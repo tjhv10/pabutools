@@ -32,7 +32,7 @@ if "%1" == "github" goto github
 goto end
 
 :github
-%SPHINXBUILD% -b html %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+%SPHINXBUILD% -b html %SOURCEDIR% %BUILDDIRGITHUB% %SPHINXOPTS% %O%
 goto end
 
 :help
