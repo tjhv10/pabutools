@@ -4,6 +4,7 @@ from pabutools.analysis.instanceproperties import *
 from pabutools.analysis.profileproperties import *
 from pabutools.analysis.votersatisfaction import *
 from pabutools.analysis.category import *
+from pabutools.analysis.projectloss import *
 from pabutools.election import CardinalProfile
 from pabutools.election.profile.approvalprofile import (
     ApprovalProfile,
@@ -20,7 +21,11 @@ from pabutools.election.satisfaction.additivesatisfaction import (
     Relative_Cardinality_Sat,
 )
 from pabutools.fractions import frac
-from pabutools.rules.budgetallocation import BudgetAllocation
+from pabutools.rules.budgetallocation import (
+    BudgetAllocation,
+    MESAllocationDetails,
+    MESIteration,
+)
 
 
 class TestAnalysis(TestCase):
@@ -257,3 +262,39 @@ class TestAnalysis(TestCase):
         assert avg_total_score(instance, card_multi_profile) == 6
         assert median_total_score(instance, card_profile) == 3
         assert median_total_score(instance, card_multi_profile) == 3
+
+    def test_project_loss(self):
+        projects = [Project(chr(ord("a") + idx), 2) for idx in range(6)]
+        supporters = [[0, 1, 2, 4], [2, 3, 4], [0, 2], [0, 1], [4], [5]]
+        was_picked = [True, True, False, False, False, False]
+        voters_budget = [
+            [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 1), frac(1, 2), frac(1, 1)],
+            [frac(1, 2), frac(1, 2), frac(0, 1), frac(0, 1), frac(0, 1), frac(1, 1)],
+            [frac(1, 2), frac(1, 2), frac(0, 1), frac(0, 1), frac(0, 1), frac(1, 1)],
+            [frac(1, 2), frac(1, 2), frac(0, 1), frac(0, 1), frac(0, 1), frac(1, 1)],
+            [frac(1, 2), frac(1, 2), frac(0, 1), frac(0, 1), frac(0, 1), frac(1, 1)],
+            [frac(1, 2), frac(1, 2), frac(0, 1), frac(0, 1), frac(0, 1), frac(1, 1)],
+        ]
+        initial_budget_per_voter = frac(1, 1)
+
+        iterations = [
+            MESIteration(projects[idx], supporters[idx], was_picked[idx], voters_budget[idx]) for idx in range(len(projects))
+        ]
+        allocation_details = MESAllocationDetails(initial_budget_per_voter)
+        allocation_details.iterations = iterations
+
+        project_losses = calculate_project_loss(allocation_details)
+        expected_budgets = [frac(4, 1), frac(2, 1), frac(1, 2), frac(1, 1), frac(0, 1), frac(1, 1)]
+        expected_losses = [
+            {},
+            {projects[0]: frac(1, 1)},
+            {projects[0]: frac(1, 1), projects[1]: frac(1, 2)},
+            {projects[0]: frac(1, 1)},
+            {projects[0]: frac(1, 2), projects[1]: frac(1, 2)},
+            {},
+        ]
+
+        for idx, project_loss in enumerate(project_losses):
+            assert project_loss.name == projects[idx].name
+            assert project_loss.supporters_budget == expected_budgets[idx]
+            assert project_loss.budget_lost == expected_losses[idx]
