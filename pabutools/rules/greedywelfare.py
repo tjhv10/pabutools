@@ -245,8 +245,8 @@ def greedy_utilitarian_welfare(
 
     Returns
     -------
-        Iterable[Project] | Iterable[Iterable[Project]]
-            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute
+        BudgetAllocation | Collection[BudgetAllocation]
+            The selected budget allocation if resolute (`resoluteness` = True), or the set of budget allocations if irresolute
             (`resoluteness = False`).
     """
     if tie_breaking is None:
