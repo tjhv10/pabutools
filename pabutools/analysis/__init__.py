@@ -20,6 +20,10 @@ from pabutools.analysis.profileproperties import (
     avg_total_score,
     median_total_score,
 )
+from pabutools.analysis.projectloss import (
+    ProjectLoss,
+    calculate_project_loss,
+)
 from pabutools.analysis.votersatisfaction import (
     avg_satisfaction,
     gini_coefficient_of_satisfaction,
@@ -28,6 +32,8 @@ from pabutools.analysis.votersatisfaction import (
 )
 
 __all__ = [
+    "ProjectLoss",
+    "calculate_project_loss",
     "category_proportionality",
     "sum_project_cost",
     "funding_scarcity",

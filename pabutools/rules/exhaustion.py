@@ -135,8 +135,9 @@ def exhaustion_by_budget_increase(
 
     Returns
     -------
-        Collection[Project]
-            The selected projects.
+        BudgetAllocation | Iterable[BudgetAllocation]
+            The selected budget allocation if resolute (`resoluteness` = True), or the set of budget allocations if irresolute
+            (`resoluteness = False`).
     """
     if rule_params is None:
         rule_params = {}

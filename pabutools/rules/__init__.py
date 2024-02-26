@@ -26,7 +26,12 @@ from pabutools.rules.maxwelfare import max_additive_utilitarian_welfare
 from pabutools.rules.mes import method_of_equal_shares
 from pabutools.rules.phragmen import sequential_phragmen
 from pabutools.rules.composition import social_welfare_comparison, popularity_comparison
-from pabutools.rules.budgetallocation import BudgetAllocation
+from pabutools.rules.budgetallocation import (
+    BudgetAllocation,
+    AllocationDetails,
+    MESAllocationDetails,
+    MESIteration,
+)
 
 __all__ = [
     "completion_by_rule_combination",
@@ -37,5 +42,8 @@ __all__ = [
     "sequential_phragmen",
     "social_welfare_comparison",
     "popularity_comparison",
-    "BudgetAllocation"
+    "BudgetAllocation",
+    "AllocationDetails",
+    "MESAllocationDetails",
+    "MESIteration",
 ]

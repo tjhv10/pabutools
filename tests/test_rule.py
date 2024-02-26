@@ -1,6 +1,8 @@
 from unittest import TestCase
+from parameterized import parameterized
 
 from pabutools.fractions import frac
+from pabutools.rules.budgetallocation import BudgetAllocation
 from pabutools.election.profile import ApprovalProfile
 from pabutools.election.ballot import ApprovalBallot
 from pabutools.election.satisfaction import (
@@ -681,3 +683,156 @@ class TestRule(TestCase):
         assert method_of_equal_shares(instance, profile, Cost_Sat) == [p1]
         assert mes_phragmen(instance, profile) == [p1]
         assert mes_phragmen(instance, profile, resoluteness=False) == [[p1]]
+
+    @parameterized.expand(
+        [
+            (
+                [1, 1, 2, 1, 2],
+                [0, 2],
+                [0, 2],
+                [0],
+                [frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8)],
+                [frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8)],
+            ),
+            (
+                [1, 1, 2, 1, 2],
+                [0, 1, 2],
+                [0],
+                [0, 1],
+                [frac(3, 8), frac(1, 24), frac(1, 24), frac(1, 24), frac(1, 24)],
+                [frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8)],
+            ),
+            (
+                [1, 1, 2, 1, 2],
+                [0, 1, 2],
+                [0, 1, 2],
+                [0, 1],
+                [frac(3, 8), frac(1, 8), frac(1, 8), frac(1, 8), frac(1, 8)],
+                [frac(3, 8), frac(1, 8), frac(1, 8), frac(1, 8), frac(1, 8)],
+            ),
+            (
+                [5, 1, 2, 1, 2],
+                [0, 1, 2],
+                [0, 1, 2],
+                [1, 3],
+                [frac(1, 2), frac(1, 4), frac(1, 4), frac(1, 4), frac(1, 4)],
+                [frac(1, 2), frac(1, 4), frac(1, 4), frac(1, 4), frac(1, 4)],
+            ),
+            (
+                [5, 5, 5, 5, 5],
+                [0, 1, 2],
+                [0, 1, 2],
+                [],
+                [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
+                [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
+            ),
+        ]
+    )
+    def test_mes_analytics(
+        self,
+        costs,
+        third_voter_approval_idxs,
+        fourth_voter_approval_idxs,
+        picked_projects_idxs,
+        expected_third_voter_budget,
+        expected_fourth_voter_budget,
+    ):
+        projects = [Project(chr(ord("a") + idx), costs[idx]) for idx in range(0, 5)]
+        instance = Instance(projects, budget_limit=5)
+        profile = ApprovalProfile(
+            [
+                ApprovalBallot({projects[0], projects[1]}),
+                ApprovalBallot({projects[0], projects[1]}),
+                ApprovalBallot({projects[0]}),
+                ApprovalBallot([projects[idx] for idx in third_voter_approval_idxs]),
+                ApprovalBallot([projects[idx] for idx in fourth_voter_approval_idxs]),
+                ApprovalBallot({projects[0], projects[2]}),
+                ApprovalBallot({projects[0], projects[3]}),
+                ApprovalBallot({projects[0], projects[3]}),
+                ApprovalBallot({projects[4]}),
+                ApprovalBallot({projects[4]}),
+            ]
+        )
+        result = method_of_equal_shares(instance, profile, Cost_Sat, analytics=True)
+
+        assert sorted(list(result), key=lambda proj: proj.name) == [
+            projects[idx] for idx in picked_projects_idxs
+        ]
+        assert result.details.initial_budget_per_voter == frac(1, 2)
+
+        for idx, anl in enumerate(
+            sorted(result.details.iterations, key=lambda iter: iter.project.name)
+        ):
+            assert anl.project.name == projects[idx].name
+            assert anl.was_picked == (idx in picked_projects_idxs)
+            assert anl.voters_budget[3] == expected_third_voter_budget[idx]
+            assert anl.voters_budget[4] == expected_fourth_voter_budget[idx]
+            assert anl.voters_budget[8] == frac(1, 2)
+
+    def test_mes_analytics_irresolute(self):
+        projects = [Project(chr(ord("a") + idx), 3) for idx in range(0, 3)]
+        instance = Instance(projects, budget_limit=6)
+        profile = ApprovalProfile(
+            [
+                ApprovalBallot({projects[1], projects[2]}),
+                ApprovalBallot({projects[0], projects[2]}),
+                ApprovalBallot({projects[0], projects[1]}),
+            ]
+        )
+        result = method_of_equal_shares(
+            instance, profile, Cost_Sat, resoluteness=False, analytics=True
+        )
+
+        assert all(elem in result for elem in [[proj] for proj in projects])
+        assert len(result) == 3
+
+        for idxs, alloc in enumerate(result):
+            assert alloc.details.initial_budget_per_voter == frac(2, 1)
+            assert alloc.details.iterations[0].was_picked == True
+            assert all([not iter.was_picked for iter in alloc.details.iterations[1:]])
+            assert alloc.details.iterations[0].project.name == projects[idxs]
+            for iter in alloc.details.iterations:
+                assert iter.voters_budget == [
+                    2 if idxs == idx else frac(1, 2) for idx in range(3)
+                ]
+
+    def test_iterated_exhaustion_analytics(self):
+        projects = [Project(chr(ord("a") + idx), 1) for idx in range(0, 8)]
+        instance = Instance(projects, budget_limit=4)
+        profile = ApprovalProfile(
+            [
+                ApprovalBallot({projects[0], projects[1]}),
+                ApprovalBallot({projects[0], projects[1]}),
+                ApprovalBallot({projects[0], projects[2]}),
+                ApprovalBallot({projects[0], projects[2]}),
+                ApprovalBallot({projects[0], projects[3]}),
+                ApprovalBallot({projects[0], projects[3]}),
+                ApprovalBallot({projects[1], projects[2], projects[5]}),
+                ApprovalBallot({projects[4]}),
+                ApprovalBallot({projects[5]}),
+                ApprovalBallot({projects[6]}),
+            ]
+        )
+
+        budget_allocation_mes_iterated = exhaustion_by_budget_increase(
+            instance,
+            profile,
+            method_of_equal_shares,
+            {"sat_class": Cost_Sat, "analytics": True},
+            budget_step=frac(1, 24),
+        )
+
+        expected_sixth_voter_budget = [frac(2, 3), frac(1, 3), 0, 0, 0, 0, 0]
+
+        assert sorted(
+            list(budget_allocation_mes_iterated), key=lambda proj: proj.name
+        ) == [projects[idx] for idx in range(4)]
+
+        assert len(budget_allocation_mes_iterated.details.iterations) == 7
+        assert budget_allocation_mes_iterated.details.initial_budget_per_voter == frac(
+            2, 3
+        )
+        for idx, iter in enumerate(budget_allocation_mes_iterated.details.iterations):
+            assert iter.was_picked == (iter.project.name <= "d")
+            assert iter.voters_budget[6] == expected_sixth_voter_budget[idx]
+            assert iter.voters_budget[8] == frac(2, 3)

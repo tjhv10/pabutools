@@ -6,7 +6,11 @@ from __future__ import annotations
 from copy import copy, deepcopy
 from collections.abc import Collection, Iterable
 
-from pabutools.rules.budgetallocation import BudgetAllocation
+from pabutools.rules.budgetallocation import (
+    BudgetAllocation,
+    MESAllocationDetails,
+    MESIteration
+)
 from pabutools.utils import Numeric
 
 from pabutools.election import AbstractApprovalProfile
@@ -282,9 +286,10 @@ def mes_inner_algo(
     voters: list[MESVoter],
     projects: set[MESProject],
     tie_breaking_rule: TieBreakingRule,
-    current_alloc: list[Project],
-    all_allocs: list[list[Project]],
+    current_alloc: BudgetAllocation,
+    all_allocs: list[BudgetAllocation],
     resoluteness: bool,
+    analytics: True,
     verbose: bool = False,
 ) -> None:
     """
@@ -304,13 +309,15 @@ def mes_inner_algo(
             values.
         tie_breaking_rule : :py:class:`~pabutools.tiebreaking.TieBreakingRule`
             The tie-breaking rule used.
-        current_alloc: list[Project]
+        current_alloc: BudgetAllocation
             The budget allocation that is currently being built. Only populated via side effects.
-        all_allocs: list[list[Project]]
+        all_allocs: list[BudgetAllocation]
             The set of all budget allocations returned so far. Only populated via side effects.
         resoluteness : bool, optional
             Set to `False` to obtain an irresolute outcome, where all tied budget allocations are returned.
             Defaults to True.
+        analytics: bool, optional
+            (De)Activate the calculation of analytics.
         verbose : bool, optional
             (De)Activate the display of additional information.
     Returns
@@ -321,22 +328,31 @@ def mes_inner_algo(
 
     """
     tied_projects = []
+    if analytics:
+        local_iterations = []
+        iteration_picked = []
+        if len(current_alloc.details.iterations) == 0:
+            current_alloc.details.initial_budget_per_voter = voters[0].budget
     best_afford = float("inf")
     if verbose:
         print("========================")
     for project in sorted(projects, key=lambda p: p.affordability):
         if verbose:
             print(f"\tConsidering: {project}")
-        if (
-            sum(voters[i].total_budget() for i in project.supporter_indices)
-            < project.cost
-        ):  # unaffordable, can delete
+        available_budget = sum(
+            voters[i].total_budget() for i in project.supporter_indices
+        )
+        if available_budget < project.cost:  # unaffordable, can delete
             if verbose:
                 print(
                     f"\t\t Removed for lack of budget: "
-                    f"{float(sum(voters[i].total_budget() for i in project.supporter_indices))} < {float(project.cost)}"
+                    f"{float(available_budget)} < {float(project.cost)}"
                 )
             projects.remove(project)
+            if analytics:
+                local_iterations.append(
+                    MESIteration(project, project.supporter_indices, False)
+                )
             continue
         if (
             project.affordability > best_afford
@@ -373,14 +389,23 @@ def mes_inner_algo(
                 if afford_factor < best_afford:
                     best_afford = afford_factor
                     tied_projects = [project]
+                    if analytics:
+                        iteration_picked = [len(local_iterations)]
                 elif afford_factor == best_afford:
                     tied_projects.append(project)
+                    if analytics:
+                        iteration_picked.append(len(local_iterations))
                 break
             current_contribution += supporter.total_budget()
             denominator -= supporter.multiplicity * project.supporters_sat(supporter)
     if verbose:
         print(f"{tied_projects}")
     if not tied_projects:
+        if analytics:
+            voters_budget = [voter.budget for voter in voters]
+            for iter in local_iterations:
+                iter.voters_budget = voters_budget
+            current_alloc.details.iterations.extend(local_iterations)
         if resoluteness:
             all_allocs.append(current_alloc)
         else:
@@ -392,13 +417,13 @@ def mes_inner_algo(
             tied_projects = tie_breaking_rule.order(instance, profile, tied_projects)
             if resoluteness:
                 tied_projects = tied_projects[:1]
-        for selected_project in tied_projects:
+        for select_idx, selected_project in enumerate(tied_projects):
             if resoluteness:
                 new_alloc = current_alloc
                 new_projects = projects
                 new_voters = voters
             else:
-                new_alloc = copy(current_alloc)
+                new_alloc = deepcopy(current_alloc)
                 new_projects = deepcopy(projects)
                 new_voters = deepcopy(voters)
             new_alloc.append(selected_project.project)
@@ -407,12 +432,32 @@ def mes_inner_algo(
                 print(
                     f"Price is {best_afford * selected_project.supporters_sat(selected_project.supporter_indices[0])}"
                 )
+            if analytics:
+                old_voters_budget = [voter.budget for voter in voters]
             for i in selected_project.supporter_indices:
                 supporter = new_voters[i]
                 supporter.budget -= min(
                     supporter.budget,
                     best_afford * selected_project.supporters_sat(supporter),
                 )
+            if analytics:
+                new_voters_budget = [voter.budget for voter in new_voters]
+                for iter_idx, iter in enumerate(local_iterations):
+                    if iter_idx < iteration_picked[select_idx]:
+                        iter.voters_budget = old_voters_budget
+                    else:
+                        iter.voters_budget = new_voters_budget
+                local_iterations.insert(
+                    iteration_picked[select_idx],
+                    MESIteration(
+                        selected_project,
+                        selected_project.supporter_indices,
+                        True,
+                        new_voters_budget,
+                    ),
+                )
+                new_alloc.details.iterations.extend(local_iterations)
+                local_iterations.pop(iteration_picked[select_idx])
             mes_inner_algo(
                 instance,
                 profile,
@@ -422,6 +467,7 @@ def mes_inner_algo(
                 new_alloc,
                 all_allocs,
                 resoluteness,
+                analytics,
                 verbose=verbose,
             )
 
@@ -436,6 +482,7 @@ def method_of_equal_shares_scheme(
     resoluteness=True,
     voter_budget_increment=None,
     binary_sat=False,
+    analytics: bool = False,
     verbose: bool = False,
 ) -> BudgetAllocation | list[BudgetAllocation]:
     """
@@ -465,6 +512,8 @@ def method_of_equal_shares_scheme(
         binary_sat : bool, optional
             Uses the inner algorithm for binary satisfaction if set to `True`. Should typically be used with approval
             ballots to gain on the runtime. Automatically set to `True` if an approval profile is given.
+        analytics: bool, optional
+            (De)Activate the calculation of analytics.
         verbose : bool, optional
             (De)Activate the display of additional information.
     Returns
@@ -511,7 +560,12 @@ def method_of_equal_shares_scheme(
             else:
                 initial_budget_allocation.append(p)
 
-    previous_outcome: BudgetAllocation | list[BudgetAllocation] = initial_budget_allocation
+    budget_allocation = BudgetAllocation(
+        initial_budget_allocation,
+        MESAllocationDetails(initial_budget_per_voter) if analytics else None,
+    )
+
+    previous_outcome: BudgetAllocation | list[BudgetAllocation] = budget_allocation
 
     while True:
         all_budget_allocations: list[BudgetAllocation] = []
@@ -521,9 +575,10 @@ def method_of_equal_shares_scheme(
             voters,
             copy(projects),
             tie_breaking,
-            copy(initial_budget_allocation),
+            deepcopy(budget_allocation),
             all_budget_allocations,
             resoluteness,
+            analytics,
             verbose,
         )
         if resoluteness:
@@ -564,6 +619,7 @@ def method_of_equal_shares(
     initial_budget_allocation: Iterable[Project] | None = None,
     voter_budget_increment=None,
     binary_sat=None,
+    analytics: bool = False,
     verbose: bool = False,
 ) -> BudgetAllocation | list[BudgetAllocation]:
     """
@@ -600,6 +656,8 @@ def method_of_equal_shares(
         binary_sat : bool, optional
             Uses the inner algorithm for binary satisfaction if set to `True`. Should typically be used with approval
             ballots to gain on the runtime. Automatically set to `True` if an approval profile is given.
+        analytics: bool, optional
+            (De)Activate the calculation of analytics.
         verbose : bool, optional
             (De)Activate the display of additional information.
 
@@ -635,5 +693,6 @@ def method_of_equal_shares(
         resoluteness=resoluteness,
         voter_budget_increment=voter_budget_increment,
         binary_sat=binary_sat,
+        analytics=analytics,
         verbose=verbose,
     )

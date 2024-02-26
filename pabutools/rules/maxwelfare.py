@@ -65,9 +65,9 @@ def max_additive_utilitarian_welfare_scheme(
     opt_value = mip_model.objective_value
 
     if resoluteness:
-        res = BudgetAllocation(initial_budget_allocation)
-        res.extend([p for p in p_vars if p_vars[p].x >= 0.99])
-        return res
+        return BudgetAllocation(
+            [p for p in p_vars if p_vars[p].x >= 0.99] + list(initial_budget_allocation)
+        )
 
     previous_partial_alloc = [p for p in p_vars if p_vars[p].x >= 0.99]
     all_partial_allocs = [previous_partial_alloc]
@@ -93,12 +93,10 @@ def max_additive_utilitarian_welfare_scheme(
         previous_partial_alloc = [p for p in p_vars if p_vars[p].x >= 0.99]
         if previous_partial_alloc not in all_partial_allocs:
             all_partial_allocs.append(previous_partial_alloc)
-    res = []
-    for partial_alloc in all_partial_allocs:
-        alloc = BudgetAllocation(initial_budget_allocation)
-        alloc.extend(partial_alloc)
-        res.append(alloc)
-    return res
+    return [
+        BudgetAllocation(partial_alloc + list(initial_budget_allocation))
+        for partial_alloc in all_partial_allocs
+    ]
 
 
 def max_additive_utilitarian_welfare(
