@@ -935,7 +935,7 @@ Tie-Breaking
 For reference, see the module :py:mod:`~pabutools.tiebreaking`.
 
 We provide several ways to break ties between several projects. All tie-breaking rules are
-instantiations of the :py:class:`pabutools.tiebreaking.TieBreakingRule` class.
+instantiations of the :py:class:`~pabutools.tiebreaking.TieBreakingRule` class.
 This class defines two functions `untie` and `order` that respectively return a single project
 from a set of several or order a list of projects.
 

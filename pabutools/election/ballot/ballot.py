@@ -1,6 +1,7 @@
 """
 Ballots, that is, the information submitted by the voters during the election.
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

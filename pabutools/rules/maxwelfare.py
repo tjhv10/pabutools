@@ -1,6 +1,7 @@
 """
 Welfare-maximizing rules.
 """
+
 from __future__ import annotations
 
 from collections.abc import Collection

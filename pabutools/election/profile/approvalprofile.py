@@ -1,6 +1,7 @@
 """
 Approval profiles, i.e., collections of approval ballots.
 """
+
 from __future__ import annotations
 
 from abc import ABC

@@ -1,6 +1,7 @@
 """
 Cardinal ballots, i.e., ballots in which the voters map projects to scores.
 """
+
 from __future__ import annotations
 
 from abc import ABC

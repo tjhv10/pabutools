@@ -10,24 +10,23 @@ from pabutools.rules.budgetallocation import AllocationDetails
 class ProjectLoss(Project):
     """
     Class used to represent the projects and how much budget they lost due to other projects being picked.
+    This extends the :py:class:`~pabutools.election.instance.Project` and thus represents the project itself.
 
     Parameters
     ----------
-        project: Project
+        project: :py:class:`~pabutools.election.instance.Project`
             Project for which analytics is calculated.
-        supporters_budget: Numeric
+        supporters_budget: :py:class:`~pabutools.utils.Numeric`
             The collective budget of the project supporters when project was considered by a rule.
-        budget_lost: dict[Project, Numeric]
+        budget_lost: dict[:py:class:`~pabutools.election.instance.Project`, :py:class:`~pabutools.utils.Numeric`]
             Describes the amount of budget project supporters spent on other projects prior to this
             projects' consideration.
 
     Attributes
     ----------
-        project: Project
-            Project for which analytics is calculated.
-        supporters_budget: Numeric
+        supporters_budget: :py:class:`~pabutools.utils.Numeric`
             The collective budget of the project supporters when project was considered by rule.
-        budget_lost: dict[Project, Numeric]
+        budget_lost: dict[:py:class:`~pabutools.election.instance.Project`, :py:class:`~pabutools.utils.Numeric`]
             Describes the amount of budget project supporters spent on other projects prior to this
             projects' consideration.
     """
@@ -50,7 +49,7 @@ class ProjectLoss(Project):
 
         Returns
         -------
-            Numeric
+            :py:class:`~pabutools.utils.Numeric`
                 The total budget spent.
         """
         return sum(self.budget_lost.values())
@@ -65,12 +64,28 @@ class ProjectLoss(Project):
 def calculate_project_loss(
     allocation_details: AllocationDetails, verbose: bool = False
 ) -> list[ProjectLoss]:
-    if (
-        allocation_details.iterations is None
-        or allocation_details.initial_budget_per_voter is None
+    """Returns a list of :py:class:`~pabutools.analysis.projectloss.ProjectLoss` objects for the projects.
+
+    Parameters
+    ----------
+        allocation_details: :py:class:`~pabutools.rules.budgetallocation.AllocationDetails`
+            The details of the budget allocation considered.
+        verbose: bool, optional
+            (De)Activate the display of additional information.
+            Defaults to `False`.
+
+    Returns
+    -------
+        list[:py:class:`~pabutools.analysis.projectloss.ProjectLoss`]
+            List of :py:class:`~pabutools.analysis.projectloss.ProjectLoss` objects.
+
+    """
+    if not hasattr(allocation_details, "iterations") or not hasattr(
+        allocation_details, "initial_budget_per_voter"
     ):
         raise ValueError(
-            "Provided allocation details do not support calculating project loss"
+            "Provided budget allocation details do not support calculating project loss. The allocation_details "
+            "should have an 'iterations' and an 'initial_budget_per_voter' attributes."
         )
     if len(allocation_details.iterations) == 0:
         if verbose:
@@ -87,31 +102,33 @@ def calculate_project_loss(
         allocation_details.initial_budget_per_voter for _ in range(voter_count)
     ]
 
-    for iter in allocation_details.iterations:
+    for iteration in allocation_details.iterations:
         if verbose:
-            print(f"Considering: {iter.project.name}, status: {iter.was_picked}")
+            print(
+                f"Considering: {iteration.project.name}, status: {iteration.was_picked}"
+            )
         budget_lost = {}
-        for spending in [voter_spendings[i] for i in iter.supporter_indices]:
+        for spending in [voter_spendings[i] for i in iteration.supporter_indices]:
             for project, spent in spending:
                 if project not in budget_lost.keys():
                     budget_lost[project] = 0
                 budget_lost[project] = budget_lost[project] + spent
         project_losses.append(
             ProjectLoss(
-                iter.project,
-                sum(current_voters_budget[i] for i in iter.supporter_indices),
+                iteration.project,
+                sum(current_voters_budget[i] for i in iteration.supporter_indices),
                 budget_lost,
             )
         )
-        if iter.was_picked:
-            for supporter_idx in iter.supporter_indices:
+        if iteration.was_picked:
+            for supporter_idx in iteration.supporter_indices:
                 voter_spendings[supporter_idx].append(
                     (
-                        iter.project,
+                        iteration.project,
                         current_voters_budget[supporter_idx]
-                        - iter.voters_budget[supporter_idx],
+                        - iteration.voters_budget[supporter_idx],
                     )
                 )
-            current_voters_budget = iter.voters_budget           
+            current_voters_budget = iteration.voters_budget
 
     return project_losses

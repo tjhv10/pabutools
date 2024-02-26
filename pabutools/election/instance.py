@@ -3,6 +3,7 @@ Module defining the basic classes used to represent a participatory budgeting el
 The :py:class:`~pabutools.election.instance.Project` and the
 :py:class:`~pabutools.election.instance.Instance` classes are defined here.
 """
+
 from __future__ import annotations
 
 from collections.abc import Collection, Generator

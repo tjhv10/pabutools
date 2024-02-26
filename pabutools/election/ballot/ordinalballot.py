@@ -1,6 +1,7 @@
 """
 Ordinal ballots, i.e., ballots in which the voters order the projects given their preferences.
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

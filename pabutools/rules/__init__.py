@@ -17,20 +17,23 @@ sequential Phragmén rule), we also implement methods to make the outcome exhaus
 All rules return one or several lists of projects called budget allocations, represented by the class
 :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`.
 """
+
 from pabutools.rules.exhaustion import (
     completion_by_rule_combination,
     exhaustion_by_budget_increase,
 )
 from pabutools.rules.greedywelfare import greedy_utilitarian_welfare
 from pabutools.rules.maxwelfare import max_additive_utilitarian_welfare
-from pabutools.rules.mes import method_of_equal_shares
+from pabutools.rules.mes import (
+    method_of_equal_shares,
+    MESAllocationDetails,
+    MESIteration,
+)
 from pabutools.rules.phragmen import sequential_phragmen
 from pabutools.rules.composition import social_welfare_comparison, popularity_comparison
 from pabutools.rules.budgetallocation import (
     BudgetAllocation,
     AllocationDetails,
-    MESAllocationDetails,
-    MESIteration,
 )
 
 __all__ = [

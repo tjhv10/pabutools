@@ -1,6 +1,7 @@
 """
 Module testing the ballots.
 """
+
 from unittest import TestCase
 
 from pabutools.election import (

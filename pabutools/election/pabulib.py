@@ -1,6 +1,7 @@
 """
 Tools to work with PaBuLib.
 """
+
 from natsort import natsorted
 from copy import deepcopy
 
@@ -410,10 +411,15 @@ def election_as_pabulib_string(instance: Instance, profile: AbstractProfile) -> 
         file_str += f"{key};{value}\n"
     file_str += "PROJECTS\n" + ";".join(project_keys) + "\n"
     for project_dict in project_dicts:
-        file_str += ";".join([str(project_dict.get(key, "None")) for key in project_keys]) + "\n"
+        file_str += (
+            ";".join([str(project_dict.get(key, "None")) for key in project_keys])
+            + "\n"
+        )
     file_str += "VOTES\n" + ";".join(vote_keys) + "\n"
     for vote_dict in vote_dicts:
-        file_str += ";".join([str(vote_dict.get(key, "None")) for key in vote_keys]) + "\n"
+        file_str += (
+            ";".join([str(vote_dict.get(key, "None")) for key in vote_keys]) + "\n"
+        )
     return file_str
 
 

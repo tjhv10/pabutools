@@ -1,6 +1,7 @@
 """
 Satisfaction profiles.
 """
+
 from __future__ import annotations
 
 from collections import Counter
@@ -206,9 +207,9 @@ class SatisfactionMultiProfile(Counter, GroupSatisfactionMeasure):
 
     def __init__(
         self,
-        init: Iterable[SatisfactionMeasure]
-        | dict[SatisfactionMeasure, int]
-        | None = None,
+        init: (
+            Iterable[SatisfactionMeasure] | dict[SatisfactionMeasure, int] | None
+        ) = None,
         instance: Instance | None = None,
         profile: Profile | None = None,
         multiprofile: MultiProfile | None = None,

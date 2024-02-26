@@ -33,7 +33,6 @@ for attributes and methods that apply both to the profile and the multiprofile. 
 
 """
 
-
 from pabutools.election.profile.profile import AbstractProfile, Profile, MultiProfile
 from pabutools.election.profile.approvalprofile import (
     AbstractApprovalProfile,

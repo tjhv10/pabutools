@@ -1,6 +1,7 @@
 """
 Cumulative ballots, i.e., ballots in which the voters distribute a given amount of points to the projects.
 """
+
 from __future__ import annotations
 
 from abc import ABC

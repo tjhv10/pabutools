@@ -1,6 +1,7 @@
 """
 Tools to work with PrefLib.
 """
+
 from __future__ import annotations
 
 import preflibtools.instances as preflib

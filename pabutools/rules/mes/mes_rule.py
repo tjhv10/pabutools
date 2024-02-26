@@ -1,16 +1,14 @@
 """
 The method of equal shares.
 """
+
 from __future__ import annotations
 
 from copy import copy, deepcopy
-from collections.abc import Collection, Iterable
+from collections.abc import Iterable
 
-from pabutools.rules.budgetallocation import (
-    BudgetAllocation,
-    MESAllocationDetails,
-    MESIteration
-)
+from pabutools.rules.budgetallocation import BudgetAllocation
+from pabutools.rules.mes.mes_details import MESAllocationDetails, MESIteration
 from pabutools.utils import Numeric
 
 from pabutools.election import AbstractApprovalProfile
@@ -172,7 +170,7 @@ def affordability_poor_rich(voters: list[MESVoter], project: MESProject) -> Nume
 
     """
     rich = set(project.supporter_indices)
-    poor = set()
+    poor = {}
     while len(rich) > 0:
         poor_budget = sum(voters[i].total_budget() for i in poor)
         numerator = frac(project.cost - poor_budget)
@@ -327,7 +325,7 @@ def mes_inner_algo(
             (`resoluteness = False`).
 
     """
-    tied_projects = []
+    tied_projects: list[MESProject] = []
     if analytics:
         local_iterations = []
         iteration_picked = []
@@ -403,8 +401,8 @@ def mes_inner_algo(
     if not tied_projects:
         if analytics:
             voters_budget = [voter.budget for voter in voters]
-            for iter in local_iterations:
-                iter.voters_budget = voters_budget
+            for iteration in local_iterations:
+                iteration.voters_budget = voters_budget
             current_alloc.details.iterations.extend(local_iterations)
         if resoluteness:
             all_allocs.append(current_alloc)
@@ -442,11 +440,11 @@ def mes_inner_algo(
                 )
             if analytics:
                 new_voters_budget = [voter.budget for voter in new_voters]
-                for iter_idx, iter in enumerate(local_iterations):
+                for iter_idx, iteration in enumerate(local_iterations):
                     if iter_idx < iteration_picked[select_idx]:
-                        iter.voters_budget = old_voters_budget
+                        iteration.voters_budget = old_voters_budget
                     else:
-                        iter.voters_budget = new_voters_budget
+                        iteration.voters_budget = new_voters_budget
                 local_iterations.insert(
                     iteration_picked[select_idx],
                     MESIteration(
@@ -513,9 +511,13 @@ def method_of_equal_shares_scheme(
             Uses the inner algorithm for binary satisfaction if set to `True`. Should typically be used with approval
             ballots to gain on the runtime. Automatically set to `True` if an approval profile is given.
         analytics: bool, optional
-            (De)Activate the calculation of analytics.
+            (De)Activate the computation of analytics. These are additional details that can be accessed from the
+            :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` object returned by the rule to perform
+            analyses.
+            Defaults to `False`.
         verbose : bool, optional
             (De)Activate the display of additional information.
+            Defaults to `False`.
     Returns
     -------
         :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]
@@ -657,9 +659,13 @@ def method_of_equal_shares(
             Uses the inner algorithm for binary satisfaction if set to `True`. Should typically be used with approval
             ballots to gain on the runtime. Automatically set to `True` if an approval profile is given.
         analytics: bool, optional
-            (De)Activate the calculation of analytics.
+            (De)Activate the computation of analytics. These are additional details that can be accessed from the
+            :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` object returned by the rule to perform
+            analyses.
+            Defaults to `False`.
         verbose : bool, optional
             (De)Activate the display of additional information.
+            Defaults to `False`.
 
     Returns
     -------

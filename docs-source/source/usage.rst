@@ -527,6 +527,8 @@ outcome (for visualisation/explanation purposes).
 Additive Utilitarian Welfare Maximiser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+:py:func:`~pabutools.rules.maxwelfare.max_additive_utilitarian_welfare`
+
 The first rule provided is the Additive Utilitarian Welfare Maximiser. It aims to return
 budget allocations that maximize the utilitarian social welfare when the satisfaction
 measure is additive.
@@ -583,6 +585,8 @@ for non-additive satisfaction measures.
 
 Greedy Approximation of the Welfare Maximiser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+:py:func:`~pabutools.rules.greedywelfare.greedy_utilitarian_welfare`
 
 The library also implements standard greedy rules. The primary rule used in this
 context is the Greedy Utilitarian Welfare. It behaves similarly to the
@@ -653,6 +657,8 @@ to additive satisfaction measures (and runs faster).
 Sequential Phragmén's Rule
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+:py:func:`~pabutools.rules.phragmen.sequential_phragmen`
+
 Another rule provided is the Sequential Phragmén's Rule, which is different from the
 previous two as it does not rely on a satisfaction measure.
 
@@ -699,6 +705,8 @@ previous two as it does not rely on a satisfaction measure.
 
 Method of Equal Shares (MES)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+:py:func:`~pabutools.rules.mes.method_of_equal_shares`
 
 The Method of Equal Shares is another rule that returns budget allocations based on the satisfaction
 measure provided. For more details, see the `equalshares.net <https://equalshares.net/>`_ website.
@@ -772,6 +780,10 @@ performances, one should use the following:
 
 Exhaustion Methods
 ^^^^^^^^^^^^^^^^^^
+
+:py:func:`~pabutools.rules.exhaustion.completion_by_rule_combination`
+
+:py:func:`~pabutools.rules.exhaustion.exhaustion_by_budget_increase`
 
 Since not all rules return exhaustive budget allocations, the library offers standard
 methods to render their outcome exhaustive.
@@ -856,6 +868,10 @@ parameter directly to obtain the iterated version.
 Rule Composition
 ^^^^^^^^^^^^^^^^
 
+:py:func:`~pabutools.rules.composition.popularity_comparison`
+
+:py:func:`~pabutools.rules.composition.social_welfare_comparison`
+
 The library also provides ways to compose rules, such as selecting the outcome that is
 preferred by the largest number of voters for a given satisfaction measure.
 
@@ -929,13 +945,33 @@ the following:
 We also provide a similar comparison using utilitarian social welfare through the function
 :py:func:`~pabutools.rules.composition.social_welfare_comparison`.
 
+Details for the Budget Allocation Rule
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Some rules, for instance :py:func:`~pabutools.rules.mes.method_of_equal_shares`, accept a
+:code:`analytics` boolean argument to activate the storage of additional information
+regarding the budget allocations output by the rule. When :code:`analytics = True`,
+the rule populate the :code:`details` member of the
+:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` object it returns.
+The stored information can then be used for analytical purposes.
+
+.. list-table::
+   :widths: 50 50
+   :header-rows: 1
+
+   * - Rule
+     - Details class
+   * - :py:func:`~pabutools.rules.mes.method_of_equal_shares`
+     - :py:class:`~pabutools.rules.mes.MESAllocationDetails`
+
+
 Tie-Breaking
 ------------
 
 For reference, see the module :py:mod:`~pabutools.tiebreaking`.
 
 We provide several ways to break ties between several projects. All tie-breaking rules are
-instantiations of the :py:class:`pabutools.tiebreaking.TieBreakingRule` class.
+instantiations of the :py:class:`~pabutools.tiebreaking.TieBreakingRule` class.
 This class defines two functions `untie` and `order` that respectively return a single project
 from a set of several or order a list of projects.
 

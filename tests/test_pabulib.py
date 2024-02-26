@@ -5,7 +5,8 @@ from pabutools.election.pabulib import (
     parse_pabulib,
     parse_pabulib_from_string,
     parse_pabulib_from_url,
-    write_pabulib, election_as_pabulib_string,
+    write_pabulib,
+    election_as_pabulib_string,
 )
 
 import os
@@ -598,7 +599,9 @@ voter_id;vote;voting_method;district
         assert profile.legal_max_total_score == 100
 
     def test_url_parse(self):
-        url = "http://pabulib.org/tiles/download/poland_warszawa_2018_pole-mokotowskie.pb"
+        url = (
+            "http://pabulib.org/tiles/download/poland_warszawa_2018_pole-mokotowskie.pb"
+        )
         url_inst, url_prof = parse_pabulib_from_url(url)
         assert url_inst.file_name == "poland_warszawa_2018_pole-mokotowskie.pb"
         assert url_inst.file_path == url

@@ -13,7 +13,8 @@ from pabutools.election import (
     Additive_Cardinal_Sat,
     AbstractCardinalProfile,
     ApprovalBallot,
-    total_cost, AbstractProfile,
+    total_cost,
+    AbstractProfile,
 )
 from pabutools.utils import powerset
 
@@ -39,7 +40,10 @@ def is_in_core(
                         sat = sat_class(instance, profile, ballot)
                         surplus = 0
                         if up_to_func is not None:
-                            surplus = up_to_func(sat.sat_project(p) for p in project_set if p not in budget_allocation
+                            surplus = up_to_func(
+                                sat.sat_project(p)
+                                for p in project_set
+                                if p not in budget_allocation
                             )
                         if sat.sat(budget_allocation) + surplus >= sat.sat(project_set):
                             all_better_alone = False

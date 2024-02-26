@@ -109,9 +109,9 @@ def dummy_elections():
     test_election.irr_results_sat[max_additive_utilitarian_welfare][Cost_Sat] = sorted(
         [[p[0], p[2]], [p[1]], [p[2], p[3]]]
     )
-    test_election.irr_results_sat[max_additive_utilitarian_welfare][
-        Cardinality_Sat
-    ] = sorted([[p[0], p[3]], [p[0], p[2]], [p[2], p[3]]])
+    test_election.irr_results_sat[max_additive_utilitarian_welfare][Cardinality_Sat] = (
+        sorted([[p[0], p[3]], [p[0], p[2]], [p[2], p[3]]])
+    )
     res.append(test_election)
 
     # Approval example 2
@@ -193,9 +193,9 @@ def dummy_elections():
     test_election.irr_results_sat[max_additive_utilitarian_welfare][Cost_Sat] = sorted(
         [[p[0], p[2]], [p[2]]]
     )
-    test_election.irr_results_sat[max_additive_utilitarian_welfare][
-        Cardinality_Sat
-    ] = sorted([[p[0], p[2]]])
+    test_election.irr_results_sat[max_additive_utilitarian_welfare][Cardinality_Sat] = (
+        sorted([[p[0], p[2]]])
+    )
     test_election.irr_results_sat[method_of_equal_shares][Cost_Sat] = sorted([[]])
     test_election.irr_results_sat[mes_iterated][Cost_Sat] = sorted([[p[2]]])
     test_election.irr_results_sat[method_of_equal_shares][Cardinality_Sat] = sorted(
@@ -212,9 +212,9 @@ def dummy_elections():
     prof = ApprovalProfile([ApprovalBallot()], instance=inst)
     test_election = DummyElection("EmptyProfile", p, inst, prof)
     for sat_class in ALL_SAT:
-        test_election.irr_results_sat[max_additive_utilitarian_welfare][
-            sat_class
-        ] = sorted([sorted(list(b)) for b in inst.budget_allocations()])
+        test_election.irr_results_sat[max_additive_utilitarian_welfare][sat_class] = (
+            sorted([sorted(list(b)) for b in inst.budget_allocations()])
+        )
         test_election.irr_results_sat[greedy_utilitarian_welfare][sat_class] = sorted(
             [
                 sorted(list(b))
@@ -239,9 +239,9 @@ def dummy_elections():
     initial_alloc = p[:1]
     test_election = DummyElection("EmptyProfile_Initial", p, inst, prof, initial_alloc)
     for sat_class in ALL_SAT:
-        test_election.irr_results_sat[max_additive_utilitarian_welfare][
-            sat_class
-        ] = sorted([sorted(list(b)) for b in inst.budget_allocations() if p[0] in b])
+        test_election.irr_results_sat[max_additive_utilitarian_welfare][sat_class] = (
+            sorted([sorted(list(b)) for b in inst.budget_allocations() if p[0] in b])
+        )
         test_election.irr_results_sat[greedy_utilitarian_welfare][sat_class] = sorted(
             [
                 sorted(list(b))
@@ -345,19 +345,19 @@ def run_sat_rule(rule, verbose=False):
                                 f"{sorted(resolute_out) in test_election.irr_results_sat[rule][sat_class]} "
                                 f"({type(resolute_out)})"
                             )
-                        irresolute_out = (
-                            rule(
-                                test_election.instance,
-                                profile,
-                                sat_class=sat_class,
-                                sat_profile=sat_profile,
-                                resoluteness=False,
-                                initial_budget_allocation=test_election.initial_alloc,
-                            )
+                        irresolute_out = rule(
+                            test_election.instance,
+                            profile,
+                            sat_class=sat_class,
+                            sat_profile=sat_profile,
+                            resoluteness=False,
+                            initial_budget_allocation=test_election.initial_alloc,
                         )
                         if verbose:
-                            print(f"Irres outcome:  {irresolute_out} "
-                                  f"({tuple(type(out) for out in irresolute_out)})")
+                            print(
+                                f"Irres outcome:  {irresolute_out} "
+                                f"({tuple(type(out) for out in irresolute_out)})"
+                            )
                             print(
                                 f"Irres expected: {test_election.irr_results_sat[rule][sat_class]}"
                             )
@@ -394,9 +394,8 @@ def run_sat_rule(rule, verbose=False):
                             in test_election.irr_results_sat[rule][sat_class]
                         )
                         assert sorted(resolute_out) == sorted(resolute_out_sat_profile)
-                        assert (
-                            sorted(sorted(x) for x in irresolute_out)
-                            == sorted(test_election.irr_results_sat[rule][sat_class])
+                        assert sorted(sorted(x) for x in irresolute_out) == sorted(
+                            test_election.irr_results_sat[rule][sat_class]
                         )
 
                         assert isinstance(resolute_out, BudgetAllocation)

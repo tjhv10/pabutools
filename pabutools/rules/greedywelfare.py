@@ -1,6 +1,7 @@
 """
 Greedy approximations of the maximum welfare.
 """
+
 from __future__ import annotations
 
 from copy import copy

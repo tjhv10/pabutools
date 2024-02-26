@@ -1,6 +1,7 @@
 """
 Profiles, i.e., collections of ballots.
 """
+
 from __future__ import annotations
 
 from collections import Counter

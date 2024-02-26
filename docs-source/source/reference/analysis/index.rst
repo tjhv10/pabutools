@@ -14,3 +14,6 @@ Analysis module
 
 .. automodule:: pabutools.analysis.category
    :members:
+
+.. automodule:: pabutools.analysis.projectloss
+   :members:

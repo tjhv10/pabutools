@@ -1,6 +1,7 @@
 """
 Approval ballots, i.e., ballots in which the voters indicate which projects they approve of.
 """
+
 from __future__ import annotations
 
 import random

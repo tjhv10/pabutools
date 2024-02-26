@@ -1,6 +1,7 @@
 """
 Module introducing all the functions used to handle fractions.
 """
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

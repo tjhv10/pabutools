@@ -1,6 +1,7 @@
 """
 Module for testing profiles.
 """
+
 from unittest import TestCase
 
 from pabutools.election import (

@@ -21,11 +21,8 @@ from pabutools.election.satisfaction.additivesatisfaction import (
     Relative_Cardinality_Sat,
 )
 from pabutools.fractions import frac
-from pabutools.rules.budgetallocation import (
-    BudgetAllocation,
-    MESAllocationDetails,
-    MESIteration,
-)
+from pabutools.rules.budgetallocation import BudgetAllocation
+from pabutools.rules.mes import MESAllocationDetails, MESIteration
 
 
 class TestAnalysis(TestCase):
@@ -278,13 +275,23 @@ class TestAnalysis(TestCase):
         initial_budget_per_voter = frac(1, 1)
 
         iterations = [
-            MESIteration(projects[idx], supporters[idx], was_picked[idx], voters_budget[idx]) for idx in range(len(projects))
+            MESIteration(
+                projects[idx], supporters[idx], was_picked[idx], voters_budget[idx]
+            )
+            for idx in range(len(projects))
         ]
         allocation_details = MESAllocationDetails(initial_budget_per_voter)
         allocation_details.iterations = iterations
 
         project_losses = calculate_project_loss(allocation_details)
-        expected_budgets = [frac(4, 1), frac(2, 1), frac(1, 2), frac(1, 1), frac(0, 1), frac(1, 1)]
+        expected_budgets = [
+            frac(4, 1),
+            frac(2, 1),
+            frac(1, 2),
+            frac(1, 1),
+            frac(0, 1),
+            frac(1, 1),
+        ]
         expected_losses = [
             {},
             {projects[0]: frac(1, 1)},
