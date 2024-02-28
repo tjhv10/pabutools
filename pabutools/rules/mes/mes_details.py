@@ -23,9 +23,10 @@ class MESAllocationDetails(AllocationDetails):
             A list of all iterations of a MES rule run. It is progressively populated during a MES rule run.
     """
 
-    def __init__(self, initial_budget_per_voter: Numeric):
+    def __init__(self, initial_budget_per_voter: Numeric, voter_multiplicity: list[int]):
         super().__init__()
         self.initial_budget_per_voter: Numeric = initial_budget_per_voter
+        self.voter_multiplicity: list[int] = voter_multiplicity
         self.iterations: list[MESIteration] = []
 
     def __str__(self):
@@ -76,10 +77,8 @@ class MESIteration:
         project: Project,
         supporter_indices: list[int],
         was_picked: bool,
-        voters_budget=None,
+        voters_budget: list[int] = [],
     ):
-        if voters_budget is None:
-            voters_budget = []
         self.project: Project = project
         self.supporter_indices: list[int] = supporter_indices
         self.was_picked: bool = was_picked
