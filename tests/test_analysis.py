@@ -261,7 +261,7 @@ class TestAnalysis(TestCase):
         assert median_total_score(instance, card_multi_profile) == 3
 
     def test_project_loss(self):
-        projects = [Project(chr(ord("a") + idx), 2) for idx in range(6)]
+        projects = [Project(chr(ord("a") + idx), 4) for idx in range(6)]
         supporters = [[0, 1, 2, 4], [2, 3, 4], [0, 2], [0, 1], [4], [5]]
         was_picked = [True, True, False, False, False, False]
         voters_budget = [
@@ -280,24 +280,20 @@ class TestAnalysis(TestCase):
             )
             for idx in range(len(projects))
         ]
-        allocation_details = MESAllocationDetails(initial_budget_per_voter)
+        allocation_details = MESAllocationDetails(
+            initial_budget_per_voter,
+            [2 for _ in range(len(voters_budget[0]))],
+        )
         allocation_details.iterations = iterations
 
         project_losses = calculate_project_loss(allocation_details)
-        expected_budgets = [
-            frac(4, 1),
-            frac(2, 1),
-            frac(1, 2),
-            frac(1, 1),
-            frac(0, 1),
-            frac(1, 1),
-        ]
+        expected_budgets = [8, 4, 1, 2, 0, 2]
         expected_losses = [
             {},
-            {projects[0]: frac(1, 1)},
-            {projects[0]: frac(1, 1), projects[1]: frac(1, 2)},
-            {projects[0]: frac(1, 1)},
-            {projects[0]: frac(1, 2), projects[1]: frac(1, 2)},
+            {projects[0]: 2},
+            {projects[0]: 2, projects[1]: 1},
+            {projects[0]: 2},
+            {projects[0]: 1, projects[1]: 1},
             {},
         ]
 
@@ -305,3 +301,7 @@ class TestAnalysis(TestCase):
             assert project_loss.name == projects[idx].name
             assert project_loss.supporters_budget == expected_budgets[idx]
             assert project_loss.budget_lost == expected_losses[idx]
+
+        # No iterations
+        project_losses = calculate_project_loss(MESAllocationDetails(1, [1]))
+        assert project_losses == []

@@ -725,6 +725,16 @@ class TestRule(TestCase):
                 [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
                 [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
             ),
+            (
+                [5, 1, 2, 1, 2],
+                [0, 1, 2],
+                [0, 1, 2],
+                [1, 3],
+                [frac(1, 2), frac(1, 4), frac(1, 4), frac(1, 4), frac(1, 4)],
+                [frac(1, 2), frac(1, 4), frac(1, 4), frac(1, 4), frac(1, 4)],
+                True,
+                [2, 1, 2, 1, 2, 2],
+            ),
         ]
     )
     def test_mes_analytics(
@@ -735,6 +745,8 @@ class TestRule(TestCase):
         picked_projects_idxs,
         expected_third_voter_budget,
         expected_fourth_voter_budget,
+        multiprofile=False,
+        expected_multiplicity=[1 for _ in range(10)],
     ):
         projects = [Project(chr(ord("a") + idx), costs[idx]) for idx in range(0, 5)]
         instance = Instance(projects, budget_limit=5)
@@ -752,21 +764,29 @@ class TestRule(TestCase):
                 ApprovalBallot({projects[4]}),
             ]
         )
+        if multiprofile:
+            profile = profile.as_multiprofile()
         result = method_of_equal_shares(instance, profile, Cost_Sat, analytics=True)
 
         assert sorted(list(result), key=lambda proj: proj.name) == [
             projects[idx] for idx in picked_projects_idxs
         ]
         assert result.details.initial_budget_per_voter == frac(1, 2)
+        assert result.details.voter_multiplicity == expected_multiplicity
 
+        check_voters = [2, 2, 5] if multiprofile else [3, 4, 8]
         for idx, anl in enumerate(
             sorted(result.details.iterations, key=lambda iter: iter.project.name)
         ):
             assert anl.project.name == projects[idx].name
             assert anl.was_picked == (idx in picked_projects_idxs)
-            assert anl.voters_budget[3] == expected_third_voter_budget[idx]
-            assert anl.voters_budget[4] == expected_fourth_voter_budget[idx]
-            assert anl.voters_budget[8] == frac(1, 2)
+            assert (
+                anl.voters_budget[check_voters[0]] == expected_third_voter_budget[idx]
+            )
+            assert (
+                anl.voters_budget[check_voters[1]] == expected_fourth_voter_budget[idx]
+            )
+            assert anl.voters_budget[check_voters[2]] == frac(1, 2)
 
     def test_mes_analytics_irresolute(self):
         projects = [Project(chr(ord("a") + idx), 3) for idx in range(0, 3)]
