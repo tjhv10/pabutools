@@ -564,7 +564,7 @@ def method_of_equal_shares_scheme(
 
     budget_allocation = BudgetAllocation(
         initial_budget_allocation,
-        MESAllocationDetails(initial_budget_per_voter) if analytics else None,
+        MESAllocationDetails(initial_budget_per_voter, [voter.multiplicity for voter in voters]) if analytics else None,
     )
 
     previous_outcome: BudgetAllocation | list[BudgetAllocation] = budget_allocation
