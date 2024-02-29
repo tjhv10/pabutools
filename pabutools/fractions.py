@@ -44,24 +44,24 @@ def frac(*arg: Numeric) -> Numeric:
             The fraction.
     """
     if len(arg) == 1:
-        if FRACTION == "gmpy2":
+        if FRACTION == GMPY_FRAC:
             return mpq(arg[0])
-        elif FRACTION == "float":
+        elif FRACTION == FLOAT_FRAC:
             return arg[0]
         else:
             raise ValueError(
-                "The current value of pabutools.fractions.FRACTION '{}' is invalid, it needs to be in "
-                "[gmpy2, float].".format(FRACTION)
+                f"The current value of pabutools.fractions.FRACTION '{FRACTION}' is invalid, it needs to be in "
+                "[gmpy2, float]."
             )
     elif len(arg) == 2:
-        if FRACTION == "gmpy2":
+        if FRACTION == GMPY_FRAC:
             return mpq(arg[0], arg[1])
-        elif FRACTION == "float":
+        elif FRACTION == FLOAT_FRAC:
             return arg[0] / arg[1]
         else:
             raise ValueError(
-                "The current value of pabutools.fractions.FRACTION '{}' is invalid, it needs to be in "
-                "[gmpy2, float].".format(FRACTION)
+                f"The current value of pabutools.fractions.FRACTION '{FRACTION}' is invalid, it needs to be in "
+                "[gmpy2, float]."
             )
     raise ValueError("frac can only take 1 or 2 arguments")
 
@@ -80,9 +80,9 @@ def str_as_frac(s: str) -> Numeric:
         Numeric
             The fraction.
     """
-    if FRACTION == "gmpy2":
+    if FRACTION == GMPY_FRAC:
         return mpq(s)
-    elif FRACTION == "float":
+    elif FRACTION == FLOAT_FRAC:
         return float(s)
     else:
         raise ValueError(f"The `FRACTION` constant has an unknown value: {FRACTION}")
