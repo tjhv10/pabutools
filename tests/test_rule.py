@@ -812,8 +812,6 @@ class TestRule(TestCase):
             assert not anl.was_picked() or anl.project in result
 
         for idx, it in enumerate(result.details.iterations):
-            print(it.voters_budget)
-            print(expected_voter_budgets[idx])
             assert it.voters_budget == expected_voter_budgets[idx]
         
     def test_mes_analytics_irresolute(self):
