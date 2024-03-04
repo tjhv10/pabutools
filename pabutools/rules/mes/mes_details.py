@@ -33,7 +33,7 @@ class MESAllocationDetails(AllocationDetails):
                 if proj_detail not in res:
                     res.append(proj_detail)
         return res
-    
+
     def get_all_selected_projects(self) -> list[Project]:
         return [iteration.selected_project for iteration in self.iterations]
 
@@ -80,7 +80,7 @@ class MESProjectDetails:
         project: Project,
         iteration: "MESIteration",
         discarded: bool = None,
-        effective_vote_count_reduced: bool = None
+        effective_vote_count_reduced: bool = None,
     ):
         self.project: Project = project
         self.iteration: "MESIteration" = iteration
@@ -90,10 +90,11 @@ class MESProjectDetails:
     def was_picked(self):
         """Returns whether the project was picked by MES during *this* iteration (Note: it could have been
         selected in a later iteration; use `MESAllocationDetails.get_all_selected_projects` instead to see
-        if it was selected in any iteration). If no project has been picked yet, returns `None`."""
+        if it was selected in any iteration). If no project has been picked yet, returns `None`.
+        """
         if self.iteration.selected_project != None:
             return self.project == self.iteration.selected_project
-        return None # No project has been selected yet
+        return None  # No project has been selected yet
 
     def __eq__(self, other):
         return self.project == other.project
@@ -104,16 +105,19 @@ class MESProjectDetails:
     def __repr__(self):
         return f"MESProjectDetails[Project: {self.project.name}]"
 
+
 class MESIteration(list[MESProjectDetails]):
     """Class representing a single iteration of a MES rule run, solely used in
     :py:class:`~pabutools.rules.mes.MESAllocationDetails`. Each iteration consist of information
-    necessary for reconstructing a MES rule run. This includes the list of projects that were considered 
+    necessary for reconstructing a MES rule run. This includes the list of projects that were considered
     in this iteration, the budget of all the voters and the project that was selected at the end of the iteration.
 
     Parameters
     ----------
         voters_budget: list[int], optional
             The budget of all voters at the start of the iteration. Defaults to `None`.
+        voters_budget_after_selection: list[int], optional
+            The budget of all voters after the selected project was covered. Defaults to `None`.
         selected_project: :py:class:`~pabutools.electin.instance.Project`, optional
             The project that was selected at the end of the iteration. Defaults to `None`.
 
@@ -121,15 +125,23 @@ class MESIteration(list[MESProjectDetails]):
     ----------
         voters_budget: list[int], optional
             The budget of all voters at the start of the iteration. Defaults to `None`.
+        voters_budget_after_selection: list[int], optional
+            The budget of all voters after the selected project was covered. Defaults to `None`.
         selected_project: :py:class:`~pabutools.election.instance.Project`, optional
             The project that was selected at the end of the iteration. Defaults to `None`.
-
-
     """
 
-    def __init__(self, voters_budget = None, selected_project = None):
-        self.voters_budget: list[int] = voters_budget
-        self.selected_project: Project = selected_project
+    def __init__(
+        self,
+        voters_budget: list[Numeric] | None = None,
+        voters_budget_after_selection: list[Numeric] | None = None,
+        selected_project: Project | None = None,
+    ):
+        self.voters_budget: list[Numeric] | None = voters_budget
+        self.voters_budget_after_selection: list[Numeric] | None = (
+            voters_budget_after_selection
+        )
+        self.selected_project: Project | None = selected_project
         super().__init__()
 
     def update_project_details_as_discarded(self, project: Project):
@@ -147,7 +159,6 @@ class MESIteration(list[MESProjectDetails]):
 
     def __str__(self):
         return f"MESIteration[{[project for project in self]}]"
-    
+
     def __repr__(self):
         return f"MESIteration[{[project for project in self]}]"
-    

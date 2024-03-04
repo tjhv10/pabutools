@@ -428,6 +428,7 @@ def mes_inner_algo(
                 )
             if analytics and current_iteration:
                 current_iteration.selected_project = selected_project
+                current_iteration.voters_budget_after_selection = [voter.budget for voter in new_voters]
                 current_alloc.details.iterations.append(current_iteration)
                 current_iteration = None # to avoid double appending
             mes_inner_algo(
