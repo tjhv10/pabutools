@@ -271,33 +271,40 @@ class TestAnalysis(TestCase):
         for idx in range(6):
             projects[idx].supporter_indices = supporters[idx]
         iterations = [
-            MESIteration([frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 1), frac(1, 2), frac(1, 1)], projects[0]),
-            MESIteration([frac(1, 2), frac(1, 2), frac(0, 1), frac(0, 1), frac(0, 1), frac(1, 1)], projects[1]),
+            MESIteration(
+                [frac(1, 1) for _ in range(6)], 
+                [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 1), frac(1, 2), frac(1, 1)],
+                projects[0]
+            ),
+            MESIteration(
+                [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 1), frac(1, 2), frac(1, 1)], 
+                [frac(1, 2), frac(1, 2), frac(0, 1), frac(0, 1), frac(0, 1), frac(1, 1)], 
+                projects[1]
+            ),
         ]
         iterations[0].extend(
             [MESProjectDetails(projects[0], iterations[0], False)]
         )
         iterations[1].extend(
-            [MESProjectDetails(projects[1], iterations[1], False), MESProjectDetails(projects[2], iterations[1], True), MESProjectDetails(projects[3], iterations[1], True), MESProjectDetails(projects[4], iterations[1], True), MESProjectDetails(projects[5], iterations[1], True)]
+            [
+                MESProjectDetails(projects[1], iterations[1], False),
+                MESProjectDetails(projects[2], iterations[1], True), 
+                MESProjectDetails(projects[3], iterations[1], True), 
+                MESProjectDetails(projects[4], iterations[1], True), 
+                MESProjectDetails(projects[5], iterations[1], True)
+            ]
         )
         allocation_details = MESAllocationDetails([2 for _ in range(len(iterations[0].voters_budget))])
         allocation_details.iterations = iterations
 
         project_losses = calculate_project_loss(allocation_details)
-        expected_budgets = [
-            frac(2, 1),
-            frac(2, 1),
-            frac(1, 2),
-            frac(1, 1),
-            frac(0, 1),
-            frac(1, 1),
-        ]
+        expected_budgets = [8, 4, 1, 2, 0, 2]
         expected_losses = [
             {},
-            {projects[0]: 0.0},
-            {projects[0]: 0.0, projects[1]: 1.0},
-            {projects[0]: 0.0},
-            {projects[0]: 0.0, projects[1]: 1.0},
+            {projects[0]: 2},
+            {projects[0]: 2, projects[1]: 1},
+            {projects[0]: 2},
+            {projects[0]: 1, projects[1]: 1},
             {},
         ]
 
