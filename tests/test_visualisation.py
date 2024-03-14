@@ -12,8 +12,8 @@ class TestUtils(TestCase):
         instance, profile = election.parse_pabulib("tests/PaBuLib/All_10/poland_czestochowa_2020_grabowka.pb")
         outcome = method_of_equal_shares(instance, profile, sat_class=Cost_Sat, analytics=True)
         vis = MESVisualiser(profile, instance, outcome.details)
-        with tempfile.NamedTemporaryFile(suffix=".html", mode='w+t', delete=False) as temp_file:
-            vis.render(outcome, temp_file.name)
+        with tempfile.NamedTemporaryFile(suffix=".html", mode='w+t', delete=False) as temp_file, tempfile.NamedTemporaryFile(suffix=".html", mode='w+t', delete=False) as temp_file_summary:
+            vis.render(outcome, temp_file.name, temp_file_summary.name)
             temp_file.seek(0)
             assert '<!DOCTYPE html>' in temp_file.read()
         assert len(vis.rounds) == 4 == len(outcome.details.iterations)
