@@ -68,6 +68,7 @@
             margin-bottom: 1rem;
             margin: 0 auto;
             width: 50%;
+            padding-bottom: 1.5rem;
         }
 
         table thead tr {
@@ -311,20 +312,20 @@
     <!-- !SAMPLE_EXPLANATION2! -->
     <header>
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-          <a class="navbar-brand active" href="https://getbootstrap.com/docs/4.0/examples/carousel/#">Summary<span class="sr-only">(current)</span></a>
+          <a class="navbar-brand active" href="./summary.html">Summary<span class="sr-only">(current)</span></a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
-                <a class="nav-link" href="output.html">Round By Round</a>
+                <a class="nav-link" href="./round_analysis.html">Round By Round</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="https://getbootstrap.com/docs/4.0/examples/carousel/#">Pabutools</a>
+                <a class="nav-link" href="">Pabutools</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="https://getbootstrap.com/docs/4.0/examples/carousel/#">MES</a>
+                <a class="nav-link" href="">MES</a>
               </li>
             </ul>
             <form class="form-inline mt-2 mt-md-0" data-dashlane-rid="586d21bb200ad9fc" data-form-type="">
@@ -485,7 +486,7 @@
                                 </ul>
                                 '
                                 allowHTML: true>
-{#                          <li>Projekt {candidate.name} ({display_short_string(candidate.id)}): {display_int(int(paid))} zł. 
+{#                          <li>Project {candidate.name} ({display_short_string(candidate.id)}): {display_int(int(paid))} zł. 
                                 <hr style=\"width:{100 * paid/ total_paid}%;
                                             height:10px;
                                             color:#f6c8c8;
@@ -513,7 +514,7 @@
                 <tr class='hidden-row' id='hidden-{{ round.id }}'>
                     <td colspan=7>
                         <div style='text-align: left'>
-                            <b>Round Analysis:</b><a href='output.html?projectId={{ round.id }}'> Click Me!</a> <br>
+                            <b>Round Analysis:</b><a href='round_analysis.html?projectId={{ round.id }}'> Click Me!</a> <br>
                             <b>Description:</b> {{ projects[round.id]["description"] }} <br>
                             <b>Categories:</b> <br>
                             {% for category in projects[round.id]["categories"] %}

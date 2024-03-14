@@ -78,23 +78,23 @@
     </style>
 </head>
 
-<body>
+<body onload="loadRound()">
     <header>
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-          <a class="navbar-brand" href="https://getbootstrap.com/docs/4.0/examples/carousel/#">Summary</a>
+          <a class="navbar-brand" href="./summary.html">Summary</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item active">
-                <a class="nav-link" href="https://getbootstrap.com/docs/4.0/examples/carousel/#">Round By Round <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="./round_analysis.html">Round By Round <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="https://getbootstrap.com/docs/4.0/examples/carousel/#">Pabutools</a>
+                <a class="nav-link" href="">Pabutools</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="https://getbootstrap.com/docs/4.0/examples/carousel/#">MES</a>
+                <a class="nav-link" href="">MES</a>
               </li>
             </ul>
             <form class="form-inline mt-2 mt-md-0" data-dashlane-rid="586d21bb200ad9fc" data-form-type="">
@@ -106,7 +106,7 @@
       </header>
 
       <main role="main">
-
+    
         <div class="container-fluid upper-page">
             <!-- General Explanations -->
             <div class="container">
@@ -129,6 +129,11 @@
                 <div class="spacer-1"></div>
             </div>
         </div>
+        <center>
+            <div id="spinner" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </center>
         <div class="container">
             <div class="spacer-1"></div>
             <hr>
@@ -137,7 +142,7 @@
 
             <!-- Round specific visualisations -->
             {% for round in rounds %}
-                <section id="{{round.id}}" class="{% if loop.index != 1 %}hidden-section{% endif %}">
+                <section id="{{round.id}}" class="hidden-section">
 
                     <!-- Effective Vote Count -->
                     <div class="row featurette">
@@ -158,7 +163,7 @@
 
                     <!-- Sankey and Chord side by side -->
                     <div class="row" style="display: grid;">
-                        <h5 style="text-align: center; font-weight: bold;">'{{ round.name }}' Voter Flows</h5>
+                        <h5 style="text-align: center; font-weight: bold;">'{{ projects[round.id]['name'][:15] }}' Voter Flows</h5>
                     </div>
                     <div class="row">
                         <div class="col-5" style="display: grid;">
@@ -211,7 +216,7 @@
                                                         <div class="spacer"></div>
                                                         <div class="pie-chart-text">
                                                             <!-- TODO: What does this mean??? -->
-                                                            This resulted in an average reduction of $ per voter for the '{{ data.project }}' voters who also voted for '{{ round.name }}'.
+                                                            This resulted in an average reduction of $ per voter for the '{{ projects[data.project]['name'] }}' voters who also voted for '{{ projects[round.id]['name'] }}'.
                                                         </div>
                                                     </div>
                                                 {% endfor %}
@@ -239,7 +244,7 @@
                     <!-- Reduced Effective Vote Count Graph (Centred Div) -->
                     <div class="row featurette">
                         <div class="col-5">
-                          <h2 class="featurette-heading">Reduce Effective Vote Count</h2>
+                          <h2 class="featurette-heading">Reduced Effective Vote Count</h2>
                           <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
                         </div>
                         <div class="col-7" style="min-height: 400px;">
@@ -255,14 +260,14 @@
             <div class="spacer-8"></div>
 
             <!-- Dropdown UI -->
-            <div class="row my-4 justify-content-center">
+            <div class="row my-4 justify-content-center hidden-section" id="dropdown-container">
                 <div class="dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" id="projectDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ rounds[0].name }}
+                    {{ projects[rounds[0].id]['name'] }}
                 </button>
                     <div class="dropdown-menu" aria-labelledby="projectDropdown">
                     {% for round in rounds %}
-                        <a class="dropdown-item {% if loop.index == 1 %}active{% endif %}" item="{{ round.id }}" onclick="onClickDropdown(this)">'{{ round.name }}'</a>
+                        <a id="dropdown-item-{{ round.id }}" class="dropdown-item {% if loop.index == 1 %}active{% endif %}" item="{{ round.id }}" onclick="onClickDropdown(this)">'{{ projects[round.id]['name'] }}'</a>
                     {% endfor %}
     
                     </div>
@@ -286,35 +291,22 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <!-- Dropdown functionality -->
-    <!-- <script>
+    <script>
         function loadRound() {
             const urlParams = new URLSearchParams(window.location.search);
-            const projectId = urlParams.get('projectId');
-
-            // Remove Loading text
-            document.getElementById("loading-text").classList.remove('active');
-            document.getElementById("loading-text").style.display = 'none';
-
+            projectId = urlParams.get('projectId');
+            if (projectId === null) {
+                projectId = "{{ rounds[0].id }}";
+            }
             // Display the round requested
             onClickDropdown(document.getElementById("dropdown-item-".concat(projectId)));
-
+            document.getElementById("spinner").style.display = "none";
+            
             // Display the dropdown
             document.getElementById("dropdown-container").classList.add('active');
             document.getElementById("dropdown-container").style.display = 'flex';
         }
-
-        function onClickDropdown(element) {
-            var dropdownItems = document.querySelectorAll('.dropdown-item');
-            dropdownItems.forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
-            document.getElementById('projectDropdown').innerText = element.innerText;
-
-            // Show the corresponding section and hide others
-            var sections = document.querySelectorAll('section');
-            sections.forEach(section => section.style.display = 'none');
-            document.getElementById(element.getAttribute("item")).style.display = 'block';
-        }
-    </script> -->
+    </script>
     <script>
     // Object to store rendered charts for each round
     var renderedCharts = {};
@@ -332,7 +324,7 @@
         selectedSection.style.display = 'block';
 
         // Check if chart has been rendered for the selected round
-        var roundId = element.getAttribute("data-round-id"); // Ensure your round button has a data-round-id attribute
+        var roundId = element.getAttribute("item"); // Ensure your round button has a data-round-id attribute
         if (!renderedCharts[roundId]) {
             // If not, render the chart
             renderChordChart(roundId);
@@ -346,6 +338,7 @@
     <script>
         chord_chart_dictionary = {};
         {% for round in rounds %}
+            {% set project_name = projects[round.id]['name'][:15] %}
             {% set selected_project = round.name %}
             {% set project_votes = round.voter_flow[selected_project] | dictsort(by='value', reverse=True) %}
             {% set top_projects = project_votes[:6] | map(attribute=0) | list %}
@@ -364,7 +357,7 @@
                         {{ round.voter_flow[projFrom].get(projFrom, 0) }},
                         {% endif %}
                     ],
-                    "text": "{{ projFrom }}"
+                    "text": "{{ projects[projFrom]['name'][:15]|replace('\"', '\\\"') }}"
                 },
                 {% endfor %}
                 {% if selected_project not in top_projects %}
@@ -376,18 +369,14 @@
                         {% endfor %}
                         {{ round.voter_flow[selected_project].get(selected_project, 0) }},
                     ],
-                    "text": "{{ selected_project }}"
+                    "text": '{{ project_name }}'
                 },
                 {% endif %}
             ]
         {% endfor %}
     </script>
     <script>
-        counter = 0;
         function renderChordChart(roundId) {
-            counter++;
-            console.log(chord_chart_dictionary[roundId]);
-            console.log(counter);
             zingchart.render({
                 id: roundId + 'ChordChart',
                 data: {
@@ -405,7 +394,6 @@
                 width: "100%",
             });
         }
-        renderChordChart({{rounds[0].name}});
     </script>
     {% for round in rounds %}
         <!-- Effective vote count bar chart -->
@@ -416,11 +404,14 @@
                   data: {
                   "type": "hbar",
                   "title": {
-                     "text": "Effective Vote Count (Winner: '{{ round.name }}')"
+                     "text": "Effective Vote Count (Winner: '{{ projects[round.id]['name'][:15]|replace('\"', '\\\"')}}')"
                   },
                   "scale-x": {
-                    
-                     "labels": {{ round.effective_vote_count.keys() | list }}, // Label that identifies each project in the round
+                    "labels": [
+                        {% for roundID in round.effective_vote_count.keys()%}
+                            '{{ projects[roundID]['name'][:15]|replace('\"', '\\\"') }}',
+                        {% endfor %}
+                    ], // Label that identifies each project in the round
                      "title": {
                         "text": "Project"
                      },
@@ -452,9 +443,9 @@
                         "speed": 0
                      }
                   }
-            },
-                  height: '100%',
-                  width: '100%'
+                },
+                height: '100%',
+                width: '100%'
             });
 
             {/* zingchart.bind('{{ round.id }}BarChart', 'shape_click', function(e) {
@@ -471,77 +462,81 @@
         <script>
             // ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "b55b025e438fa8a98e32482b5f768ff5"];
             zingchart.render({
-            id: '{{round.id}}AfterRoundBarChart',
-            data: {
-            "type": "hbar",
-            "stacked": true,
-            "title": {
-                "text": "Reduced Effective Vote Count {% if loop.index in range(rounds|length) %} (Next Winner: {{ rounds[loop.index].name }}) {% endif %}",
-                "adjust-layout": true,
-            },
-            "legend": {
-                "layout": "x4",
-                "background-color": "none",
-                "shadow": 0,
-                "align": "center",
-                "adjust-layout": true,
-                "item": {
-                    "font-color": "#333"
-                },
-                "marker": {
-                    "type": "square",
-                    "border-width": 0,
-                    "size": 5
-                },
-                "toggle-action": "remove",
-                "adjust-layout": true,
-            },
-            "plot": {
-                "tooltip": {
-                    "text": "Project %scale-key-label has %v votes"
-                },
-                "animation": {
-                    "effect": "ANIMATION_SLIDE_BOTTOM",
-                    "sequence": 1,
-                    "speed": 0
-                }
-            },
-            "scale-x": {
-                "labels": {{ round.effective_vote_count_reduction.keys() | list }}, // Label that identifies each project in the round
+                id: '{{round.id}}AfterRoundBarChart',
+                data: {
+                "type": "hbar",
+                "stacked": true,
                 "title": {
-                    "text": "Projects"
+                    "text": "Reduced Effective Vote Count {% if loop.index in range(rounds|length) %} (Next Winner: {{ projects[rounds[loop.index].id]['name'][:15]|replace('\"', '\\\"') }}) {% endif %}",
+                    "adjust-layout": true,
                 },
-                "item": { // Explicitly control the appearance of the scale labels
-                        "font-size": 14, // Adjust font size as needed
-                        "offset-x": 0, // Adjust to move the label left or right if needed
-                        "offset-y": 0 // Adjust to move the label up or down if needed
-                     }
-            },
-            "scale-y": {
-                "title": {
-                    "text": "Votes"
-                }
-            },
-            "series": [{
-                "values":[ 
-                    {% for key in round.effective_vote_count_reduction.keys() %}
-                        {{ round.effective_vote_count[key]}},
-                    {% endfor %}
-                ], // Effective votes for next round
-                "background-color": "#0070C0",
-                "text": "Current Votes",
-                'hover-state': { /* Hover object */
-                        'background-color': "orange",
-                        // 'border-width':3,
-                        // 'border-color': "purple",
-                        // 'line-style': "dotted"
+                "legend": {
+                    "layout": "x4",
+                    "background-color": "none",
+                    "shadow": 0,
+                    "align": "center",
+                    "adjust-layout": true,
+                    "item": {
+                        "font-color": "#333"
+                    },
+                    "marker": {
+                        "type": "square",
+                        "border-width": 0,
+                        "size": 5
+                    },
+                    "toggle-action": "remove",
+                    "adjust-layout": true,
+                },
+                "plot": {
+                    "tooltip": {
+                        "text": "Project %scale-key-label has %v votes"
+                    },
+                    "animation": {
+                        "effect": "ANIMATION_SLIDE_BOTTOM",
+                        "sequence": 1,
+                        "speed": 0
                     }
-            }, {
-                "values": {{ round.effective_vote_count_reduction.values() | list }}, // Effective votes lost this round
-                "background-color": "#FF0000",
-                "text": "Previous Votes"
-            }]
-        },
+                },
+                "scale-x": {
+                    "labels": [
+                        {% for roundID in round.effective_vote_count_reduction.keys()%}
+                            '{{ projects[roundID]['name'][:15]|replace('\"', '\\\"') }}',
+                        {% endfor %}
+                    ], // Label that identifies each project in the round
+                    "title": {
+                        "text": "Projects"
+                    },
+                    "item": { // Explicitly control the appearance of the scale labels
+                            "font-size": 14, // Adjust font size as needed
+                            "offset-x": 0, // Adjust to move the label left or right if needed
+                            "offset-y": 0 // Adjust to move the label up or down if needed
+                        }
+                },
+                "scale-y": {
+                    "title": {
+                        "text": "Votes"
+                    }
+                },
+                "series": [{
+                    "values":[ 
+                        {% for key in round.effective_vote_count_reduction.keys() %}
+                            {{ round.effective_vote_count[key]}},
+                        {% endfor %}
+                    ], // Effective votes for next round
+                    "background-color": "#0070C0",
+                    "text": "Current Votes",
+                    'hover-state': { /* Hover object */
+                            'background-color': "orange",
+                            // 'border-width':3,
+                            // 'border-color': "purple",
+                            // 'line-style': "dotted"
+                        }
+                }, {
+                    "values": {{ round.effective_vote_count_reduction.values() | list }}, // Effective votes lost this round
+                    "background-color": "#FF0000",
+                    "text": "Previous Votes"
+                }]
+            },
             height: '100%',
             width: '100%'
         });
@@ -569,11 +564,11 @@
                     data.addRows([
                         {% for key, value in top_items %}
                             {% if key != round.id %}
-                                ['{{ round.id }}', '{{ key }}', {{ value }}],
+                                ['{{ projects[round.id]['name'][:15]|replace('\"', '\\\"') }}', '{{ projects[key]['name'][:15]|replace('\"', '\\\"') }}', {{ value }}],
                             {% endif %}
                         {% endfor %}
                         {% if other_items %}
-                            ['{{ round.id }}', 'Other', {{ other_total }}],
+                            ['{{ projects[round.id]['name'][:15]|replace('\"', '\\\"') }}', 'Other', {{ other_total }}],
                         {% endif %}
                     ])
 
@@ -602,7 +597,7 @@
                     var myConfig = {
                         "type": "pie",
                         "title": {
-                            "text": "'{{ data.project}}' Voters"
+                            "text": "'{{ projects[data.project]['name'][:15]|replace('\"', '\\\"')}}' Voters"
                         },
                         "legend": {
                             "toggle-action": "remove",
@@ -627,10 +622,10 @@
                         },
                         "series": [{
                             "values": [{{ data.roundVoters }}],
-                            "text": "'{{ round.name }}' Voters",
+                            "text": "'{{ projects[round.id]['name'][:15]|replace('\"', '\\\"') }}' Voters",
                         }, {
                             "values": [{{ data.nonRoundVoters }}],
-                            "text": "Non '{{ round.name }}' Voters",
+                            "text": "Non '{{ projects[round.id]['name'][:15]|replace('\"', '\\\"') }}' Voters",
                         }]
                     };
 

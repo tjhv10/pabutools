@@ -19,7 +19,7 @@ class Visualiser:
 
 class MESVisualiser(Visualiser):
     # TODO make sure the variable name 'p' isn't used both in an outer loop and an inner loop at the same time.
-    template = ENV.get_template('./templates/mes_template.html') 
+    template = ENV.get_template('./templates/mes_round_analysis_template.html') 
     page_summary_template = ENV.get_template('./templates/mes_page_summary_template.html')
 
     def __init__(self, profile, instance, mes_details: MESAllocationDetails, verbose=False):
@@ -165,13 +165,13 @@ class MESVisualiser(Visualiser):
             round["voter_flow"] = voter_flow_matrix(self.instance, self.profile)
         self._calculate_pie_charts(projectVotes)
 
-    def render(self, outcome, output_file_path, output_page_summary_file_path):
+    def render(self, outcome, output_folder_path):
         self._calculate()
         if self.verbose:
             print(self.rounds)
 
         # Round by Round
-        rendered_output = MESVisualiser.template.render( # TODO: Some redudant data is being passed to the template that can be calculated within template directly
+        round_analysis_page_output = MESVisualiser.template.render( # TODO: Some redudant data is being passed to the template that can be calculated within template directly
             election_name=self.instance.meta["description"] if "description" in self.instance.meta else "No description provided.", 
             # total_votes=sum(votes_count_by_project(self.profile).values()),
             rounds=self.rounds, 
@@ -184,7 +184,7 @@ class MESVisualiser(Visualiser):
         )
 
         # Page Summary
-        rendered_page_summary_output = MESVisualiser.page_summary_template.render( # TODO: Some redudant data is being passed to the template that can be calculated within template directly
+        summary_page_output = MESVisualiser.page_summary_template.render( # TODO: Some redudant data is being passed to the template that can be calculated within template directly
             election_name=self.instance.meta["description"] if "description" in self.instance.meta else "No description provided.", 
             rounds=self.rounds, 
             projects=self.instance.project_meta,
@@ -194,8 +194,9 @@ class MESVisualiser(Visualiser):
             budget=self.instance.meta["budget"],
             total_votes=self.instance.meta["num_votes"]
         )
-        with open(output_file_path, "w", encoding="utf-8") as o:
-            o.write(rendered_output)
-
-        with open(output_page_summary_file_path, "w", encoding="utf-8") as o:
-            o.write(rendered_page_summary_output)
+        if not os.path.exists(output_folder_path):
+            os.makedirs(output_folder_path)
+        with open(f"{output_folder_path}/round_analysis.html", "w", encoding="utf-8") as o:
+            o.write(round_analysis_page_output)
+        with open(f"{output_folder_path}/summary.html", "w", encoding="utf-8") as o:
+            o.write(summary_page_output)
