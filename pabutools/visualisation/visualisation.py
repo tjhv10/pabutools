@@ -155,9 +155,8 @@ class MESVisualiser(Visualiser):
                     pie_chart_items.append(pie_chart_item)
 
             pie_chart_items = sorted(pie_chart_items, key=lambda x: x["roundVoters"], reverse=True)
-            if len(pie_chart_items) > 3:
-                pie_chart_items = pie_chart_items[:3]
             round["pie_chart_items"] = [pie_chart_items]
+            round["pie_chart_triplet"] = [pie_chart_items[i:i + 3] for i in range(0, len(pie_chart_items), 3)]
 
     def _calculate(self):
         self._calculate_rounds_dictinary()
@@ -170,8 +169,11 @@ class MESVisualiser(Visualiser):
         self._calculate()
         if self.verbose:
             print(self.rounds)
+
+        # Round by Round
         rendered_output = MESVisualiser.template.render( # TODO: Some redudant data is being passed to the template that can be calculated within template directly
             election_name=self.instance.meta["description"] if "description" in self.instance.meta else "No description provided.", 
+            # total_votes=sum(votes_count_by_project(self.profile).values()),
             rounds=self.rounds, 
             projects=self.instance.project_meta,
             number_of_elected_projects=len(outcome),
