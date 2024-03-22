@@ -9,6 +9,8 @@ from collections.abc import Collection
 import mip
 from mip import Model, xsum, maximize, BINARY
 
+import math
+
 from pabutools.election import (
     Instance,
     SatisfactionMeasure,
@@ -18,7 +20,6 @@ from pabutools.election import (
     AbstractProfile,
 )
 from pabutools.rules.budgetallocation import BudgetAllocation
-
 
 def max_additive_utilitarian_welfare_scheme(
     instance: Instance,
@@ -151,6 +152,115 @@ def max_additive_utilitarian_welfare(
     else:
         if sat_profile is None:
             sat_profile = profile.as_sat_profile(sat_class=sat_class)
-    return max_additive_utilitarian_welfare_scheme(
+    return max_additive_utilitarian_welfare_scheme2(
         instance, sat_profile, budget_allocation, resoluteness=resoluteness
     )
+
+def max_additive_utilitarian_welfare_scheme2(
+instance: Instance,
+    sat_profile: GroupSatisfactionMeasure,
+    initial_budget_allocation: Collection[Project],
+    resoluteness: bool = True,
+) -> BudgetAllocation | list[BudgetAllocation]:
+    kvps = {p: sat_profile.total_satisfaction_project(p) for p in instance}
+    items = []
+
+    for p in instance:
+        profit = kvps[p]
+        tmp = KnapsackItem(p.name, p.cost, profit)
+        items.append(tmp)
+
+    result = primal_dual_branch(items, instance.budget_limit)    
+    resultNames = [p.id for p in result]
+    res = [p for p in instance if p.name in resultNames]
+    return BudgetAllocation(res)
+
+def primal_dual_branch(items, capacity):
+    items.sort(key=lambda x: x.efficiency, reverse=True)
+
+    tmp_capacity = capacity
+    split_idx = -1
+    split_weight = 0
+    split_profit = 0
+    for i, item in enumerate(items):
+        tmp_capacity -= item.weight
+        split_idx = i
+        if tmp_capacity < 0:
+            break
+
+        split_weight += item.weight
+        split_profit += item.profit
+
+    solution = [0] * len(items)
+    lower_bound = [0]
+    a_star = [-1]
+    b_star = [-1]
+    primal_dual_branch_impl(split_idx - 1, split_idx, split_profit, split_weight, items, capacity, solution, lower_bound, a_star, b_star)
+
+    result = []
+    for i in range(len(items)):
+        if i < len(items) and i < b_star[0]:
+            if i < a_star[0] + 1:
+                solution[i] = 1
+
+            if solution[i] == 1:
+                result.append(items[i])
+
+    return result
+
+def primal_dual_branch_impl(a, b, profit_sum, weight_sum, items, capacity, x, lower_bound, a_star, b_star):
+    improved = False
+
+    if weight_sum <= capacity:
+        if profit_sum > lower_bound[0]:
+            lower_bound[0] = profit_sum
+            a_star[0] = a
+            b_star[0] = b
+            improved = True
+
+        if b > len(items) - 1:
+            return improved
+
+        upper_bound = math.floor((capacity - weight_sum) * items[b].efficiency)
+        if profit_sum + upper_bound <= lower_bound[0]:
+            return improved
+
+        pb = items[b].profit
+        wb = items[b].weight
+        if primal_dual_branch_impl(a, b + 1, profit_sum + pb, weight_sum + wb, items, capacity, x, lower_bound, a_star, b_star):
+            x[b] = 1
+            improved = True
+
+        if primal_dual_branch_impl(a, b + 1, profit_sum, weight_sum, items, capacity, x, lower_bound, a_star, b_star):
+            x[b] = 0
+            improved = True
+    else:
+        if a < 0:
+            return False
+
+        upper_bound = math.floor((capacity - weight_sum) * items[a].efficiency)
+        if profit_sum + upper_bound <= lower_bound[0]:
+            return False
+
+        pa = items[a].profit
+        wa = items[a].weight
+        if primal_dual_branch_impl(a - 1, b, profit_sum - pa, weight_sum - wa, items, capacity, x, lower_bound, a_star, b_star):
+            x[a] = 0
+            improved = True
+
+        if primal_dual_branch_impl(a - 1, b, profit_sum, weight_sum, items, capacity, x, lower_bound, a_star, b_star):
+            x[a] = 1
+            improved = True
+
+    return improved
+
+
+class KnapsackItem:
+    def __init__(self, id, weight, profit):
+        self.id = id
+        self.weight = weight
+        self.profit = profit
+
+    @property
+    def efficiency(self):
+        return self.profit / self.weight if self.weight != 0 else 0
