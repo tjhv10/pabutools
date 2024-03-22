@@ -196,6 +196,12 @@ class KnapsackItem:
     def efficiency(self):
         return self.profit / self.weight if self.weight != 0 else 0
 
+    def __repr__(self):
+        return self.project.__repr__()
+
+    def __str__(self):
+        return self.project.__str__()
+
 
 def primal_dual_branch(items: list[KnapsackItem], capacity: float):
     items.sort(key=lambda x: x.efficiency, reverse=True)
@@ -213,7 +219,7 @@ def primal_dual_branch(items: list[KnapsackItem], capacity: float):
         split_weight += item.weight
         split_profit += item.profit
 
-    solution = [0] * len(items)
+    solution = [0 for _ in range(len(items))]
     lower_bound = [0]
     a_star = [-1]
     b_star = [-1]
