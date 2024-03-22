@@ -343,7 +343,7 @@ def run_sat_rule(rule, verbose=False):
                             print(
                                 f"Res outcome:  {resolute_out} -- In irres: "
                                 f"{sorted(resolute_out) in test_election.irr_results_sat[rule][sat_class]} "
-                                f"({type(resolute_out)})"
+                                f"(type is {type(resolute_out)})"
                             )
                         irresolute_out = rule(
                             test_election.instance,
@@ -356,7 +356,7 @@ def run_sat_rule(rule, verbose=False):
                         if verbose:
                             print(
                                 f"Irres outcome:  {irresolute_out} "
-                                f"({tuple(type(out) for out in irresolute_out)})"
+                                f"(types are {tuple(type(out) for out in irresolute_out)})"
                             )
                             print(
                                 f"Irres expected: {test_election.irr_results_sat[rule][sat_class]}"
@@ -374,7 +374,7 @@ def run_sat_rule(rule, verbose=False):
                             print(
                                 f"Res outcome with sat_profile: {resolute_out_sat_profile} -- Same: "
                                 f"{resolute_out == resolute_out_sat_profile} "
-                                f"({type(resolute_out_sat_profile)})"
+                                f"(type is {type(resolute_out_sat_profile)})"
                             )
 
                         assert (
@@ -491,7 +491,7 @@ class TestRule(TestCase):
                 assert outcome1 == outcome2
 
     def test_max_welfare(self):
-        run_sat_rule(max_additive_utilitarian_welfare, verbose=False)
+        run_sat_rule(max_additive_utilitarian_welfare, verbose=True)
         with self.assertRaises(ValueError):
             max_additive_utilitarian_welfare(Instance(), ApprovalProfile())
 

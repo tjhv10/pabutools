@@ -10,7 +10,8 @@ from pabutools.rules.mes.mes_rule import method_of_equal_shares
 
 class TestUtils(TestCase):
     def test_mes_visualisation(self):
-        instance, profile = election.parse_pabulib("tests/PaBuLib/All_10/poland_czestochowa_2020_grabowka.pb")
+        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "PaBuLib", "All_10", "poland_czestochowa_2020_grabowka.pb")
+        instance, profile = election.parse_pabulib(file_path)
         outcome = method_of_equal_shares(instance, profile, sat_class=Cost_Sat, analytics=True)
         vis = MESVisualiser(profile, instance, outcome.details)
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -4,7 +4,7 @@ Welfare-maximizing rules.
 
 from __future__ import annotations
 
-from collections.abc import Collection
+from collections.abc import Collection, Iterable
 
 import mip
 from mip import Model, xsum, maximize, BINARY
@@ -21,11 +21,12 @@ from pabutools.election import (
 )
 from pabutools.rules.budgetallocation import BudgetAllocation
 
-def max_additive_utilitarian_welfare_scheme(
-    instance: Instance,
-    sat_profile: GroupSatisfactionMeasure,
-    initial_budget_allocation: Collection[Project],
-    resoluteness: bool = True,
+
+def max_additive_utilitarian_welfare_ilp_scheme(
+        instance: Instance,
+        sat_profile: GroupSatisfactionMeasure,
+        initial_budget_allocation: Collection[Project],
+        resoluteness: bool = True,
 ) -> BudgetAllocation | list[BudgetAllocation]:
     """
     The inner algorithm for the welfare maximizing rule. It generates the corresponding budget allocations using a
@@ -78,14 +79,14 @@ def max_additive_utilitarian_welfare_scheme(
     while True:
         # See http://yetanothermathprogrammingconsultant.blogspot.com/2011/10/integer-cuts.html
         mip_model += (
-            xsum(1 - p_vars[p] for p in previous_partial_alloc)
-            + xsum(p_vars[p] for p in p_vars if p not in previous_partial_alloc)
-            >= 1
+                xsum(1 - p_vars[p] for p in previous_partial_alloc)
+                + xsum(p_vars[p] for p in p_vars if p not in previous_partial_alloc)
+                >= 1
         )
         mip_model += (
-            xsum(p_vars[p] for p in previous_partial_alloc)
-            - xsum(p_vars[p] for p in p_vars if p not in previous_partial_alloc)
-            <= len(previous_partial_alloc) - 1
+                xsum(p_vars[p] for p in previous_partial_alloc)
+                - xsum(p_vars[p] for p in p_vars if p not in previous_partial_alloc)
+                <= len(previous_partial_alloc) - 1
         )
 
         opt_status = mip_model.optimize()
@@ -102,12 +103,12 @@ def max_additive_utilitarian_welfare_scheme(
 
 
 def max_additive_utilitarian_welfare(
-    instance: Instance,
-    profile: AbstractProfile,
-    sat_class: type[SatisfactionMeasure] | None = None,
-    sat_profile: GroupSatisfactionMeasure | None = None,
-    resoluteness: bool = True,
-    initial_budget_allocation: Collection[Project] | None = None,
+        instance: Instance,
+        profile: AbstractProfile,
+        sat_class: type[SatisfactionMeasure] | None = None,
+        sat_profile: GroupSatisfactionMeasure | None = None,
+        resoluteness: bool = True,
+        initial_budget_allocation: Collection[Project] | None = None,
 ) -> BudgetAllocation | list[BudgetAllocation]:
     """
     Rule returning the budget allocation(s) maximizing the utilitarian social welfare. The utilitarian social welfare is
@@ -152,30 +153,51 @@ def max_additive_utilitarian_welfare(
     else:
         if sat_profile is None:
             sat_profile = profile.as_sat_profile(sat_class=sat_class)
-    return max_additive_utilitarian_welfare_scheme2(
-        instance, sat_profile, budget_allocation, resoluteness=resoluteness
-    )
+    if resoluteness:
+        return max_additive_utilitarian_welfare_primal_dual_scheme(
+            instance, sat_profile, budget_allocation
+        )
+    else:
+        return max_additive_utilitarian_welfare_ilp_scheme(
+            instance, sat_profile, budget_allocation, resoluteness
+        )
 
-def max_additive_utilitarian_welfare_scheme2(
-instance: Instance,
-    sat_profile: GroupSatisfactionMeasure,
-    initial_budget_allocation: Collection[Project],
-    resoluteness: bool = True,
-) -> BudgetAllocation | list[BudgetAllocation]:
-    kvps = {p: sat_profile.total_satisfaction_project(p) for p in instance}
+
+def max_additive_utilitarian_welfare_primal_dual_scheme(
+        instance: Instance,
+        sat_profile: GroupSatisfactionMeasure,
+        initial_budget_allocation: Collection[Project],
+) -> BudgetAllocation:
+    budget_allocation = BudgetAllocation(initial_budget_allocation)
+
     items = []
-
     for p in instance:
-        profit = kvps[p]
-        tmp = KnapsackItem(p.name, p.cost, profit)
-        items.append(tmp)
+        if p not in budget_allocation:
+            profit = sat_profile.total_satisfaction_project(p)
+            if p.cost == 0:
+                if profit > 0:
+                    budget_allocation.append(p)
+            else:
+                items.append(KnapsackItem(p, p.cost, profit))
 
-    result = primal_dual_branch(items, instance.budget_limit)    
-    resultNames = [p.id for p in result]
-    res = [p for p in instance if p.name in resultNames]
-    return BudgetAllocation(res)
+    current_budget_limit = instance.budget_limit - total_cost(budget_allocation)
+    result = primal_dual_branch(items, current_budget_limit)
+    budget_allocation.extend(p.project for p in result)
+    return budget_allocation
 
-def primal_dual_branch(items, capacity):
+
+class KnapsackItem:
+    def __init__(self, project, weight, profit):
+        self.project = project
+        self.weight = weight
+        self.profit = profit
+
+    @property
+    def efficiency(self):
+        return self.profit / self.weight if self.weight != 0 else 0
+
+
+def primal_dual_branch(items: list[KnapsackItem], capacity: float):
     items.sort(key=lambda x: x.efficiency, reverse=True)
 
     tmp_capacity = capacity
@@ -195,7 +217,8 @@ def primal_dual_branch(items, capacity):
     lower_bound = [0]
     a_star = [-1]
     b_star = [-1]
-    primal_dual_branch_impl(split_idx - 1, split_idx, split_profit, split_weight, items, capacity, solution, lower_bound, a_star, b_star)
+    primal_dual_branch_impl(split_idx - 1, split_idx, split_profit, split_weight, items, capacity,
+                            solution, lower_bound, a_star, b_star)
 
     result = []
     for i in range(len(items)):
@@ -208,7 +231,9 @@ def primal_dual_branch(items, capacity):
 
     return result
 
-def primal_dual_branch_impl(a, b, profit_sum, weight_sum, items, capacity, x, lower_bound, a_star, b_star):
+
+def primal_dual_branch_impl(a, b, profit_sum, weight_sum, items, capacity, x, lower_bound, a_star,
+                            b_star):
     improved = False
 
     if weight_sum <= capacity:
@@ -227,11 +252,13 @@ def primal_dual_branch_impl(a, b, profit_sum, weight_sum, items, capacity, x, lo
 
         pb = items[b].profit
         wb = items[b].weight
-        if primal_dual_branch_impl(a, b + 1, profit_sum + pb, weight_sum + wb, items, capacity, x, lower_bound, a_star, b_star):
+        if primal_dual_branch_impl(a, b + 1, profit_sum + pb, weight_sum + wb, items, capacity, x,
+                                   lower_bound, a_star, b_star):
             x[b] = 1
             improved = True
 
-        if primal_dual_branch_impl(a, b + 1, profit_sum, weight_sum, items, capacity, x, lower_bound, a_star, b_star):
+        if primal_dual_branch_impl(a, b + 1, profit_sum, weight_sum, items, capacity, x,
+                                   lower_bound, a_star, b_star):
             x[b] = 0
             improved = True
     else:
@@ -244,23 +271,14 @@ def primal_dual_branch_impl(a, b, profit_sum, weight_sum, items, capacity, x, lo
 
         pa = items[a].profit
         wa = items[a].weight
-        if primal_dual_branch_impl(a - 1, b, profit_sum - pa, weight_sum - wa, items, capacity, x, lower_bound, a_star, b_star):
+        if primal_dual_branch_impl(a - 1, b, profit_sum - pa, weight_sum - wa, items, capacity, x,
+                                   lower_bound, a_star, b_star):
             x[a] = 0
             improved = True
 
-        if primal_dual_branch_impl(a - 1, b, profit_sum, weight_sum, items, capacity, x, lower_bound, a_star, b_star):
+        if primal_dual_branch_impl(a - 1, b, profit_sum, weight_sum, items, capacity, x,
+                                   lower_bound, a_star, b_star):
             x[a] = 1
             improved = True
 
     return improved
-
-
-class KnapsackItem:
-    def __init__(self, id, weight, profit):
-        self.id = id
-        self.weight = weight
-        self.profit = profit
-
-    @property
-    def efficiency(self):
-        return self.profit / self.weight if self.weight != 0 else 0
