@@ -21,5 +21,5 @@ In particular, we provide full support for the instances taken from
     Pabutools <self>
     installation
     quickstart
-    usage
+    usage/index
     reference/index

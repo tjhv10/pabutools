@@ -1,0 +1,606 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Profiles &#8212; Pabutools</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'usage/profiles';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Preference Libraries" href="libraries.html" />
+    <link rel="prev" title="Instances" href="instances.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Pabutools</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Pabutools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Complete Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="instances.html">Instances</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libraries.html">Preference Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="satisfaction.html">Satisfaction Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tiebreaking.html">Tie-Breaking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fractions.html">Fractions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/election/index.html">Election module</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/election/instance.html">Instance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/election/ballot.html">Ballot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/election/profile.html">Profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/election/satisfaction.html">Satisfaction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/election/libraries.html">Preference Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/rules/index.html">Rules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/analysis/index.html">Analysis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/tiebreaking.html">Tie-Breaking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/fractions.html">Fractions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/utils.html">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/pbvoting/pabutools" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/usage/profiles.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Profiles</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#approval-profiles">Approval Profiles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cardinal-profiles">Cardinal Profiles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cumulative-profiles">Cumulative Profiles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ordinal-profiles">Ordinal Profiles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiprofile">Multiprofile</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="profiles">
+<h1>Profiles<a class="headerlink" href="#profiles" title="Permalink to this heading">#</a></h1>
+<p>For reference, please refer to the modules <a class="reference internal" href="../reference/election/ballot.html#module-pabutools.election.ballot" title="pabutools.election.ballot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ballot</span></code></a> and
+<a class="reference internal" href="../reference/election/profile.html#module-pabutools.election.profile" title="pabutools.election.profile"><code class="xref py py-mod docutils literal notranslate"><span class="pre">profile</span></code></a>.</p>
+<p>A profile is the second fundamental component of a participatory budgeting election; it stores
+the ballots of the voters.</p>
+<p>We provide a general class <a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.profile.Profile" title="pabutools.election.profile.profile.Profile"><code class="xref py py-class docutils literal notranslate"><span class="pre">Profile</span></code></a>
+that inherits from the Python class <cite>list</cite> and serves as a base for all specific
+profile types. It primarily acts as an abstract class and should not be used
+for any other purpose than inheritance. Similarly, we provide a class
+<a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.ballot.Ballot" title="pabutools.election.ballot.ballot.Ballot"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ballot</span></code></a> that is used as a base for specific
+ballot formats.</p>
+<p>A profile is associated with an instance, which is passed as a parameter and then stored in
+an attribute. It also implements validation of the ballots to ensure the consistency
+of the ballots in a profile.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Profile</span><span class="p">,</span> <span class="n">Ballot</span>
+
+<span class="n">instance</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">()</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">instance</span><span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">ballot_validation</span> <span class="o">=</span> <span class="kc">True</span>   <span class="c1"># Boolean to activate/deactivate the validation of the ballot type</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">ballot_type</span> <span class="o">=</span> <span class="n">Ballot</span>   <span class="c1"># The type used for the ballot validation</span>
+<span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">validate_ballot</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>   <span class="c1"># The validator, would raise a TypeError here</span>
+</pre></div>
+</div>
+<section id="approval-profiles">
+<h2>Approval Profiles<a class="headerlink" href="#approval-profiles" title="Permalink to this heading">#</a></h2>
+<p>When submitting approval ballots, voters submit a set of projects they approve of.
+Approval ballots are represented through the class
+<a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.approvalballot.ApprovalBallot" title="pabutools.election.ballot.approvalballot.ApprovalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApprovalBallot</span></code></a> that inherits
+from both <cite>set</cite> and <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.ballot.Ballot" title="pabutools.election.ballot.ballot.Ballot"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ballot</span></code></a>.</p>
+<p>A profile of approval ballots, i.e., an approval profile, is instantiated from the class
+<a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.approvalprofile.ApprovalProfile" title="pabutools.election.profile.approvalprofile.ApprovalProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApprovalProfile</span></code></a>. It inherits from
+<a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.profile.Profile" title="pabutools.election.profile.profile.Profile"><code class="xref py py-class docutils literal notranslate"><span class="pre">Profile</span></code></a>. By default, it sets the type for the ballot
+validator to <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.approvalballot.ApprovalBallot" title="pabutools.election.ballot.approvalballot.ApprovalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApprovalBallot</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">Project</span><span class="p">,</span> <span class="n">ApprovalBallot</span><span class="p">,</span> <span class="n">ApprovalProfile</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">Project</span><span class="p">(</span><span class="s2">&quot;p</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">ApprovalBallot</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>   <span class="c1"># Approval ballot containing the first 3 projects</span>
+<span class="n">b1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>   <span class="c1"># Add project to approval ballot</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="n">ApprovalBallot</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ApprovalProfile</span><span class="p">([</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">])</span>
+<span class="n">b3</span> <span class="o">=</span> <span class="n">ApprovalBallot</span><span class="p">({</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">]})</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b3</span><span class="p">)</span>
+<span class="n">b1</span> <span class="ow">in</span> <span class="n">profile</span>   <span class="c1"># Tests membership, returns True here</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.approvalprofile.ApprovalProfile" title="pabutools.election.profile.approvalprofile.ApprovalProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApprovalProfile</span></code></a> class provides several additional methods.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span><span class="o">.</span><span class="n">approval_score</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>   <span class="c1"># The approval score of a project, i.e., the number of approvers</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">is_party_list</span><span class="p">()</span>   <span class="c1"># Boolean indicating if the profile is a party list profile</span>
+</pre></div>
+</div>
+</section>
+<section id="cardinal-profiles">
+<h2>Cardinal Profiles<a class="headerlink" href="#cardinal-profiles" title="Permalink to this heading">#</a></h2>
+<p>When required to submit cardinal ballots, voters are asked to assign a score to each project.
+Cardinal ballots are represented using the class
+<a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.cardinalballot.CardinalBallot" title="pabutools.election.ballot.cardinalballot.CardinalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">CardinalBallot</span></code></a>.
+It directly inherits from the Python <cite>dict</cite> class and our
+<a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.ballot.Ballot" title="pabutools.election.ballot.ballot.Ballot"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ballot</span></code></a> class.</p>
+<p>A profile of cardinal ballots, i.e., a cardinal profile, is created using the
+<a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.cardinalprofile.CardinalProfile" title="pabutools.election.profile.cardinalprofile.CardinalProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">CardinalProfile</span></code></a> class.
+It inherits from the <a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.profile.Profile" title="pabutools.election.profile.profile.Profile"><code class="xref py py-class docutils literal notranslate"><span class="pre">Profile</span></code></a> class and validates ballot types using
+<a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.cardinalballot.CardinalBallot" title="pabutools.election.ballot.cardinalballot.CardinalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">CardinalBallot</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">Project</span><span class="p">,</span> <span class="n">CardinalBallot</span><span class="p">,</span> <span class="n">CardinalProfile</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">Project</span><span class="p">(</span><span class="s2">&quot;p</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">CardinalBallot</span><span class="p">({</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="mi">0</span><span class="p">})</span>   <span class="c1"># Cardinal ballot scoring 5 for p1 and 0 for p2</span>
+<span class="n">b1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>   <span class="c1"># The ballot becomes p0 &gt; p4 &gt; p2 &gt; p1</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">CardinalProfile</span><span class="p">()</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="cumulative-profiles">
+<h2>Cumulative Profiles<a class="headerlink" href="#cumulative-profiles" title="Permalink to this heading">#</a></h2>
+<p>Cumulative ballots correspond to a specific type of cardinal ballots where the voters are
+allocated a specific number of points that they can distribute among the projects.
+The class <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.cumulativeballot.CumulativeBallot" title="pabutools.election.ballot.cumulativeballot.CumulativeBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">CumulativeBallot</span></code></a>
+is used to handle cumulative ballots. It inherits from
+<a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.cardinalballot.CardinalBallot" title="pabutools.election.ballot.cardinalballot.CardinalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">CardinalBallot</span></code></a> and thus also from
+the Python class <cite>dict</cite>.</p>
+<p>As before, a profile of cumulative ballots is defined in the class
+<a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.cumulativeprofile.CumulativeProfile" title="pabutools.election.profile.cumulativeprofile.CumulativeProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">CumulativeProfile</span></code></a>
+that inherits from the <a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.profile.Profile" title="pabutools.election.profile.profile.Profile"><code class="xref py py-class docutils literal notranslate"><span class="pre">Profile</span></code></a> class
+(and acts thus as a <cite>list</cite>).</p>
+</section>
+<section id="ordinal-profiles">
+<h2>Ordinal Profiles<a class="headerlink" href="#ordinal-profiles" title="Permalink to this heading">#</a></h2>
+<p>When ordinal ballots are used, voters are asked to rank the projects based on their
+preferences. The class <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.ordinalballot.OrdinalBallot" title="pabutools.election.ballot.ordinalballot.OrdinalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrdinalBallot</span></code></a>
+represents such ballots. It inherits from the Python class <cite>list</cite> (actually the class
+<cite>dict</cite> to ensure unicity of the projects, but all <cite>list</cite> methods have been implemented)
+and our class <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.ballot.Ballot" title="pabutools.election.ballot.ballot.Ballot"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ballot</span></code></a>.</p>
+<p>Ordinal profiles are handled by the class
+<a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.ordinalprofile.OrdinalProfile" title="pabutools.election.profile.ordinalprofile.OrdinalProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrdinalProfile</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">Project</span><span class="p">,</span> <span class="n">OrdinalBallot</span><span class="p">,</span> <span class="n">OrdinalProfile</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">Project</span><span class="p">(</span><span class="s2">&quot;p</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">OrdinalBallot</span><span class="p">((</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>   <span class="c1"># Ordinal ballot ranking p0 &gt; p4 &gt; p2</span>
+<span class="n">b1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>   <span class="c1"># The ballot becomes p0 &gt; p4 &gt; p2 &gt; p1</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">OrdinalProfile</span><span class="p">()</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="multiprofile">
+<h2>Multiprofile<a class="headerlink" href="#multiprofile" title="Permalink to this heading">#</a></h2>
+<p>For reference, see the modules <a class="reference internal" href="../reference/election/profile.html#module-pabutools.election.profile" title="pabutools.election.profile"><code class="xref py py-mod docutils literal notranslate"><span class="pre">profile</span></code></a>.</p>
+<p>In some cases, it is faster to use multisets instead of lists for the profiles. We have
+implemented this through multiprofiles. A multiprofile is a collection of ballots where
+each ballot is stored once, along with its multiplicity.</p>
+<p>Multiprofiles are defined through the class
+<a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.profile.MultiProfile" title="pabutools.election.profile.profile.MultiProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiProfile</span></code></a> that inherits from the Python
+class <cite>Counter</cite>. Each specific type of profile has its multiprofile counterpart:
+<a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.approvalprofile.ApprovalMultiProfile" title="pabutools.election.profile.approvalprofile.ApprovalMultiProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApprovalMultiProfile</span></code></a>,
+<a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.cardinalprofile.CardinalMultiProfile" title="pabutools.election.profile.cardinalprofile.CardinalMultiProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">CardinalMultiProfile</span></code></a>,
+<a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.cumulativeprofile.CumulativeMultiProfile" title="pabutools.election.profile.cumulativeprofile.CumulativeMultiProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">CumulativeMultiProfile</span></code></a>,
+and <a class="reference internal" href="../reference/election/profile.html#pabutools.election.profile.ordinalprofile.OrdinalMultiProfile" title="pabutools.election.profile.ordinalprofile.OrdinalMultiProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrdinalMultiProfile</span></code></a>.
+Importantly, our implementations allow for profiles and multiprofiles to be used
+interchangeably (for rules, analysis, etc.).</p>
+<p>Since ballots are used as dictionary keys in a multiprofile, they have to be immutable.
+We have thus implemented the class <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.ballot.FrozenBallot" title="pabutools.election.ballot.ballot.FrozenBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrozenBallot</span></code></a>
+which corresponds to the immutable representation of a ballot. All specific ballot types
+have their frozen counterparts:
+<a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.approvalballot.FrozenApprovalBallot" title="pabutools.election.ballot.approvalballot.FrozenApprovalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrozenApprovalBallot</span></code></a>,
+<a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.cardinalballot.FrozenCardinalBallot" title="pabutools.election.ballot.cardinalballot.FrozenCardinalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrozenCardinalBallot</span></code></a>,
+<a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.cumulativeballot.FrozenCumulativeBallot" title="pabutools.election.ballot.cumulativeballot.FrozenCumulativeBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrozenCumulativeBallot</span></code></a>,
+and <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.ordinalballot.FrozenOrdinalBallot" title="pabutools.election.ballot.ordinalballot.FrozenOrdinalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrozenOrdinalBallot</span></code></a>.</p>
+<p>Ballots can easily be frozen:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">Project</span><span class="p">,</span> <span class="n">ApprovalBallot</span><span class="p">,</span> <span class="n">FrozenApprovalBallot</span>
+
+<span class="n">app_ballot</span> <span class="o">=</span> <span class="n">ApprovalBallot</span><span class="p">({</span><span class="n">Project</span><span class="p">(</span><span class="s2">&quot;p1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Project</span><span class="p">(</span><span class="s2">&quot;p2&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)})</span>
+<span class="c1"># Freezing a ballot using the frozen method of a ballot</span>
+<span class="n">frozen_ballot</span> <span class="o">=</span> <span class="n">app_ballot</span><span class="o">.</span><span class="n">frozen</span><span class="p">()</span>
+
+<span class="c1"># Freezing a ballot using the frozen ballot constructor</span>
+<span class="n">frozen_ballot</span> <span class="o">=</span> <span class="n">FrozenApprovalBallot</span><span class="p">(</span><span class="n">app_ballot</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Similarly profiles can easily be turned into multiprofiles:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">Project</span><span class="p">,</span> <span class="n">ApprovalBallot</span><span class="p">,</span> <span class="n">FrozenApprovalBallot</span>
+<span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">ApprovalProfile</span><span class="p">,</span> <span class="n">ApprovalMultiProfile</span>
+
+<span class="n">b1</span> <span class="o">=</span> <span class="n">ApprovalBallot</span><span class="p">({</span><span class="n">Project</span><span class="p">(</span><span class="s2">&quot;p1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Project</span><span class="p">(</span><span class="s2">&quot;p2&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)})</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="n">ApprovalBallot</span><span class="p">({</span><span class="n">Project</span><span class="p">(</span><span class="s2">&quot;p1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Project</span><span class="p">(</span><span class="s2">&quot;p3&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)})</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ApprovalProfile</span><span class="p">([</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">])</span>
+
+<span class="c1"># Multiprofile from the method of a profile</span>
+<span class="n">multiprofile</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">as_multiprofile</span><span class="p">()</span>
+
+<span class="c1"># Multiprofile using the constructor</span>
+<span class="n">frozen_ballot</span> <span class="o">=</span> <span class="n">ApprovalMultiProfile</span><span class="p">(</span><span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>What is the gain of multiprofiles, you would ask? Well, we can show that using multiprofile
+speeds up the computation as long as voters do not approve of more than 7 projects on average.</p>
+<a class="reference internal image-reference" href="../_images/RuntimeProfileMultiprofile.png"><img alt="Analysis of the runtime using profiles and multiprofiles" src="../_images/RuntimeProfileMultiprofile.png" style="width: 600px;" /></a>
+<p>For the above plot, we computed the outcome of the rules on the data hosted on
+<a class="reference external" href="http://pabulib.org">pabulib</a> both when using profiles and multiprofiles. We measured the
+runtime and plotted the following measure:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>multiprofile_runtime<span class="w"> </span>-<span class="w"> </span>profile_runtime<span class="o">)</span><span class="w"> </span>/<span class="w"> </span>max<span class="o">(</span>multiprofile_runtime,<span class="w"> </span>profile_runtime<span class="o">)</span>
+</pre></div>
+</div>
+<p>To get more insights, we also plot the actual runtime for each type of profiles:</p>
+<a class="reference internal image-reference" href="../_images/RuntimeMESCost.png"><img alt="Analysis of the runtime of MES[Cost_Sat] using profiles and multiprofiles" src="../_images/RuntimeMESCost.png" style="width: 600px;" /></a>
+<p>(Note the log scale above)</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="instances.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Instances</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="libraries.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Preference Libraries</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#approval-profiles">Approval Profiles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cardinal-profiles">Cardinal Profiles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cumulative-profiles">Cumulative Profiles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ordinal-profiles">Ordinal Profiles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiprofile">Multiprofile</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Simon Rey, Grzegorz Pierczyński, Markus Utke and Piotr Skowron
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023, Simon Rey, Grzegorz Pierczyński, Markus Utke and Piotr Skowron.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
