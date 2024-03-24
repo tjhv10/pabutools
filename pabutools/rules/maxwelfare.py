@@ -213,6 +213,9 @@ def primal_dual_branch(items: list[KnapsackItem], capacity: float):
     for i, item in enumerate(items):
         tmp_capacity -= item.weight
         split_idx = i
+        if split_idx == len(items) - 1 and tmp_capacity >= 0:
+            split_idx += 1
+
         if tmp_capacity < 0:
             break
 
