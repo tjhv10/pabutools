@@ -8,7 +8,11 @@ from copy import copy, deepcopy
 from collections.abc import Iterable
 
 from pabutools.rules.budgetallocation import BudgetAllocation
-from pabutools.rules.mes.mes_details import MESAllocationDetails, MESIteration, MESProjectDetails
+from pabutools.rules.mes.mes_details import (
+    MESAllocationDetails,
+    MESIteration,
+    MESProjectDetails,
+)
 from pabutools.utils import Numeric
 
 from pabutools.election import AbstractApprovalProfile
@@ -287,6 +291,7 @@ def mes_inner_algo(
     current_alloc: BudgetAllocation,
     all_allocs: list[BudgetAllocation],
     resoluteness: bool,
+    skipped_project: MESProject | None = None,
     analytics: bool = False,
     verbose: bool = False,
 ) -> None:
@@ -314,6 +319,9 @@ def mes_inner_algo(
         resoluteness : bool, optional
             Set to `False` to obtain an irresolute outcome, where all tied budget allocations are returned.
             Defaults to True.
+        skipped_project: MESProject, optional,
+            Project from instance which shouldn't be considered in calculations and for which effective vote count
+            will be calculated, if analytics is true. Solely used by analytics module.
         analytics: bool, optional
             (De)Activate the calculation of analytics.
         verbose : bool, optional
@@ -328,7 +336,9 @@ def mes_inner_algo(
     tied_projects: list[MESProject] = []
     if analytics:
         current_iteration = MESIteration()
-        current_iteration.extend([MESProjectDetails(p, current_iteration) for p in projects])
+        current_iteration.extend(
+            [MESProjectDetails(p, current_iteration) for p in projects]
+        )
         current_iteration.voters_budget = [voter.budget for voter in voters]
     best_afford = float("inf")
     if verbose:
@@ -374,7 +384,9 @@ def mes_inner_algo(
                 # found the best afford_factor for this project
                 project.affordability = afford_factor
                 if analytics:
-                    current_iteration.update_project_details_as_effective_vote_count_reduced(project)
+                    current_iteration.update_project_details_as_effective_vote_count_reduced(
+                        project
+                    )
                 if verbose:
                     eff_vote_count = frac(
                         denominator, project.cost - current_contribution
@@ -394,6 +406,12 @@ def mes_inner_algo(
     if verbose:
         print(f"{tied_projects}")
     if not tied_projects:
+        if analytics and skipped_project:
+            cover = sum(voters[i].budget for i in skipped_project.supporter_indices)
+            new_eff = int(cover / skipped_project.cost * 100)
+            current_alloc.details.skipped_project_eff_vote_count = max(
+                new_eff, current_alloc.details.skipped_project_eff_vote_count
+            )
         if resoluteness:
             all_allocs.append(current_alloc)
         else:
@@ -428,9 +446,22 @@ def mes_inner_algo(
                 )
             if analytics and current_iteration:
                 current_iteration.selected_project = selected_project
-                current_iteration.voters_budget_after_selection = [voter.budget for voter in new_voters]
+                current_iteration.voters_budget_after_selection = [
+                    voter.budget for voter in new_voters
+                ]
                 current_alloc.details.iterations.append(current_iteration)
-                current_iteration = None # to avoid double appending
+                current_iteration = None  # to avoid double appending
+                if skipped_project:
+                    cover = 0
+                    for i in skipped_project.supporter_indices:
+                        cover += min(
+                            voters[i].budget,
+                            best_afford * skipped_project.supporters_sat(voters[i]),
+                        )
+                    new_eff = int(cover / skipped_project.cost * 100)
+                    current_alloc.details.skipped_project_eff_vote_count = max(
+                        new_eff, current_alloc.details.skipped_project_eff_vote_count
+                    )
             mes_inner_algo(
                 instance,
                 profile,
@@ -440,6 +471,7 @@ def mes_inner_algo(
                 new_alloc,
                 all_allocs,
                 resoluteness,
+                skipped_project,
                 analytics,
                 verbose=verbose,
             )
@@ -455,6 +487,7 @@ def method_of_equal_shares_scheme(
     resoluteness=True,
     voter_budget_increment=None,
     binary_sat=False,
+    skipped_project: Project | None = None,
     analytics: bool = False,
     verbose: bool = False,
 ) -> BudgetAllocation | list[BudgetAllocation]:
@@ -485,6 +518,9 @@ def method_of_equal_shares_scheme(
         binary_sat : bool, optional
             Uses the inner algorithm for binary satisfaction if set to `True`. Should typically be used with approval
             ballots to gain on the runtime. Automatically set to `True` if an approval profile is given.
+        skipped_project: MESProject, optional,
+            Project from instance which shouldn't be considered in calculations and for which effective vote count
+            will be calculated, if analytics is true. Solely used by analytics module.
         analytics: bool, optional
             (De)Activate the computation of analytics. These are additional details that can be accessed from the
             :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` object returned by the rule to perform
@@ -539,8 +575,20 @@ def method_of_equal_shares_scheme(
 
     budget_allocation = BudgetAllocation(
         initial_budget_allocation,
-        MESAllocationDetails([voter.multiplicity for voter in voters]) if analytics else None,
+        (
+            MESAllocationDetails([voter.multiplicity for voter in voters])
+            if analytics
+            else None
+        ),
     )
+
+    skipped_mes_project = None
+    if skipped_project:
+        skipped_mes_project = next(
+            p for p in projects if p.name == skipped_project.name
+        )
+        projects = [p for p in projects if p.name != skipped_project.name]
+        budget_allocation.details.skipped_project_eff_vote_count = 0
 
     previous_outcome: BudgetAllocation | list[BudgetAllocation] = budget_allocation
 
@@ -555,6 +603,7 @@ def method_of_equal_shares_scheme(
             deepcopy(budget_allocation),
             all_budget_allocations,
             resoluteness,
+            skipped_mes_project,
             analytics,
             verbose,
         )
@@ -596,6 +645,7 @@ def method_of_equal_shares(
     initial_budget_allocation: Iterable[Project] | None = None,
     voter_budget_increment=None,
     binary_sat=None,
+    skipped_project: Project | None = None,
     analytics: bool = False,
     verbose: bool = False,
 ) -> BudgetAllocation | list[BudgetAllocation]:
@@ -633,6 +683,9 @@ def method_of_equal_shares(
         binary_sat : bool, optional
             Uses the inner algorithm for binary satisfaction if set to `True`. Should typically be used with approval
             ballots to gain on the runtime. Automatically set to `True` if an approval profile is given.
+        skipped_project: MESProject, optional,
+            Project from instance which shouldn't be considered in calculations and for which effective vote count
+            will be calculated, if analytics is true. Solely used by analytics module.
         analytics: bool, optional
             (De)Activate the computation of analytics. These are additional details that can be accessed from the
             :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` object returned by the rule to perform
@@ -674,6 +727,7 @@ def method_of_equal_shares(
         resoluteness=resoluteness,
         voter_budget_increment=voter_budget_increment,
         binary_sat=binary_sat,
+        skipped_project=skipped_project,
         analytics=analytics,
         verbose=verbose,
     )
