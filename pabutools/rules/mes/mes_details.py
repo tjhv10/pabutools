@@ -37,6 +37,18 @@ class MESAllocationDetails(AllocationDetails):
     def get_all_selected_projects(self) -> list[Project]:
         return [iteration.selected_project for iteration in self.iterations]
 
+    def get_final_budget(self) -> Numeric:
+        """
+        Returns the budget limt used in the final feasible MES run.
+        """
+        budget_per_voter = self.iterations[0].voters_budget
+        return sum(
+            [
+                budget_per_voter[i] * self.voter_multiplicity[i]
+                for i in range(len(self.voter_multiplicity))
+            ]
+        )
+
     def __str__(self):
         return f"MESAllocationDetails[{self.iterations}]"
 

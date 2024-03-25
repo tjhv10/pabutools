@@ -20,9 +20,11 @@ from pabutools.analysis.profileproperties import (
     avg_total_score,
     median_total_score,
 )
-from pabutools.analysis.projectloss import (
+from pabutools.analysis.mesanalytics import (
     ProjectLoss,
     calculate_project_loss,
+    calculate_effective_vote_counts,
+    calculate_effective_vote_count,
 )
 from pabutools.analysis.votersatisfaction import (
     avg_satisfaction,
@@ -34,6 +36,8 @@ from pabutools.analysis.votersatisfaction import (
 __all__ = [
     "ProjectLoss",
     "calculate_project_loss",
+    "calculate_effective_vote_counts",
+    "calculate_effective_vote_count",
     "category_proportionality",
     "sum_project_cost",
     "funding_scarcity",
