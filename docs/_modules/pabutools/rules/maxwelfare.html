@@ -27,16 +27,16 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pabutools/rules/maxwelfare';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -127,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/libraries.html">Preference Libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/satisfaction.html">Satisfaction Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../usage/outcomevisualisation.html">Outcome Visualisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/tiebreaking.html">Tie-Breaking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/fractions.html">Fractions</a></li>
 </ul>
@@ -269,10 +270,12 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="kn">import</span> <span class="nn">mip</span>
 <span class="kn">from</span> <span class="nn">mip</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">xsum</span><span class="p">,</span> <span class="n">maximize</span><span class="p">,</span> <span class="n">BINARY</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Instance</span><span class="p">,</span>
@@ -283,13 +286,30 @@ document.write(`
     <span class="n">AbstractProfile</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pabutools.rules.budgetallocation</span> <span class="kn">import</span> <span class="n">BudgetAllocation</span>
+<span class="kn">from</span> <span class="nn">pabutools.utils</span> <span class="kn">import</span> <span class="n">DocEnum</span>
 
 
-<span class="k">def</span> <span class="nf">max_additive_utilitarian_welfare_scheme</span><span class="p">(</span>
-    <span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span>
-    <span class="n">sat_profile</span><span class="p">:</span> <span class="n">GroupSatisfactionMeasure</span><span class="p">,</span>
-    <span class="n">initial_budget_allocation</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">],</span>
-    <span class="n">resoluteness</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<div class="viewcode-block" id="MaxAddUtilWelfareAlgo">
+<a class="viewcode-back" href="../../../reference/rules/index.html#pabutools.rules.maxwelfare.MaxAddUtilWelfareAlgo">[docs]</a>
+<span class="k">class</span> <span class="nc">MaxAddUtilWelfareAlgo</span><span class="p">(</span><span class="n">DocEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constants use to represent different algorithms that can be used to compute budget allocations</span>
+<span class="sd">    maximising the additive utilitarian welfare.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ILP_SOLVER</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Converts the instance into a integer linear program (ILP) and uses an ILP &quot;</span> \
+                    <span class="s2">&quot;solver to compute the outcome.&quot;</span>
+
+    <span class="n">PRIMAL_DUAL</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Uses state-of-the-art primal/dual solvers for knapsack problems to compute &quot;</span> \
+                     <span class="s2">&quot;the outcome.&quot;</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">max_additive_utilitarian_welfare_ilp_scheme</span><span class="p">(</span>
+        <span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span>
+        <span class="n">sat_profile</span><span class="p">:</span> <span class="n">GroupSatisfactionMeasure</span><span class="p">,</span>
+        <span class="n">initial_budget_allocation</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">],</span>
+        <span class="n">resoluteness</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BudgetAllocation</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">BudgetAllocation</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The inner algorithm for the welfare maximizing rule. It generates the corresponding budget allocations using a</span>
@@ -309,8 +329,8 @@ document.write(`
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">        :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]</span>
-<span class="sd">            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute</span>
-<span class="sd">            (`resoluteness = False`).</span>
+<span class="sd">            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute</span>
+<span class="sd">            (:code:`resoluteness == False`).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">score</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="p">:</span> <span class="n">sat_profile</span><span class="o">.</span><span class="n">total_satisfaction_project</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">instance</span><span class="p">}</span>
 
@@ -342,14 +362,14 @@ document.write(`
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="c1"># See http://yetanothermathprogrammingconsultant.blogspot.com/2011/10/integer-cuts.html</span>
         <span class="n">mip_model</span> <span class="o">+=</span> <span class="p">(</span>
-            <span class="n">xsum</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p_vars</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">previous_partial_alloc</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">xsum</span><span class="p">(</span><span class="n">p_vars</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p_vars</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">previous_partial_alloc</span><span class="p">)</span>
-            <span class="o">&gt;=</span> <span class="mi">1</span>
+                <span class="n">xsum</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p_vars</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">previous_partial_alloc</span><span class="p">)</span>
+                <span class="o">+</span> <span class="n">xsum</span><span class="p">(</span><span class="n">p_vars</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p_vars</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">previous_partial_alloc</span><span class="p">)</span>
+                <span class="o">&gt;=</span> <span class="mi">1</span>
         <span class="p">)</span>
         <span class="n">mip_model</span> <span class="o">+=</span> <span class="p">(</span>
-            <span class="n">xsum</span><span class="p">(</span><span class="n">p_vars</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">previous_partial_alloc</span><span class="p">)</span>
-            <span class="o">-</span> <span class="n">xsum</span><span class="p">(</span><span class="n">p_vars</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p_vars</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">previous_partial_alloc</span><span class="p">)</span>
-            <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">previous_partial_alloc</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">xsum</span><span class="p">(</span><span class="n">p_vars</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">previous_partial_alloc</span><span class="p">)</span>
+                <span class="o">-</span> <span class="n">xsum</span><span class="p">(</span><span class="n">p_vars</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p_vars</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">previous_partial_alloc</span><span class="p">)</span>
+                <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">previous_partial_alloc</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="p">)</span>
 
         <span class="n">opt_status</span> <span class="o">=</span> <span class="n">mip_model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
@@ -365,19 +385,157 @@ document.write(`
     <span class="p">]</span>
 
 
-<div class="viewcode-block" id="max_additive_utilitarian_welfare"><a class="viewcode-back" href="../../../reference/rules/index.html#pabutools.rules.maxwelfare.max_additive_utilitarian_welfare">[docs]</a><span class="k">def</span> <span class="nf">max_additive_utilitarian_welfare</span><span class="p">(</span>
-    <span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span>
-    <span class="n">profile</span><span class="p">:</span> <span class="n">AbstractProfile</span><span class="p">,</span>
-    <span class="n">sat_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">SatisfactionMeasure</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">sat_profile</span><span class="p">:</span> <span class="n">GroupSatisfactionMeasure</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">resoluteness</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">initial_budget_allocation</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">max_additive_utilitarian_welfare_primal_dual_scheme</span><span class="p">(</span>
+        <span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span>
+        <span class="n">sat_profile</span><span class="p">:</span> <span class="n">GroupSatisfactionMeasure</span><span class="p">,</span>
+        <span class="n">initial_budget_allocation</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BudgetAllocation</span><span class="p">:</span>
+    <span class="n">budget_allocation</span> <span class="o">=</span> <span class="n">BudgetAllocation</span><span class="p">(</span><span class="n">initial_budget_allocation</span><span class="p">)</span>
+
+    <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">instance</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">budget_allocation</span><span class="p">:</span>
+            <span class="n">profit</span> <span class="o">=</span> <span class="n">sat_profile</span><span class="o">.</span><span class="n">total_satisfaction_project</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">cost</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">profit</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">budget_allocation</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">KnapsackItem</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span> <span class="n">profit</span><span class="p">))</span>
+
+    <span class="n">current_budget_limit</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">budget_limit</span> <span class="o">-</span> <span class="n">total_cost</span><span class="p">(</span><span class="n">budget_allocation</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">primal_dual_branch</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">current_budget_limit</span><span class="p">)</span>
+    <span class="n">budget_allocation</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">project</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">result</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">budget_allocation</span>
+
+
+<span class="k">class</span> <span class="nc">KnapsackItem</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">profit</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="o">=</span> <span class="n">project</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profit</span> <span class="o">=</span> <span class="n">profit</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">efficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profit</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">primal_dual_branch</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">KnapsackItem</span><span class="p">],</span> <span class="n">capacity</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="n">items</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">efficiency</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">tmp_capacity</span> <span class="o">=</span> <span class="n">capacity</span>
+    <span class="n">split_idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">split_weight</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">split_profit</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+        <span class="n">tmp_capacity</span> <span class="o">-=</span> <span class="n">item</span><span class="o">.</span><span class="n">weight</span>
+        <span class="n">split_idx</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">split_idx</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">tmp_capacity</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">split_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">tmp_capacity</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">split_weight</span> <span class="o">+=</span> <span class="n">item</span><span class="o">.</span><span class="n">weight</span>
+        <span class="n">split_profit</span> <span class="o">+=</span> <span class="n">item</span><span class="o">.</span><span class="n">profit</span>
+
+    <span class="n">solution</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">))]</span>
+    <span class="n">lower_bound</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">a_star</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">b_star</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">primal_dual_branch_impl</span><span class="p">(</span><span class="n">split_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">split_idx</span><span class="p">,</span> <span class="n">split_profit</span><span class="p">,</span> <span class="n">split_weight</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">capacity</span><span class="p">,</span>
+                            <span class="n">solution</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">a_star</span><span class="p">,</span> <span class="n">b_star</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">b_star</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">a_star</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">solution</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">solution</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">primal_dual_branch_impl</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">profit_sum</span><span class="p">,</span> <span class="n">weight_sum</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">capacity</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">a_star</span><span class="p">,</span>
+                            <span class="n">b_star</span><span class="p">):</span>
+    <span class="n">improved</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">weight_sum</span> <span class="o">&lt;=</span> <span class="n">capacity</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">profit_sum</span> <span class="o">&gt;</span> <span class="n">lower_bound</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">lower_bound</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">profit_sum</span>
+            <span class="n">a_star</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+            <span class="n">b_star</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span>
+            <span class="n">improved</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">b</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">improved</span>
+
+        <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">capacity</span> <span class="o">-</span> <span class="n">weight_sum</span><span class="p">)</span> <span class="o">*</span> <span class="n">items</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">efficiency</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">profit_sum</span> <span class="o">+</span> <span class="n">upper_bound</span> <span class="o">&lt;=</span> <span class="n">lower_bound</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">improved</span>
+
+        <span class="n">pb</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">profit</span>
+        <span class="n">wb</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span>
+        <span class="k">if</span> <span class="n">primal_dual_branch_impl</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">profit_sum</span> <span class="o">+</span> <span class="n">pb</span><span class="p">,</span> <span class="n">weight_sum</span> <span class="o">+</span> <span class="n">wb</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">capacity</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span>
+                                   <span class="n">lower_bound</span><span class="p">,</span> <span class="n">a_star</span><span class="p">,</span> <span class="n">b_star</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">improved</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">primal_dual_branch_impl</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">profit_sum</span><span class="p">,</span> <span class="n">weight_sum</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">capacity</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span>
+                                   <span class="n">lower_bound</span><span class="p">,</span> <span class="n">a_star</span><span class="p">,</span> <span class="n">b_star</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">improved</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">capacity</span> <span class="o">-</span> <span class="n">weight_sum</span><span class="p">)</span> <span class="o">*</span> <span class="n">items</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">efficiency</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">profit_sum</span> <span class="o">+</span> <span class="n">upper_bound</span> <span class="o">&lt;=</span> <span class="n">lower_bound</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">pa</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">profit</span>
+        <span class="n">wa</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span>
+        <span class="k">if</span> <span class="n">primal_dual_branch_impl</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">profit_sum</span> <span class="o">-</span> <span class="n">pa</span><span class="p">,</span> <span class="n">weight_sum</span> <span class="o">-</span> <span class="n">wa</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">capacity</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span>
+                                   <span class="n">lower_bound</span><span class="p">,</span> <span class="n">a_star</span><span class="p">,</span> <span class="n">b_star</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">improved</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">primal_dual_branch_impl</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">profit_sum</span><span class="p">,</span> <span class="n">weight_sum</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">capacity</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span>
+                                   <span class="n">lower_bound</span><span class="p">,</span> <span class="n">a_star</span><span class="p">,</span> <span class="n">b_star</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">improved</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">improved</span>
+
+
+<div class="viewcode-block" id="max_additive_utilitarian_welfare">
+<a class="viewcode-back" href="../../../reference/rules/index.html#pabutools.rules.maxwelfare.max_additive_utilitarian_welfare">[docs]</a>
+<span class="k">def</span> <span class="nf">max_additive_utilitarian_welfare</span><span class="p">(</span>
+        <span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span>
+        <span class="n">profile</span><span class="p">:</span> <span class="n">AbstractProfile</span><span class="p">,</span>
+        <span class="n">sat_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">SatisfactionMeasure</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sat_profile</span><span class="p">:</span> <span class="n">GroupSatisfactionMeasure</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">resoluteness</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">initial_budget_allocation</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">inner_algo</span><span class="p">:</span> <span class="n">MaxAddUtilWelfareAlgo</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BudgetAllocation</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">BudgetAllocation</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Rule returning the budget allocation(s) maximizing the utilitarian social welfare. The utilitarian social welfare is</span>
-<span class="sd">    defined as the sum of the satisfactin of the voters, where the satisfaction is computed using the satisfaction</span>
-<span class="sd">    measure given as a parameter. The satisfaction measure is assumed to be additive. The bugdet allocation(s) are</span>
-<span class="sd">    computed using a linear program solver. Note that there is no control over the way ties are broken.</span>
+<span class="sd">    Rule returning the budget allocation(s) maximizing the utilitarian social welfare. The</span>
+<span class="sd">    utilitarian social welfare is defined as the sum of the satisfactin of the voters, where the</span>
+<span class="sd">    satisfaction is computed using the satisfaction measure given as a parameter. The satisfaction</span>
+<span class="sd">    measure is assumed to be additive.</span>
+
+<span class="sd">    The outcome can be computed either via a integer linear program solver or with a primal/dual</span>
+<span class="sd">    approach. Note that depending on the selected algorithm, not all functionalities are supported</span>
+<span class="sd">    (with the ILP solver ties cannot be handled while the primal/dual approach does not support</span>
+<span class="sd">    irresolute outcomes).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -398,12 +556,18 @@ document.write(`
 <span class="sd">        resoluteness : bool, optional</span>
 <span class="sd">            Set to `False` to obtain an irresolute outcome, where all tied budget allocations are returned.</span>
 <span class="sd">            Defaults to True.</span>
+<span class="sd">        inner_algo: :py:class:`~pabutools.rules.maxwelfare.MaxAddUtilWelfareAlgo`, optional</span>
+<span class="sd">            The inner algorithm used. See :py:class:`~pabutools.rules.maxwelfare.MaxAddUtilWelfareAlgo`</span>
+<span class="sd">            for the available choices.</span>
+<span class="sd">            Defaults to :py:enum:mem:`~pabutools.rules.maxwelfare.MaxAddUtilWelfareAlgo.PRIMAL_DUAL`</span>
+<span class="sd">            if :code:`resoluteness == True`, otherwise defaults to</span>
+<span class="sd">            :py:enum:mem:`~pabutools.rules.maxwelfare.MaxAddUtilWelfareAlgo.ILP_SOLVER`.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">        :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]</span>
-<span class="sd">            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute</span>
-<span class="sd">            (`resoluteness = False`).</span>
+<span class="sd">            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute</span>
+<span class="sd">            (:code:`resoluteness == False`).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">initial_budget_allocation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">budget_allocation</span> <span class="o">=</span> <span class="n">BudgetAllocation</span><span class="p">(</span><span class="n">initial_budget_allocation</span><span class="p">)</span>
@@ -416,9 +580,26 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sat_profile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sat_profile</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">as_sat_profile</span><span class="p">(</span><span class="n">sat_class</span><span class="o">=</span><span class="n">sat_class</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">max_additive_utilitarian_welfare_scheme</span><span class="p">(</span>
-        <span class="n">instance</span><span class="p">,</span> <span class="n">sat_profile</span><span class="p">,</span> <span class="n">budget_allocation</span><span class="p">,</span> <span class="n">resoluteness</span><span class="o">=</span><span class="n">resoluteness</span>
-    <span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">inner_algo</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">inner_algo</span> <span class="o">==</span> <span class="n">MaxAddUtilWelfareAlgo</span><span class="o">.</span><span class="n">PRIMAL_DUAL</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">resoluteness</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The primal/dual algorithm does not support irresolute outcomes.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resoluteness</span><span class="p">:</span>
+            <span class="n">inner_algo</span> <span class="o">=</span> <span class="n">MaxAddUtilWelfareAlgo</span><span class="o">.</span><span class="n">PRIMAL_DUAL</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inner_algo</span> <span class="o">=</span> <span class="n">MaxAddUtilWelfareAlgo</span><span class="o">.</span><span class="n">ILP_SOLVER</span>
+    <span class="k">if</span> <span class="n">inner_algo</span> <span class="o">==</span> <span class="n">MaxAddUtilWelfareAlgo</span><span class="o">.</span><span class="n">PRIMAL_DUAL</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">max_additive_utilitarian_welfare_primal_dual_scheme</span><span class="p">(</span>
+            <span class="n">instance</span><span class="p">,</span> <span class="n">sat_profile</span><span class="p">,</span> <span class="n">budget_allocation</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">inner_algo</span> <span class="o">==</span> <span class="n">MaxAddUtilWelfareAlgo</span><span class="o">.</span><span class="n">ILP_SOLVER</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">max_additive_utilitarian_welfare_ilp_scheme</span><span class="p">(</span>
+            <span class="n">instance</span><span class="p">,</span> <span class="n">sat_profile</span><span class="p">,</span> <span class="n">budget_allocation</span><span class="p">,</span> <span class="n">resoluteness</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The parameter &#39;inner_algo&#39; needs to be a member of the &quot;</span>
+                         <span class="s2">&quot;MaxAddUtilWelfareAlgo enumeration.&quot;</span><span class="p">)</span></div>
+
 </pre></div>
 
                 </article>

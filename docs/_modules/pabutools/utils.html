@@ -27,16 +27,16 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pabutools/utils';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -127,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../usage/libraries.html">Preference Libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../usage/satisfaction.html">Satisfaction Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../usage/rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage/outcomevisualisation.html">Outcome Visualisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../usage/tiebreaking.html">Tie-Breaking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../usage/fractions.html">Fractions</a></li>
 </ul>
@@ -270,6 +271,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Generator</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span><span class="p">,</span> <span class="n">chain</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
@@ -284,7 +286,9 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="mean_generator"><a class="viewcode-back" href="../../reference/utils.html#pabutools.utils.mean_generator">[docs]</a><span class="k">def</span> <span class="nf">mean_generator</span><span class="p">(</span>
+<div class="viewcode-block" id="mean_generator">
+<a class="viewcode-back" href="../../reference/utils.html#pabutools.utils.mean_generator">[docs]</a>
+<span class="k">def</span> <span class="nf">mean_generator</span><span class="p">(</span>
     <span class="n">generator</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Numeric</span><span class="p">]</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Numeric</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -315,7 +319,10 @@ document.write(`
     <span class="k">return</span> <span class="n">mean</span></div>
 
 
-<div class="viewcode-block" id="powerset"><a class="viewcode-back" href="../../reference/utils.html#pabutools.utils.powerset">[docs]</a><span class="k">def</span> <span class="nf">powerset</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
+
+<div class="viewcode-block" id="powerset">
+<a class="viewcode-back" href="../../reference/utils.html#pabutools.utils.powerset">[docs]</a>
+<span class="k">def</span> <span class="nf">powerset</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a generator of all the subsets of a given iterable.</span>
 
@@ -333,7 +340,10 @@ document.write(`
     <span class="k">return</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="gini_coefficient"><a class="viewcode-back" href="../../reference/utils.html#pabutools.utils.gini_coefficient">[docs]</a><span class="k">def</span> <span class="nf">gini_coefficient</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Numeric</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
+
+<div class="viewcode-block" id="gini_coefficient">
+<a class="viewcode-back" href="../../reference/utils.html#pabutools.utils.gini_coefficient">[docs]</a>
+<span class="k">def</span> <span class="nf">gini_coefficient</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Numeric</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the Gini coefficient of the vector of values given as argument.</span>
 
@@ -365,6 +375,24 @@ document.write(`
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sorted_values</span><span class="p">):</span>
         <span class="n">total_cum_sum</span> <span class="o">+=</span> <span class="n">v</span> <span class="o">*</span> <span class="p">(</span><span class="n">num_values</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">frac</span><span class="p">(</span><span class="n">num_values</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">frac</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">total_cum_sum</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="n">num_values</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DocEnum">
+<a class="viewcode-back" href="../../reference/utils.html#pabutools.utils.DocEnum">[docs]</a>
+<span class="k">class</span> <span class="nc">DocEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enumeration with documentation of its members. Taken directly from</span>
+<span class="sd">    `stack overflow &lt;https://stackoverflow.com/questions/50473951/how-can-i-attach-documentation-to-members-of-a-python-enum/50473952#50473952&gt;`_.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">doc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
 </pre></div>
 
                 </article>

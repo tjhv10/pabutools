@@ -27,16 +27,16 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" href="../../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-    <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pabutools/rules/mes/mes_rule';</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -127,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/libraries.html">Preference Libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/satisfaction.html">Satisfaction Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../usage/outcomevisualisation.html">Outcome Visualisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/tiebreaking.html">Tie-Breaking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/fractions.html">Fractions</a></li>
 </ul>
@@ -460,8 +461,8 @@ document.write(`
     <span class="n">initial_budget_per_voter</span><span class="p">:</span> <span class="n">Numeric</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BudgetAllocation</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Naive implementation of the method of equal shares. Probably slow, but useful to test the correctness of</span>
-<span class="sd">    other implementations.</span>
+<span class="sd">    Naive implementation of the method of equal shares. Probably slow, but useful to test the</span>
+<span class="sd">    correctness of other implementations.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -556,8 +557,9 @@ document.write(`
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The inner algorithm used to compute the outcome of the Method of Equal Shares (MES). See the website</span>
-<span class="sd">    `equalshares.net &lt;https://equalshares.net/&gt;`_ for details about how to compute the outcome of the rule.</span>
+<span class="sd">    The inner algorithm used to compute the outcome of the Method of Equal Shares (MES). See the</span>
+<span class="sd">    website `equalshares.net &lt;https://equalshares.net/&gt;`_ for details about how to compute the</span>
+<span class="sd">    outcome of the rule.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -586,8 +588,8 @@ document.write(`
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">        :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]</span>
-<span class="sd">            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute</span>
-<span class="sd">            (`resoluteness = False`).</span>
+<span class="sd">            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute</span>
+<span class="sd">            (:code:`resoluteness == False`).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">tied_projects</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MESProject</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -761,8 +763,8 @@ document.write(`
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">        :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]</span>
-<span class="sd">            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute</span>
-<span class="sd">            (`resoluteness = False`).</span>
+<span class="sd">            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute</span>
+<span class="sd">            (:code:`resoluteness == False`).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initial budget per voter is: </span><span class="si">{</span><span class="n">initial_budget_per_voter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -851,7 +853,9 @@ document.write(`
             <span class="n">p</span><span class="o">.</span><span class="n">affordability</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">initial_affordability</span>
 
 
-<div class="viewcode-block" id="method_of_equal_shares"><a class="viewcode-back" href="../../../../reference/rules/index.html#pabutools.rules.mes.method_of_equal_shares">[docs]</a><span class="k">def</span> <span class="nf">method_of_equal_shares</span><span class="p">(</span>
+<div class="viewcode-block" id="method_of_equal_shares">
+<a class="viewcode-back" href="../../../../reference/rules/index.html#pabutools.rules.mes.method_of_equal_shares">[docs]</a>
+<span class="k">def</span> <span class="nf">method_of_equal_shares</span><span class="p">(</span>
     <span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span>
     <span class="n">profile</span><span class="p">:</span> <span class="n">AbstractProfile</span><span class="p">,</span>
     <span class="n">sat_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">SatisfactionMeasure</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -910,8 +914,8 @@ document.write(`
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">        :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]</span>
-<span class="sd">            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute</span>
-<span class="sd">            (`resoluteness = False`).</span>
+<span class="sd">            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute</span>
+<span class="sd">            (:code:`resoluteness == False`).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">tie_breaking</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">tie_breaking</span> <span class="o">=</span> <span class="n">lexico_tie_breaking</span>
@@ -942,6 +946,7 @@ document.write(`
         <span class="n">analytics</span><span class="o">=</span><span class="n">analytics</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
     <span class="p">)</span></div>
+
 </pre></div>
 
                 </article>

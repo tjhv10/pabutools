@@ -28,16 +28,16 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'usage/satisfaction';</script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -130,6 +130,7 @@
 <li class="toctree-l2"><a class="reference internal" href="libraries.html">Preference Libraries</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Satisfaction Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outcomevisualisation.html">Outcome Visualisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tiebreaking.html">Tie-Breaking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fractions.html">Fractions</a></li>
 </ul>
@@ -327,7 +328,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="satisfaction-measures">
-<h1>Satisfaction Measures<a class="headerlink" href="#satisfaction-measures" title="Permalink to this heading">#</a></h1>
+<h1>Satisfaction Measures<a class="headerlink" href="#satisfaction-measures" title="Link to this heading">#</a></h1>
 <p>In participatory budgeting, various concepts and rules utilize proxies for voter satisfaction,
 which are deduced from the submitted ballots rather than using the ballots directly.</p>
 <p>We offer a range of satisfaction functions and provide flexible ways to create custom ones.
@@ -376,7 +377,7 @@ methods and provide several widely used satisfaction functions.</p>
 </pre></div>
 </div>
 <section id="default-satisfaction-functions">
-<h2>Default Satisfaction Functions<a class="headerlink" href="#default-satisfaction-functions" title="Permalink to this heading">#</a></h2>
+<h2>Default Satisfaction Functions<a class="headerlink" href="#default-satisfaction-functions" title="Link to this heading">#</a></h2>
 <p>Several satisfaction functions are already defined in the package and can be imported
 from <cite>pabutools.election</cite>. We list them below.</p>
 <ul class="simple">
@@ -395,7 +396,7 @@ from <cite>pabutools.election</cite>. We list them below.</p>
 <p>Next, we present additional tools we provide to define satisfaction functions.</p>
 </section>
 <section id="functional-satisfaction-functions">
-<h2>Functional Satisfaction Functions<a class="headerlink" href="#functional-satisfaction-functions" title="Permalink to this heading">#</a></h2>
+<h2>Functional Satisfaction Functions<a class="headerlink" href="#functional-satisfaction-functions" title="Link to this heading">#</a></h2>
 <p>For more specific ways of defining satisfaction functions, we introduce the class
 <a class="reference internal" href="../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.FunctionalSatisfaction" title="pabutools.election.satisfaction.functionalsatisfaction.FunctionalSatisfaction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionalSatisfaction</span></code></a>.
 This class corresponds to a satisfaction function defined by a function that takes as arguments
@@ -414,7 +415,7 @@ at least one approved project is selected and 0 otherwise).</p>
 </div>
 </section>
 <section id="additive-satisfaction-functions">
-<h2>Additive Satisfaction Functions<a class="headerlink" href="#additive-satisfaction-functions" title="Permalink to this heading">#</a></h2>
+<h2>Additive Satisfaction Functions<a class="headerlink" href="#additive-satisfaction-functions" title="Link to this heading">#</a></h2>
 <p>We also offer additive satisfaction functions, where the satisfaction for a set
 of projects is equal to the sum of the satisfaction of each individual project. The class
 <a class="reference internal" href="../reference/election/satisfaction.html#pabutools.election.satisfaction.additivesatisfaction.AdditiveSatisfaction" title="pabutools.election.satisfaction.additivesatisfaction.AdditiveSatisfaction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveSatisfaction</span></code></a>
@@ -435,7 +436,7 @@ how to define the cardinality satisfaction function.</p>
 </div>
 </section>
 <section id="positional-satisfaction-functions">
-<h2>Positional Satisfaction Functions<a class="headerlink" href="#positional-satisfaction-functions" title="Permalink to this heading">#</a></h2>
+<h2>Positional Satisfaction Functions<a class="headerlink" href="#positional-satisfaction-functions" title="Link to this heading">#</a></h2>
 <p>For ordinal ballots, we have positional satisfaction functions, where a voter’s
 satisfaction depends on the position of projects in their ballot. The class
 <a class="reference internal" href="../reference/election/satisfaction.html#pabutools.election.satisfaction.positionalsatisfaction.PositionalSatisfaction" title="pabutools.election.satisfaction.positionalsatisfaction.PositionalSatisfaction"><code class="xref py py-class docutils literal notranslate"><span class="pre">PositionalSatisfaction</span></code></a>

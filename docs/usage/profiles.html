@@ -28,16 +28,16 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'usage/profiles';</script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -130,6 +130,7 @@
 <li class="toctree-l2"><a class="reference internal" href="libraries.html">Preference Libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="satisfaction.html">Satisfaction Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outcomevisualisation.html">Outcome Visualisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tiebreaking.html">Tie-Breaking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fractions.html">Fractions</a></li>
 </ul>
@@ -328,7 +329,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="profiles">
-<h1>Profiles<a class="headerlink" href="#profiles" title="Permalink to this heading">#</a></h1>
+<h1>Profiles<a class="headerlink" href="#profiles" title="Link to this heading">#</a></h1>
 <p>For reference, please refer to the modules <a class="reference internal" href="../reference/election/ballot.html#module-pabutools.election.ballot" title="pabutools.election.ballot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ballot</span></code></a> and
 <a class="reference internal" href="../reference/election/profile.html#module-pabutools.election.profile" title="pabutools.election.profile"><code class="xref py py-mod docutils literal notranslate"><span class="pre">profile</span></code></a>.</p>
 <p>A profile is the second fundamental component of a participatory budgeting election; it stores
@@ -353,7 +354,7 @@ of the ballots in a profile.</p>
 </pre></div>
 </div>
 <section id="approval-profiles">
-<h2>Approval Profiles<a class="headerlink" href="#approval-profiles" title="Permalink to this heading">#</a></h2>
+<h2>Approval Profiles<a class="headerlink" href="#approval-profiles" title="Link to this heading">#</a></h2>
 <p>When submitting approval ballots, voters submit a set of projects they approve of.
 Approval ballots are represented through the class
 <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.approvalballot.ApprovalBallot" title="pabutools.election.ballot.approvalballot.ApprovalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">ApprovalBallot</span></code></a> that inherits
@@ -381,7 +382,7 @@ validator to <a class="reference internal" href="../reference/election/ballot.ht
 </div>
 </section>
 <section id="cardinal-profiles">
-<h2>Cardinal Profiles<a class="headerlink" href="#cardinal-profiles" title="Permalink to this heading">#</a></h2>
+<h2>Cardinal Profiles<a class="headerlink" href="#cardinal-profiles" title="Link to this heading">#</a></h2>
 <p>When required to submit cardinal ballots, voters are asked to assign a score to each project.
 Cardinal ballots are represented using the class
 <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.cardinalballot.CardinalBallot" title="pabutools.election.ballot.cardinalballot.CardinalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">CardinalBallot</span></code></a>.
@@ -402,7 +403,7 @@ It inherits from the <a class="reference internal" href="../reference/election/p
 </div>
 </section>
 <section id="cumulative-profiles">
-<h2>Cumulative Profiles<a class="headerlink" href="#cumulative-profiles" title="Permalink to this heading">#</a></h2>
+<h2>Cumulative Profiles<a class="headerlink" href="#cumulative-profiles" title="Link to this heading">#</a></h2>
 <p>Cumulative ballots correspond to a specific type of cardinal ballots where the voters are
 allocated a specific number of points that they can distribute among the projects.
 The class <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.cumulativeballot.CumulativeBallot" title="pabutools.election.ballot.cumulativeballot.CumulativeBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">CumulativeBallot</span></code></a>
@@ -415,7 +416,7 @@ that inherits from the <a class="reference internal" href="../reference/election
 (and acts thus as a <cite>list</cite>).</p>
 </section>
 <section id="ordinal-profiles">
-<h2>Ordinal Profiles<a class="headerlink" href="#ordinal-profiles" title="Permalink to this heading">#</a></h2>
+<h2>Ordinal Profiles<a class="headerlink" href="#ordinal-profiles" title="Link to this heading">#</a></h2>
 <p>When ordinal ballots are used, voters are asked to rank the projects based on their
 preferences. The class <a class="reference internal" href="../reference/election/ballot.html#pabutools.election.ballot.ordinalballot.OrdinalBallot" title="pabutools.election.ballot.ordinalballot.OrdinalBallot"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrdinalBallot</span></code></a>
 represents such ballots. It inherits from the Python class <cite>list</cite> (actually the class
@@ -434,7 +435,7 @@ and our class <a class="reference internal" href="../reference/election/ballot.h
 </div>
 </section>
 <section id="multiprofile">
-<h2>Multiprofile<a class="headerlink" href="#multiprofile" title="Permalink to this heading">#</a></h2>
+<h2>Multiprofile<a class="headerlink" href="#multiprofile" title="Link to this heading">#</a></h2>
 <p>For reference, see the modules <a class="reference internal" href="../reference/election/profile.html#module-pabutools.election.profile" title="pabutools.election.profile"><code class="xref py py-mod docutils literal notranslate"><span class="pre">profile</span></code></a>.</p>
 <p>In some cases, it is faster to use multisets instead of lists for the profiles. We have
 implemented this through multiprofiles. A multiprofile is a collection of ballots where

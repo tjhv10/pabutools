@@ -195,8 +195,8 @@ def naive_mes(
     initial_budget_per_voter: Numeric,
 ) -> BudgetAllocation:
     """
-    Naive implementation of the method of equal shares. Probably slow, but useful to test the correctness of
-    other implementations.
+    Naive implementation of the method of equal shares. Probably slow, but useful to test the
+    correctness of other implementations.
 
     Parameters
     ----------
@@ -291,8 +291,9 @@ def mes_inner_algo(
     verbose: bool = False,
 ) -> None:
     """
-    The inner algorithm used to compute the outcome of the Method of Equal Shares (MES). See the website
-    `equalshares.net <https://equalshares.net/>`_ for details about how to compute the outcome of the rule.
+    The inner algorithm used to compute the outcome of the Method of Equal Shares (MES). See the
+    website `equalshares.net <https://equalshares.net/>`_ for details about how to compute the
+    outcome of the rule.
 
     Parameters
     ----------
@@ -321,8 +322,8 @@ def mes_inner_algo(
     Returns
     -------
         :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]
-            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute
-            (`resoluteness = False`).
+            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute
+            (:code:`resoluteness == False`).
 
     """
     tied_projects: list[MESProject] = []
@@ -496,8 +497,8 @@ def method_of_equal_shares_scheme(
     Returns
     -------
         :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]
-            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute
-            (`resoluteness = False`).
+            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute
+            (:code:`resoluteness == False`).
     """
     if verbose:
         print(f"Initial budget per voter is: {initial_budget_per_voter}")
@@ -645,8 +646,8 @@ def method_of_equal_shares(
     Returns
     -------
         :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]
-            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute
-            (`resoluteness = False`).
+            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute
+            (:code:`resoluteness == False`).
     """
     if tie_breaking is None:
         tie_breaking = lexico_tie_breaking

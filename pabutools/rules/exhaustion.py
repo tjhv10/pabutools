@@ -136,8 +136,8 @@ def exhaustion_by_budget_increase(
     Returns
     -------
         BudgetAllocation | Iterable[BudgetAllocation]
-            The selected budget allocation if resolute (`resoluteness` = True), or the set of budget allocations if irresolute
-            (`resoluteness = False`).
+            The selected budget allocation if resolute (:code:`resoluteness == True`), or the set of budget allocations if irresolute
+            (:code:`resoluteness == False`).
     """
     if rule_params is None:
         rule_params = {}

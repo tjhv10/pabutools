@@ -38,7 +38,9 @@ dev = [
     "sphinx-book-theme",
     "sphinxcontrib-napoleon",
     "unittest2",
-    "parameterized"
+    "parameterized",
+    "sphinx-toolbox",
+    "enum_tools"
 ]
 
 [project.urls]

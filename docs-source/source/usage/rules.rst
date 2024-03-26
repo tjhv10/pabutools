@@ -26,7 +26,7 @@ measure is additive.
 .. code-block:: python
 
     from pabutools.election import Instance, Project, ApprovalProfile, ApprovalBallot, Cost_Sat
-    from pabutools.rules import max_additive_utilitarian_welfare
+    from pabutools.rules import max_additive_utilitarian_welfare, MaxAddUtilWelfareAlgo
 
     p = [Project("p" + str(i), 1) for i in range(10)]
     instance = Instance(p, budget_limit=5)
@@ -66,11 +66,25 @@ measure is additive.
         resoluteness=False
     )
 
-The outcome of the utilitarian welfare maximiser is computed using a linear program solver
-(through the  `mip package <https://www.python-mip.com/>`_). Irresolute outcomes are
+    # We can force the use of the ILP solver
+    irresolute_outcome = max_additive_utilitarian_welfare(
+        instance,
+        profile,
+        sat_class=Cost_Sat,
+        resoluteness=False,
+        inner_algo=MaxAddUtilWelfareAlgo.ILP_SOLVER
+    )
+
+The outcome of the utilitarian welfare maximiser can be computed either using a integer linear
+program (ILP) solver (through the  `mip package <https://www.python-mip.com/>`_) or using the
+primal/dual approach for solving knapsack problems.
+
+Only the ILP solver supports irresolute outcomes. Irresolute outcomes are
 computed by iteratively adding constraints excluding previously returned budget
 allocations. Note that because the computation is handled via a linear program solver, we
-have no control as to how ties are broken. Moreover, there are no clear ways to adapt this
+have no control as to how ties are broken.
+
+Note that this can only be used for additive satisfaction measures. There is no general solution
 for non-additive satisfaction measures.
 
 Greedy Approximation of the Welfare Maximiser

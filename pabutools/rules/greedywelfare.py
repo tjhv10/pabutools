@@ -56,8 +56,8 @@ def greedy_utilitarian_scheme(
     Returns
     -------
         :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]
-            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute
-            (`resoluteness = False`).
+            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute
+            (:code:`resoluteness == False`).
     """
 
     def aux(inst, prof, feasible, sats, allocs, alloc, tie, resolute):
@@ -163,8 +163,8 @@ def greedy_utilitarian_scheme_additive(
     Returns
     -------
         :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]
-            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute
-            (`resoluteness = False`).
+            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute
+            (:code:`resoluteness == False`).
     """
     if not resoluteness:
         return greedy_utilitarian_scheme(
@@ -247,8 +247,8 @@ def greedy_utilitarian_welfare(
     Returns
     -------
         BudgetAllocation | Collection[BudgetAllocation]
-            The selected budget allocation if resolute (`resoluteness` = True), or the set of budget allocations if irresolute
-            (`resoluteness = False`).
+            The selected budget allocation if resolute (:code:`resoluteness == True`), or the set of budget allocations if irresolute
+            (:code:`resoluteness == False`).
     """
     if tie_breaking is None:
         tie_breaking = lexico_tie_breaking

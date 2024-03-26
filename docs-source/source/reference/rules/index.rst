@@ -18,6 +18,8 @@ Greedy Utilitarian Rule
 Additive Utilitarian Welfare Maximiser
 --------------------------------------
 
+.. autoenum:: pabutools.rules.maxwelfare.MaxAddUtilWelfareAlgo
+
 .. autofunction:: pabutools.rules.maxwelfare.max_additive_utilitarian_welfare
 
 Sequential Phragmén's Rule

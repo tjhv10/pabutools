@@ -91,8 +91,8 @@ def sequential_phragmen(
     Returns
     -------
         :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]
-            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute
-            (`resoluteness = False`).
+            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute
+            (:code:`resoluteness == False`).
     """
 
     def aux(

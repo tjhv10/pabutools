@@ -20,6 +20,20 @@ from pabutools.election import (
     AbstractProfile,
 )
 from pabutools.rules.budgetallocation import BudgetAllocation
+from pabutools.utils import DocEnum
+
+
+class MaxAddUtilWelfareAlgo(DocEnum):
+    """
+    Constants use to represent different algorithms that can be used to compute budget allocations
+    maximising the additive utilitarian welfare.
+    """
+
+    ILP_SOLVER = 1, "Converts the instance into a integer linear program (ILP) and uses an ILP " \
+                    "solver to compute the outcome."
+
+    PRIMAL_DUAL = 2, "Uses state-of-the-art primal/dual solvers for knapsack problems to compute " \
+                     "the outcome."
 
 
 def max_additive_utilitarian_welfare_ilp_scheme(
@@ -46,8 +60,8 @@ def max_additive_utilitarian_welfare_ilp_scheme(
     Returns
     -------
         :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]
-            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute
-            (`resoluteness = False`).
+            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute
+            (:code:`resoluteness == False`).
     """
     score = {p: sat_profile.total_satisfaction_project(p) for p in instance}
 
@@ -100,67 +114,6 @@ def max_additive_utilitarian_welfare_ilp_scheme(
         BudgetAllocation(partial_alloc + list(initial_budget_allocation))
         for partial_alloc in all_partial_allocs
     ]
-
-
-def max_additive_utilitarian_welfare(
-        instance: Instance,
-        profile: AbstractProfile,
-        sat_class: type[SatisfactionMeasure] | None = None,
-        sat_profile: GroupSatisfactionMeasure | None = None,
-        resoluteness: bool = True,
-        initial_budget_allocation: Collection[Project] | None = None,
-) -> BudgetAllocation | list[BudgetAllocation]:
-    """
-    Rule returning the budget allocation(s) maximizing the utilitarian social welfare. The utilitarian social welfare is
-    defined as the sum of the satisfactin of the voters, where the satisfaction is computed using the satisfaction
-    measure given as a parameter. The satisfaction measure is assumed to be additive. The bugdet allocation(s) are
-    computed using a linear program solver. Note that there is no control over the way ties are broken.
-
-    Parameters
-    ----------
-        instance: :py:class:`~pabutools.election.instance.Instance`
-            The instance.
-        profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`
-            The profile.
-        sat_class : type[:py:class:`~pabutools.election.satisfaction.satisfactionmeasure.SatisfactionMeasure`]
-            The class defining the satisfaction function used to measure the social welfare. It should be a class
-            inhereting from pabutools.election.satisfaction.satisfactionmeasure.SatisfactionMeasure.
-            If no satisfaction is provided, a satisfaction profile needs to be provided. If a satisfation profile is
-            provided, the satisfaction argument is disregarded.
-        sat_profile : :py:class:`~pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure`
-            The satisfaction profile corresponding to the instance and the profile. If no satisfaction profile is
-            provided, but a satisfaction function is, the former is computed from the latter.
-        initial_budget_allocation : Iterable[:py:class:`~pabutools.election.instance.Project`]
-            An initial budget allocation, typically empty.
-        resoluteness : bool, optional
-            Set to `False` to obtain an irresolute outcome, where all tied budget allocations are returned.
-            Defaults to True.
-
-    Returns
-    -------
-        :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]
-            The selected projects if resolute (`resoluteness` = True), or the set of selected projects if irresolute
-            (`resoluteness = False`).
-    """
-    if initial_budget_allocation is not None:
-        budget_allocation = BudgetAllocation(initial_budget_allocation)
-    else:
-        budget_allocation = BudgetAllocation()
-
-    if sat_class is None:
-        if sat_profile is None:
-            raise ValueError("Satisfaction and sat_profile cannot both be None.")
-    else:
-        if sat_profile is None:
-            sat_profile = profile.as_sat_profile(sat_class=sat_class)
-    if resoluteness:
-        return max_additive_utilitarian_welfare_primal_dual_scheme(
-            instance, sat_profile, budget_allocation
-        )
-    else:
-        return max_additive_utilitarian_welfare_ilp_scheme(
-            instance, sat_profile, budget_allocation, resoluteness
-        )
 
 
 def max_additive_utilitarian_welfare_primal_dual_scheme(
@@ -291,3 +244,87 @@ def primal_dual_branch_impl(a, b, profit_sum, weight_sum, items, capacity, x, lo
             improved = True
 
     return improved
+
+
+def max_additive_utilitarian_welfare(
+        instance: Instance,
+        profile: AbstractProfile,
+        sat_class: type[SatisfactionMeasure] | None = None,
+        sat_profile: GroupSatisfactionMeasure | None = None,
+        resoluteness: bool = True,
+        initial_budget_allocation: Collection[Project] | None = None,
+        inner_algo: MaxAddUtilWelfareAlgo | None = None,
+) -> BudgetAllocation | list[BudgetAllocation]:
+    """
+    Rule returning the budget allocation(s) maximizing the utilitarian social welfare. The
+    utilitarian social welfare is defined as the sum of the satisfactin of the voters, where the
+    satisfaction is computed using the satisfaction measure given as a parameter. The satisfaction
+    measure is assumed to be additive.
+
+    The outcome can be computed either via a integer linear program solver or with a primal/dual
+    approach. Note that depending on the selected algorithm, not all functionalities are supported
+    (with the ILP solver ties cannot be handled while the primal/dual approach does not support
+    irresolute outcomes).
+
+    Parameters
+    ----------
+        instance: :py:class:`~pabutools.election.instance.Instance`
+            The instance.
+        profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`
+            The profile.
+        sat_class : type[:py:class:`~pabutools.election.satisfaction.satisfactionmeasure.SatisfactionMeasure`]
+            The class defining the satisfaction function used to measure the social welfare. It should be a class
+            inhereting from pabutools.election.satisfaction.satisfactionmeasure.SatisfactionMeasure.
+            If no satisfaction is provided, a satisfaction profile needs to be provided. If a satisfation profile is
+            provided, the satisfaction argument is disregarded.
+        sat_profile : :py:class:`~pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure`
+            The satisfaction profile corresponding to the instance and the profile. If no satisfaction profile is
+            provided, but a satisfaction function is, the former is computed from the latter.
+        initial_budget_allocation : Iterable[:py:class:`~pabutools.election.instance.Project`]
+            An initial budget allocation, typically empty.
+        resoluteness : bool, optional
+            Set to `False` to obtain an irresolute outcome, where all tied budget allocations are returned.
+            Defaults to True.
+        inner_algo: :py:class:`~pabutools.rules.maxwelfare.MaxAddUtilWelfareAlgo`, optional
+            The inner algorithm used. See :py:class:`~pabutools.rules.maxwelfare.MaxAddUtilWelfareAlgo`
+            for the available choices.
+            Defaults to :py:enum:mem:`~pabutools.rules.maxwelfare.MaxAddUtilWelfareAlgo.PRIMAL_DUAL`
+            if :code:`resoluteness == True`, otherwise defaults to
+            :py:enum:mem:`~pabutools.rules.maxwelfare.MaxAddUtilWelfareAlgo.ILP_SOLVER`.
+
+    Returns
+    -------
+        :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` | list[:py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`]
+            The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute
+            (:code:`resoluteness == False`).
+    """
+    if initial_budget_allocation is not None:
+        budget_allocation = BudgetAllocation(initial_budget_allocation)
+    else:
+        budget_allocation = BudgetAllocation()
+
+    if sat_class is None:
+        if sat_profile is None:
+            raise ValueError("Satisfaction and sat_profile cannot both be None.")
+    else:
+        if sat_profile is None:
+            sat_profile = profile.as_sat_profile(sat_class=sat_class)
+    if inner_algo:
+        if inner_algo == MaxAddUtilWelfareAlgo.PRIMAL_DUAL and not resoluteness:
+            raise ValueError("The primal/dual algorithm does not support irresolute outcomes.")
+    else:
+        if resoluteness:
+            inner_algo = MaxAddUtilWelfareAlgo.PRIMAL_DUAL
+        else:
+            inner_algo = MaxAddUtilWelfareAlgo.ILP_SOLVER
+    if inner_algo == MaxAddUtilWelfareAlgo.PRIMAL_DUAL:
+        return max_additive_utilitarian_welfare_primal_dual_scheme(
+            instance, sat_profile, budget_allocation
+        )
+    elif inner_algo == MaxAddUtilWelfareAlgo.ILP_SOLVER:
+        return max_additive_utilitarian_welfare_ilp_scheme(
+            instance, sat_profile, budget_allocation, resoluteness
+        )
+    else:
+        raise ValueError("The parameter 'inner_algo' needs to be a member of the "
+                         "MaxAddUtilWelfareAlgo enumeration.")

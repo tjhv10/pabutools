@@ -5,6 +5,7 @@ Collection of util functions.
 from __future__ import annotations
 
 from collections.abc import Iterable, Generator
+from enum import Enum
 from itertools import combinations, chain
 
 from typing import Union
@@ -100,3 +101,17 @@ def gini_coefficient(values: Iterable[Numeric]) -> Numeric:
     for i, v in enumerate(sorted_values):
         total_cum_sum += v * (num_values - i)
     return frac(num_values + 1 - frac(2 * total_cum_sum, sum(values)), num_values)
+
+
+class DocEnum(Enum):
+    """
+    Enumeration with documentation of its members. Taken directly from
+    `stack overflow <https://stackoverflow.com/questions/50473951/how-can-i-attach-documentation-to-members-of-a-python-enum/50473952#50473952>`_.
+    """
+
+    def __new__(cls, value, doc=None):
+        self = object.__new__(cls)
+        self._value_ = value
+        if doc is not None:
+            self.__doc__ = doc
+        return self

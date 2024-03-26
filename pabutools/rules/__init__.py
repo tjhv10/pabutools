@@ -23,7 +23,10 @@ from pabutools.rules.exhaustion import (
     exhaustion_by_budget_increase,
 )
 from pabutools.rules.greedywelfare import greedy_utilitarian_welfare
-from pabutools.rules.maxwelfare import max_additive_utilitarian_welfare
+from pabutools.rules.maxwelfare import (
+    max_additive_utilitarian_welfare,
+    MaxAddUtilWelfareAlgo
+)
 from pabutools.rules.mes import (
     method_of_equal_shares,
     MESAllocationDetails,
@@ -40,6 +43,7 @@ __all__ = [
     "completion_by_rule_combination",
     "exhaustion_by_budget_increase",
     "greedy_utilitarian_welfare",
+    "MaxAddUtilWelfareAlgo",
     "max_additive_utilitarian_welfare",
     "method_of_equal_shares",
     "sequential_phragmen",
