@@ -409,8 +409,8 @@ def mes_inner_algo(
         if analytics and skipped_project:
             cover = sum(voters[i].budget for i in skipped_project.supporter_indices)
             new_eff = int(cover / skipped_project.cost * 100)
-            current_alloc.details.skipped_project_eff_vote_count = max(
-                new_eff, current_alloc.details.skipped_project_eff_vote_count
+            current_alloc.details.skipped_project_eff_support = max(
+                new_eff, current_alloc.details.skipped_project_eff_support
             )
         if resoluteness:
             all_allocs.append(current_alloc)
@@ -459,8 +459,8 @@ def mes_inner_algo(
                             best_afford * skipped_project.supporters_sat(voters[i]),
                         )
                     new_eff = int(cover / skipped_project.cost * 100)
-                    current_alloc.details.skipped_project_eff_vote_count = max(
-                        new_eff, current_alloc.details.skipped_project_eff_vote_count
+                    current_alloc.details.skipped_project_eff_support = max(
+                        new_eff, current_alloc.details.skipped_project_eff_support
                     )
             mes_inner_algo(
                 instance,
@@ -588,7 +588,7 @@ def method_of_equal_shares_scheme(
             p for p in projects if p.name == skipped_project.name
         )
         projects = [p for p in projects if p.name != skipped_project.name]
-        budget_allocation.details.skipped_project_eff_vote_count = 0
+        budget_allocation.details.skipped_project_eff_support = 0
 
     previous_outcome: BudgetAllocation | list[BudgetAllocation] = budget_allocation
 

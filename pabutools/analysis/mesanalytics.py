@@ -162,15 +162,15 @@ def calculate_effective_supports(
         dict[:py:class:`~pabutools.election.instance.Project`, int]
             Dictionary of pairs (:py:class:`~pabutools.election.instance.Project`, effective support).
     """
-    effective_vote_counts: dict[Project, int] = {}
+    effective_supports: dict[Project, int] = {}
     if final_budget:
         instance.budget_limit = final_budget
     for project in instance:
-        effective_vote_counts[project] = calculate_effective_support(
+        effective_supports[project] = calculate_effective_support(
             instance, profile, project, mes_params
         )
 
-    return effective_vote_counts
+    return effective_supports
 
 
 def calculate_effective_support(
@@ -209,7 +209,7 @@ def calculate_effective_support(
     mes_params["resoluteness"] = True
     return method_of_equal_shares(
         instance, profile, **mes_params
-    ).details.skipped_project_eff_vote_count
+    ).details.skipped_project_eff_support
 
 
 def _create_project_loss(
