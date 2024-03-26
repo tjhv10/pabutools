@@ -320,7 +320,7 @@ def mes_inner_algo(
             Set to `False` to obtain an irresolute outcome, where all tied budget allocations are returned.
             Defaults to True.
         skipped_project: MESProject, optional,
-            Project from instance which shouldn't be considered in calculations and for which effective vote count
+            Project from instance which shouldn't be considered in calculations and for which effective support
             will be calculated, if analytics is true. Solely used by analytics module.
         analytics: bool, optional
             (De)Activate the calculation of analytics.
@@ -519,7 +519,7 @@ def method_of_equal_shares_scheme(
             Uses the inner algorithm for binary satisfaction if set to `True`. Should typically be used with approval
             ballots to gain on the runtime. Automatically set to `True` if an approval profile is given.
         skipped_project: MESProject, optional,
-            Project from instance which shouldn't be considered in calculations and for which effective vote count
+            Project from instance which shouldn't be considered in calculations and for which effective support
             will be calculated, if analytics is true. Solely used by analytics module.
         analytics: bool, optional
             (De)Activate the computation of analytics. These are additional details that can be accessed from the
@@ -684,7 +684,7 @@ def method_of_equal_shares(
             Uses the inner algorithm for binary satisfaction if set to `True`. Should typically be used with approval
             ballots to gain on the runtime. Automatically set to `True` if an approval profile is given.
         skipped_project: MESProject, optional,
-            Project from instance which shouldn't be considered in calculations and for which effective vote count
+            Project from instance which shouldn't be considered in calculations and for which effective support
             will be calculated, if analytics is true. Solely used by analytics module.
         analytics: bool, optional
             (De)Activate the computation of analytics. These are additional details that can be accessed from the

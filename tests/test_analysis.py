@@ -326,7 +326,7 @@ class TestAnalysis(TestCase):
             ([5, 5, 5, 5, 5], [80, 40, 30, 20, 20])
         ]
     )
-    def test_effective_vote_count(self, costs, expected_eff_vote_count):
+    def test_effective_support(self, costs, expected_effective_support):
         projects = [Project(chr(ord("a") + idx), costs[idx]) for idx in range(0, 5)]
         instance = Instance(projects, budget_limit=2)
         profile = ApprovalProfile(
@@ -344,11 +344,11 @@ class TestAnalysis(TestCase):
             ]
         )
         
-        result = calculate_effective_vote_counts(instance, profile, {"sat_class": Cost_Sat}, 5)
+        result = calculate_effective_supports(instance, profile, {"sat_class": Cost_Sat}, 5)
         assert len(result) == len(projects)
         sorted_projects = sorted(list(result), key=lambda proj: proj.name)
 
         for idx, project in enumerate(sorted_projects):
             assert project.name == chr(ord("a") + idx)
-            assert result[project] == expected_eff_vote_count[idx]
+            assert result[project] == expected_effective_support[idx]
 

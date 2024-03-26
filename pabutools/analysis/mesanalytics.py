@@ -133,14 +133,16 @@ def calculate_project_loss(
     return project_losses
 
 
-def calculate_effective_vote_counts(
+def calculate_effective_supports(
     instance: Instance,
     profile: Profile,
     mes_params: dict | None = None,
     final_budget: Numeric | None = None,
 ) -> dict[Project, int]:
-    """Returns a dictionary of :py:class:`~pabutools.election.instance.project` and their effective vote count
-    in a given instance, profile and mes election. Effective vote count is represented in percentages.
+    """Returns a dictionary of :py:class:`~pabutools.election.instance.project` and their effective support
+    in a given instance, profile and mes election. Effective support for a project is an analytical metric 
+    which allows to measure the ratio of initial budget received to minimal budget required to win.
+    Effective support is represented in percentages.
 
     Parameters
     ----------
@@ -157,28 +159,29 @@ def calculate_effective_vote_counts(
 
     Returns
     -------
-        dict[:py:class:`~pabutools.analysis.projectloss.ProjectLoss`, int]
-            Dictionary of pairs (:py:class:`~pabutools.analysis.projectloss.ProjectLoss`, effective vote count).
+        dict[:py:class:`~pabutools.election.instance.Project`, int]
+            Dictionary of pairs (:py:class:`~pabutools.election.instance.Project`, effective support).
     """
     effective_vote_counts: dict[Project, int] = {}
     if final_budget:
         instance.budget_limit = final_budget
     for project in instance:
-        effective_vote_counts[project] = calculate_effective_vote_count(
+        effective_vote_counts[project] = calculate_effective_support(
             instance, profile, project, mes_params
         )
 
     return effective_vote_counts
 
 
-def calculate_effective_vote_count(
+def calculate_effective_support(
     instance: Instance,
     profile: Profile,
     project: Project,
     mes_params: dict | None = None,
 ) -> int:
-    """Calculates the effective vote count of a given project in a given instance, profile and mes election. 
-    Effective vote count is represented in percentages.
+    """Calculates the effective support of a given project in a given instance, profile and mes election.
+    Effective support for a project is an analytical metric which allows to measure the ratio of 
+    initial budget received to minimal budget required to win. Effective support is represented in percentages.
 
     Parameters
     ----------
@@ -187,15 +190,15 @@ def calculate_effective_vote_count(
         profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`
             The profile.
         project: :py:class:`~pabutools.election.instance.Project`
-            Project for which effective vote count is calculated. Must be a part of the instance.
+            Project for which effective support is calculated. Must be a part of the instance.
         mes_params: dict, optional
             Dictionary of additional parameters that are passed as keyword arguments to the MES rule.
             Defaults to `{}`.
 
     Returns
     -------
-        dict[:py:class:`~pabutools.analysis.projectloss.ProjectLoss`, int]
-            Dictionary of pairs (:py:class:`~pabutools.analysis.projectloss.ProjectLoss`, effective vote count).
+        int
+            effective support value in percentages for project.
     """
     if project not in instance:
         raise RuntimeError("Provided instance does not match the allocation details")
