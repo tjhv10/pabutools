@@ -27,16 +27,16 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" href="../../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-    <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pabutools/election/satisfaction/functionalsatisfaction';</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -127,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/libraries.html">Preference Libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/satisfaction.html">Satisfaction Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../usage/outcomevisualisation.html">Outcome Visualisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/tiebreaking.html">Tie-Breaking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/fractions.html">Fractions</a></li>
 </ul>
@@ -292,7 +293,9 @@ document.write(`
     <span class="kn">from</span> <span class="nn">pabutools.election.profile</span> <span class="kn">import</span> <span class="n">AbstractProfile</span>
 
 
-<div class="viewcode-block" id="FunctionalSatisfaction"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.FunctionalSatisfaction">[docs]</a><span class="k">class</span> <span class="nc">FunctionalSatisfaction</span><span class="p">(</span><span class="n">SatisfactionMeasure</span><span class="p">):</span>
+<div class="viewcode-block" id="FunctionalSatisfaction">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.FunctionalSatisfaction">[docs]</a>
+<span class="k">class</span> <span class="nc">FunctionalSatisfaction</span><span class="p">(</span><span class="n">SatisfactionMeasure</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class representing satisfaction measures that are simply defined via functions of the ballot and a subset of</span>
 <span class="sd">    projects.</span>
@@ -335,11 +338,18 @@ document.write(`
         <span class="n">SatisfactionMeasure</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">ballot</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
 
-<div class="viewcode-block" id="FunctionalSatisfaction.sat"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.FunctionalSatisfaction.sat">[docs]</a>    <span class="k">def</span> <span class="nf">sat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
+<div class="viewcode-block" id="FunctionalSatisfaction.sat">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.FunctionalSatisfaction.sat">[docs]</a>
+    <span class="k">def</span> <span class="nf">sat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ballot</span><span class="p">,</span> <span class="n">projects</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FunctionalSatisfaction.sat_project"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.FunctionalSatisfaction.sat_project">[docs]</a>    <span class="k">def</span> <span class="nf">sat_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sat</span><span class="p">([</span><span class="n">project</span><span class="p">])</span></div></div>
+
+<div class="viewcode-block" id="FunctionalSatisfaction.sat_project">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.FunctionalSatisfaction.sat_project">[docs]</a>
+    <span class="k">def</span> <span class="nf">sat_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sat</span><span class="p">([</span><span class="n">project</span><span class="p">])</span></div>
+</div>
+
 
 
 <span class="k">def</span> <span class="nf">cc_sat_func_app</span><span class="p">(</span>
@@ -406,7 +416,9 @@ document.write(`
     <span class="k">return</span> <span class="n">res</span>
 
 
-<div class="viewcode-block" id="CC_Sat"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.CC_Sat">[docs]</a><span class="k">class</span> <span class="nc">CC_Sat</span><span class="p">(</span><span class="n">FunctionalSatisfaction</span><span class="p">):</span>
+<div class="viewcode-block" id="CC_Sat">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.CC_Sat">[docs]</a>
+<span class="k">class</span> <span class="nc">CC_Sat</span><span class="p">(</span><span class="n">FunctionalSatisfaction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Chamberlin-Courant satisfaction. It can only be applied to approval or cardinal ballots.</span>
 
@@ -444,6 +456,7 @@ document.write(`
             <span class="p">)</span></div>
 
 
+
 <span class="k">def</span> <span class="nf">cost_sqrt_sat_func</span><span class="p">(</span>
     <span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span>
     <span class="n">profile</span><span class="p">:</span> <span class="n">AbstractProfile</span><span class="p">,</span>
@@ -474,7 +487,9 @@ document.write(`
     <span class="k">return</span> <span class="n">frac</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">total_cost</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">projects</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ballot</span><span class="p">)))))</span>
 
 
-<div class="viewcode-block" id="Cost_Sqrt_Sat"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.Cost_Sqrt_Sat">[docs]</a><span class="k">class</span> <span class="nc">Cost_Sqrt_Sat</span><span class="p">(</span><span class="n">FunctionalSatisfaction</span><span class="p">):</span>
+<div class="viewcode-block" id="Cost_Sqrt_Sat">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.Cost_Sqrt_Sat">[docs]</a>
+<span class="k">class</span> <span class="nc">Cost_Sqrt_Sat</span><span class="p">(</span><span class="n">FunctionalSatisfaction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cost square root satisfaction. It can only be applied to approval ballots. It is equal to the square root of</span>
 <span class="sd">    the total cost of the approved and selected projects.</span>
@@ -502,6 +517,7 @@ document.write(`
                     <span class="nb">type</span><span class="p">(</span><span class="n">ballot</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">)</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">cost_log_sat_func</span><span class="p">(</span>
@@ -534,7 +550,9 @@ document.write(`
     <span class="k">return</span> <span class="n">frac</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">total_cost</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">projects</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ballot</span><span class="p">)))</span>
 
 
-<div class="viewcode-block" id="Cost_Log_Sat"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.Cost_Log_Sat">[docs]</a><span class="k">class</span> <span class="nc">Cost_Log_Sat</span><span class="p">(</span><span class="n">FunctionalSatisfaction</span><span class="p">):</span>
+<div class="viewcode-block" id="Cost_Log_Sat">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.Cost_Log_Sat">[docs]</a>
+<span class="k">class</span> <span class="nc">Cost_Log_Sat</span><span class="p">(</span><span class="n">FunctionalSatisfaction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cost log satisfaction. It can only be applied to approval ballots. It is equal to the log of 1 plus the total cost</span>
 <span class="sd">    of the approved and selected projects.</span>
@@ -562,6 +580,7 @@ document.write(`
                     <span class="nb">type</span><span class="p">(</span><span class="n">ballot</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">)</span></div>
+
 </pre></div>
 
                 </article>

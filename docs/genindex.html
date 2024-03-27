@@ -506,7 +506,7 @@ document.write(`
 </li>
       <li><a href="reference/election/instance.html#pabutools.election.instance.Instance.budget_limit">budget_limit (Instance attribute)</a>
 </li>
-      <li><a href="reference/analysis/index.html#pabutools.analysis.projectloss.ProjectLoss.budget_lost">budget_lost (ProjectLoss attribute)</a>
+      <li><a href="reference/analysis/index.html#pabutools.analysis.mesanalytics.ProjectLoss.budget_lost">budget_lost (ProjectLoss attribute)</a>
 </li>
       <li><a href="reference/rules/index.html#pabutools.rules.budgetallocation.BudgetAllocation">BudgetAllocation (class in pabutools.rules.budgetallocation)</a>
 </li>
@@ -516,7 +516,11 @@ document.write(`
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/analysis/index.html#pabutools.analysis.projectloss.calculate_project_loss">calculate_project_loss() (in module pabutools.analysis.projectloss)</a>
+      <li><a href="reference/analysis/index.html#pabutools.analysis.mesanalytics.calculate_effective_support">calculate_effective_support() (in module pabutools.analysis.mesanalytics)</a>
+</li>
+      <li><a href="reference/analysis/index.html#pabutools.analysis.mesanalytics.calculate_effective_supports">calculate_effective_supports() (in module pabutools.analysis.mesanalytics)</a>
+</li>
+      <li><a href="reference/analysis/index.html#pabutools.analysis.mesanalytics.calculate_project_loss">calculate_project_loss() (in module pabutools.analysis.mesanalytics)</a>
 </li>
       <li><a href="reference/election/libraries.html#pabutools.election.preflib.cardinal_to_preflib">cardinal_to_preflib() (in module pabutools.election.preflib)</a>
 </li>
@@ -570,6 +574,8 @@ document.write(`
       </ul></li>
       <li><a href="reference/rules/index.html#pabutools.rules.exhaustion.completion_by_rule_combination">completion_by_rule_combination() (in module pabutools.rules.exhaustion)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/election/ballot.html#pabutools.election.ballot.approvalballot.ApprovalBallot.copy">copy() (ApprovalBallot method)</a>
 
       <ul>
@@ -602,8 +608,6 @@ document.write(`
         <li><a href="reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionprofile.SatisfactionProfile.copy">(SatisfactionProfile method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/election/instance.html#pabutools.election.instance.Project.cost">cost (Project attribute)</a>
 </li>
       <li><a href="reference/election/satisfaction.html#pabutools.election.satisfaction.functionalsatisfaction.Cost_Log_Sat">Cost_Log_Sat (class in pabutools.election.satisfaction.functionalsatisfaction)</a>
@@ -1176,9 +1180,9 @@ document.write(`
 </li>
         <li><a href="reference/analysis/index.html#module-pabutools.analysis.instanceproperties">pabutools.analysis.instanceproperties</a>
 </li>
-        <li><a href="reference/analysis/index.html#module-pabutools.analysis.profileproperties">pabutools.analysis.profileproperties</a>
+        <li><a href="reference/analysis/index.html#module-pabutools.analysis.mesanalytics">pabutools.analysis.mesanalytics</a>
 </li>
-        <li><a href="reference/analysis/index.html#module-pabutools.analysis.projectloss">pabutools.analysis.projectloss</a>
+        <li><a href="reference/analysis/index.html#module-pabutools.analysis.profileproperties">pabutools.analysis.profileproperties</a>
 </li>
         <li><a href="reference/analysis/index.html#module-pabutools.analysis.votersatisfaction">pabutools.analysis.votersatisfaction</a>
 </li>
@@ -1353,17 +1357,17 @@ document.write(`
 </li>
       </ul></li>
       <li>
+    pabutools.analysis.mesanalytics
+
+      <ul>
+        <li><a href="reference/analysis/index.html#module-pabutools.analysis.mesanalytics">module</a>
+</li>
+      </ul></li>
+      <li>
     pabutools.analysis.profileproperties
 
       <ul>
         <li><a href="reference/analysis/index.html#module-pabutools.analysis.profileproperties">module</a>
-</li>
-      </ul></li>
-      <li>
-    pabutools.analysis.projectloss
-
-      <ul>
-        <li><a href="reference/analysis/index.html#module-pabutools.analysis.projectloss">module</a>
 </li>
       </ul></li>
       <li>
@@ -1540,7 +1544,7 @@ document.write(`
 </li>
       <li><a href="reference/election/instance.html#pabutools.election.instance.Instance.project_meta">project_meta (Instance attribute)</a>
 </li>
-      <li><a href="reference/analysis/index.html#pabutools.analysis.projectloss.ProjectLoss">ProjectLoss (class in pabutools.analysis.projectloss)</a>
+      <li><a href="reference/analysis/index.html#pabutools.analysis.mesanalytics.ProjectLoss">ProjectLoss (class in pabutools.analysis.mesanalytics)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1742,7 +1746,7 @@ document.write(`
       </ul></li>
       <li><a href="reference/analysis/index.html#pabutools.analysis.instanceproperties.sum_project_cost">sum_project_cost() (in module pabutools.analysis.instanceproperties)</a>
 </li>
-      <li><a href="reference/analysis/index.html#pabutools.analysis.projectloss.ProjectLoss.supporters_budget">supporters_budget (ProjectLoss attribute)</a>
+      <li><a href="reference/analysis/index.html#pabutools.analysis.mesanalytics.ProjectLoss.supporters_budget">supporters_budget (ProjectLoss attribute)</a>
 </li>
       <li><a href="reference/election/ballot.html#pabutools.election.ballot.approvalballot.ApprovalBallot.symmetric_difference">symmetric_difference() (ApprovalBallot method)</a>
 
@@ -1786,7 +1790,7 @@ document.write(`
         <li><a href="reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionprofile.SatisfactionMultiProfile.total">(SatisfactionMultiProfile method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/analysis/index.html#pabutools.analysis.projectloss.ProjectLoss.total_budget_lost">total_budget_lost() (ProjectLoss method)</a>
+      <li><a href="reference/analysis/index.html#pabutools.analysis.mesanalytics.ProjectLoss.total_budget_lost">total_budget_lost() (ProjectLoss method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>

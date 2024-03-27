@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pabutools.analysis.projectloss &#8212; Pabutools</title>
+    <title>pabutools.analysis.mesanalytics &#8212; Pabutools</title>
   
   
   
@@ -27,18 +27,18 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pabutools/analysis/projectloss';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pabutools/analysis/mesanalytics';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -127,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/libraries.html">Preference Libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/satisfaction.html">Satisfaction Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../usage/outcomevisualisation.html">Outcome Visualisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/tiebreaking.html">Tie-Breaking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/fractions.html">Fractions</a></li>
 </ul>
@@ -262,15 +263,19 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <h1>Source code for pabutools.analysis.projectloss</h1><div class="highlight"><pre>
+  <h1>Source code for pabutools.analysis.mesanalytics</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">pabutools.utils</span> <span class="kn">import</span> <span class="n">Numeric</span>
-<span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">Project</span>
+<span class="kn">from</span> <span class="nn">pabutools.election.instance</span> <span class="kn">import</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Project</span>
+<span class="kn">from</span> <span class="nn">pabutools.election.profile</span> <span class="kn">import</span> <span class="n">Profile</span>
 <span class="kn">from</span> <span class="nn">pabutools.rules.budgetallocation</span> <span class="kn">import</span> <span class="n">AllocationDetails</span>
+<span class="kn">from</span> <span class="nn">pabutools.rules.mes.mes_rule</span> <span class="kn">import</span> <span class="n">method_of_equal_shares</span>
 
 
-<div class="viewcode-block" id="ProjectLoss"><a class="viewcode-back" href="../../../reference/analysis/index.html#pabutools.analysis.projectloss.ProjectLoss">[docs]</a><span class="k">class</span> <span class="nc">ProjectLoss</span><span class="p">(</span><span class="n">Project</span><span class="p">):</span>
+<div class="viewcode-block" id="ProjectLoss">
+<a class="viewcode-back" href="../../../reference/analysis/index.html#pabutools.analysis.mesanalytics.ProjectLoss">[docs]</a>
+<span class="k">class</span> <span class="nc">ProjectLoss</span><span class="p">(</span><span class="n">Project</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class used to represent the projects and how much budget they lost due to other projects being picked.</span>
 <span class="sd">    This extends the :py:class:`~pabutools.election.instance.Project` and thus represents the project itself.</span>
@@ -306,7 +311,9 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">supporters_budget</span><span class="p">:</span> <span class="n">Numeric</span> <span class="o">=</span> <span class="n">supporters_budget</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">budget_lost</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Project</span><span class="p">,</span> <span class="n">Numeric</span><span class="p">]</span> <span class="o">=</span> <span class="n">budget_lost</span>
 
-<div class="viewcode-block" id="ProjectLoss.total_budget_lost"><a class="viewcode-back" href="../../../reference/analysis/index.html#pabutools.analysis.projectloss.ProjectLoss.total_budget_lost">[docs]</a>    <span class="k">def</span> <span class="nf">total_budget_lost</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
+<div class="viewcode-block" id="ProjectLoss.total_budget_lost">
+<a class="viewcode-back" href="../../../reference/analysis/index.html#pabutools.analysis.mesanalytics.ProjectLoss.total_budget_lost">[docs]</a>
+    <span class="k">def</span> <span class="nf">total_budget_lost</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the total budget spent by project supporters on prior projects.</span>
 
@@ -317,6 +324,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget_lost</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
 
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;ProjectLoss[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supporters_budget</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total_budget_lost</span><span class="p">()</span><span class="si">}</span><span class="s2">]&quot;</span>
 
@@ -324,10 +332,15 @@ document.write(`
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;ProjectLoss[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supporters_budget</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total_budget_lost</span><span class="p">()</span><span class="si">}</span><span class="s2">]&quot;</span></div>
 
 
-<div class="viewcode-block" id="calculate_project_loss"><a class="viewcode-back" href="../../../reference/analysis/index.html#pabutools.analysis.projectloss.calculate_project_loss">[docs]</a><span class="k">def</span> <span class="nf">calculate_project_loss</span><span class="p">(</span>
-    <span class="n">allocation_details</span><span class="p">:</span> <span class="n">AllocationDetails</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="calculate_project_loss">
+<a class="viewcode-back" href="../../../reference/analysis/index.html#pabutools.analysis.mesanalytics.calculate_project_loss">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_project_loss</span><span class="p">(</span>
+    <span class="n">allocation_details</span><span class="p">:</span> <span class="n">AllocationDetails</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ProjectLoss</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a list of :py:class:`~pabutools.analysis.projectloss.ProjectLoss` objects for the projects.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a list of :py:class:`~pabutools.analysis.mesanalytics.ProjectLoss` objects for the projects.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -339,8 +352,8 @@ document.write(`
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        list[:py:class:`~pabutools.analysis.projectloss.ProjectLoss`]</span>
-<span class="sd">            List of :py:class:`~pabutools.analysis.projectloss.ProjectLoss` objects.</span>
+<span class="sd">        list[:py:class:`~pabutools.analysis.mesanalytics.ProjectLoss`]</span>
+<span class="sd">            List of :py:class:`~pabutools.analysis.mesanalytics.ProjectLoss` objects.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">allocation_details</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">):</span>
@@ -395,6 +408,94 @@ document.write(`
     <span class="k">return</span> <span class="n">project_losses</span></div>
 
 
+
+<div class="viewcode-block" id="calculate_effective_supports">
+<a class="viewcode-back" href="../../../reference/analysis/index.html#pabutools.analysis.mesanalytics.calculate_effective_supports">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_effective_supports</span><span class="p">(</span>
+    <span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span>
+    <span class="n">profile</span><span class="p">:</span> <span class="n">Profile</span><span class="p">,</span>
+    <span class="n">mes_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">final_budget</span><span class="p">:</span> <span class="n">Numeric</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Project</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a dictionary of :py:class:`~pabutools.election.instance.project` and their effective support</span>
+<span class="sd">    in a given instance, profile and mes election. Effective support for a project is an analytical metric</span>
+<span class="sd">    which allows to measure the ratio of initial budget received to minimal budget required to win.</span>
+<span class="sd">    Effective support is represented in percentages.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        instance: :py:class:`~pabutools.election.instance.Instance`</span>
+<span class="sd">            The instance.</span>
+<span class="sd">        profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`</span>
+<span class="sd">            The profile.</span>
+<span class="sd">        mes_params: dict, optional</span>
+<span class="sd">            Dictionary of additional parameters that are passed as keyword arguments to the MES rule.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        final_budget: Numeric, optional</span>
+<span class="sd">            Numeric value of the final budget which will replace the instance budget. Allows for simulating</span>
+<span class="sd">            exhaustive MES.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        dict[:py:class:`~pabutools.election.instance.Project`, int]</span>
+<span class="sd">            Dictionary of pairs (:py:class:`~pabutools.election.instance.Project`, effective support).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">effective_supports</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Project</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">final_budget</span><span class="p">:</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">budget_limit</span> <span class="o">=</span> <span class="n">final_budget</span>
+    <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">instance</span><span class="p">:</span>
+        <span class="n">effective_supports</span><span class="p">[</span><span class="n">project</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculate_effective_support</span><span class="p">(</span>
+            <span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">mes_params</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">effective_supports</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_effective_support">
+<a class="viewcode-back" href="../../../reference/analysis/index.html#pabutools.analysis.mesanalytics.calculate_effective_support">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_effective_support</span><span class="p">(</span>
+    <span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span>
+    <span class="n">profile</span><span class="p">:</span> <span class="n">Profile</span><span class="p">,</span>
+    <span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span>
+    <span class="n">mes_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the effective support of a given project in a given instance, profile and mes election.</span>
+<span class="sd">    Effective support for a project is an analytical metric which allows to measure the ratio of </span>
+<span class="sd">    initial budget received to minimal budget required to win. Effective support is represented in percentages.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        instance: :py:class:`~pabutools.election.instance.Instance`</span>
+<span class="sd">            The instance.</span>
+<span class="sd">        profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`</span>
+<span class="sd">            The profile.</span>
+<span class="sd">        project: :py:class:`~pabutools.election.instance.Project`</span>
+<span class="sd">            Project for which effective support is calculated. Must be a part of the instance.</span>
+<span class="sd">        mes_params: dict, optional</span>
+<span class="sd">            Dictionary of additional parameters that are passed as keyword arguments to the MES rule.</span>
+<span class="sd">            Defaults to `{}`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        int</span>
+<span class="sd">            The effective support value in percentages for project.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">instance</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Provided instance does not match the allocation details&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mes_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mes_params</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">mes_params</span><span class="p">[</span><span class="s2">&quot;analytics&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">mes_params</span><span class="p">[</span><span class="s2">&quot;skipped_project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">project</span>
+    <span class="n">mes_params</span><span class="p">[</span><span class="s2">&quot;resoluteness&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">method_of_equal_shares</span><span class="p">(</span>
+        <span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="o">**</span><span class="n">mes_params</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">skipped_project_eff_support</span></div>
+
+
+
 <span class="k">def</span> <span class="nf">_create_project_loss</span><span class="p">(</span>
     <span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span>
     <span class="n">current_voters_budget</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Numeric</span><span class="p">],</span>
@@ -415,7 +516,10 @@ document.write(`
             <span class="p">)</span>
     <span class="k">return</span> <span class="n">ProjectLoss</span><span class="p">(</span>
         <span class="n">project</span><span class="p">,</span>
-        <span class="nb">sum</span><span class="p">(</span><span class="n">current_voters_budget</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">voter_multiplicity</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">project</span><span class="o">.</span><span class="n">supporter_indices</span><span class="p">),</span>
+        <span class="nb">sum</span><span class="p">(</span>
+            <span class="n">current_voters_budget</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">voter_multiplicity</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">project</span><span class="o">.</span><span class="n">supporter_indices</span>
+        <span class="p">),</span>
         <span class="n">budget_lost</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>

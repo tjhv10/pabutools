@@ -27,16 +27,16 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pabutools/election/instance';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -127,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/libraries.html">Preference Libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/satisfaction.html">Satisfaction Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../usage/outcomevisualisation.html">Outcome Visualisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/tiebreaking.html">Tie-Breaking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/fractions.html">Fractions</a></li>
 </ul>
@@ -284,7 +285,9 @@ document.write(`
 <span class="kn">import</span> <span class="nn">random</span>
 
 
-<div class="viewcode-block" id="Project"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Project">[docs]</a><span class="k">class</span> <span class="nc">Project</span><span class="p">:</span>
+<div class="viewcode-block" id="Project">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Project">[docs]</a>
+<span class="k">class</span> <span class="nc">Project</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a project, that is, the entity that is voted upon in a participatory budgeting election.</span>
 
@@ -366,7 +369,10 @@ document.write(`
         <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="total_cost"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.total_cost">[docs]</a><span class="k">def</span> <span class="nf">total_cost</span><span class="p">(</span><span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
+
+<div class="viewcode-block" id="total_cost">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.total_cost">[docs]</a>
+<span class="k">def</span> <span class="nf">total_cost</span><span class="p">(</span><span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the total cost of a collection of projects, summing the cost of the projects.</span>
 
@@ -383,7 +389,10 @@ document.write(`
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">cost</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">projects</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="max_budget_allocation_cardinality"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.max_budget_allocation_cardinality">[docs]</a><span class="k">def</span> <span class="nf">max_budget_allocation_cardinality</span><span class="p">(</span>
+
+<div class="viewcode-block" id="max_budget_allocation_cardinality">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.max_budget_allocation_cardinality">[docs]</a>
+<span class="k">def</span> <span class="nf">max_budget_allocation_cardinality</span><span class="p">(</span>
     <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">],</span> <span class="n">budget_limit</span><span class="p">:</span> <span class="n">Numeric</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -414,7 +423,10 @@ document.write(`
     <span class="k">return</span> <span class="n">selected</span></div>
 
 
-<div class="viewcode-block" id="max_budget_allocation_cost"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.max_budget_allocation_cost">[docs]</a><span class="k">def</span> <span class="nf">max_budget_allocation_cost</span><span class="p">(</span>
+
+<div class="viewcode-block" id="max_budget_allocation_cost">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.max_budget_allocation_cost">[docs]</a>
+<span class="k">def</span> <span class="nf">max_budget_allocation_cost</span><span class="p">(</span>
     <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">],</span> <span class="n">budget_limit</span><span class="p">:</span> <span class="n">Numeric</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -451,7 +463,10 @@ document.write(`
     <span class="k">return</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="Instance"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance">[docs]</a><span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">set</span><span class="p">[</span><span class="n">Project</span><span class="p">]):</span>
+
+<div class="viewcode-block" id="Instance">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance">[docs]</a>
+<span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">set</span><span class="p">[</span><span class="n">Project</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Participatory budgeting instances.</span>
 <span class="sd">    An instance contains the projects that are voted on, together with other information about the election such as the</span>
@@ -613,7 +628,9 @@ document.write(`
                 <span class="n">project_meta</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">project_meta</span> <span class="o">=</span> <span class="n">project_meta</span>
 
-<div class="viewcode-block" id="Instance.get_project"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance.get_project">[docs]</a>    <span class="k">def</span> <span class="nf">get_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Project</span><span class="p">:</span>
+<div class="viewcode-block" id="Instance.get_project">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance.get_project">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Project</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iterates over the instance to find a project with the given name. If found, the project is returned, otherwise</span>
 <span class="sd">        a `KeyError` exception is raised.</span>
@@ -630,7 +647,10 @@ document.write(`
             <span class="s2">&quot;No project with name </span><span class="si">{}</span><span class="s2"> found in the instance.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">project_name</span><span class="p">)</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Instance.budget_allocations"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance.budget_allocations">[docs]</a>    <span class="k">def</span> <span class="nf">budget_allocations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">]]:</span>
+
+<div class="viewcode-block" id="Instance.budget_allocations">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance.budget_allocations">[docs]</a>
+    <span class="k">def</span> <span class="nf">budget_allocations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a generator for all the feasible budget allocations of the instance.</span>
 
@@ -644,7 +664,10 @@ document.write(`
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_feasible</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
                 <span class="k">yield</span> <span class="n">b</span></div>
 
-<div class="viewcode-block" id="Instance.is_trivial"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance.is_trivial">[docs]</a>    <span class="k">def</span> <span class="nf">is_trivial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Instance.is_trivial">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance.is_trivial">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_trivial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tests if the instance is trivial, meaning that either all projects can be selected without</span>
 <span class="sd">        exceeding the budget limit, or that no project can be selected.</span>
@@ -658,7 +681,10 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">budget_limit</span> <span class="o">&lt;=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">cost</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Instance.is_feasible"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance.is_feasible">[docs]</a>    <span class="k">def</span> <span class="nf">is_feasible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Instance.is_feasible">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance.is_feasible">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_feasible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tests if a given collection of projects is feasible for the instance, meaning that the total cost of the</span>
 <span class="sd">        projects does not exceed the budget limit of the instance.</span>
@@ -674,7 +700,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">total_cost</span><span class="p">(</span><span class="n">projects</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget_limit</span></div>
 
-<div class="viewcode-block" id="Instance.is_exhaustive"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance.is_exhaustive">[docs]</a>    <span class="k">def</span> <span class="nf">is_exhaustive</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Instance.is_exhaustive">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.Instance.is_exhaustive">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_exhaustive</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">],</span>
         <span class="n">available_projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -703,6 +732,7 @@ document.write(`
             <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">projects</span> <span class="ow">and</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">cost</span> <span class="o">+</span> <span class="n">cost</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget_limit</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
+
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">res</span> <span class="o">=</span> <span class="s2">&quot;Instance &quot;</span>
@@ -745,6 +775,7 @@ document.write(`
             <span class="n">wrap_method_closure</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
 
 
+
 <span class="n">Instance</span><span class="o">.</span><span class="n">_wrap_methods</span><span class="p">(</span>
     <span class="p">[</span>
         <span class="s2">&quot;__ror__&quot;</span><span class="p">,</span>
@@ -771,7 +802,9 @@ document.write(`
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_random_instance"><a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.get_random_instance">[docs]</a><span class="k">def</span> <span class="nf">get_random_instance</span><span class="p">(</span><span class="n">num_projects</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">min_cost</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_cost</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Instance</span><span class="p">:</span>
+<div class="viewcode-block" id="get_random_instance">
+<a class="viewcode-back" href="../../../reference/election/instance.html#pabutools.election.instance.get_random_instance">[docs]</a>
+<span class="k">def</span> <span class="nf">get_random_instance</span><span class="p">(</span><span class="n">num_projects</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">min_cost</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_cost</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Instance</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates a random instance. Costs and budget limit are integers. The costs are selected uniformly at random between</span>
 <span class="sd">    `min_cost` and `max_cost`. The budget limit is sample form a uniform between the minimum cost of a project</span>
@@ -803,6 +836,7 @@ document.write(`
         <span class="n">ceil</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">cost</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">inst</span><span class="p">)),</span> <span class="n">ceil</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">cost</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">inst</span><span class="p">))</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">inst</span></div>
+
 </pre></div>
 
                 </article>

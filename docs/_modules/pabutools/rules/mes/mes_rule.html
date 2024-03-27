@@ -274,7 +274,11 @@ document.write(`
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
 
 <span class="kn">from</span> <span class="nn">pabutools.rules.budgetallocation</span> <span class="kn">import</span> <span class="n">BudgetAllocation</span>
-<span class="kn">from</span> <span class="nn">pabutools.rules.mes.mes_details</span> <span class="kn">import</span> <span class="n">MESAllocationDetails</span><span class="p">,</span> <span class="n">MESIteration</span><span class="p">,</span> <span class="n">MESProjectDetails</span>
+<span class="kn">from</span> <span class="nn">pabutools.rules.mes.mes_details</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MESAllocationDetails</span><span class="p">,</span>
+    <span class="n">MESIteration</span><span class="p">,</span>
+    <span class="n">MESProjectDetails</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pabutools.utils</span> <span class="kn">import</span> <span class="n">Numeric</span>
 
 <span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">AbstractApprovalProfile</span>
@@ -553,6 +557,7 @@ document.write(`
     <span class="n">current_alloc</span><span class="p">:</span> <span class="n">BudgetAllocation</span><span class="p">,</span>
     <span class="n">all_allocs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BudgetAllocation</span><span class="p">],</span>
     <span class="n">resoluteness</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">skipped_project</span><span class="p">:</span> <span class="n">MESProject</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">analytics</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -581,6 +586,9 @@ document.write(`
 <span class="sd">        resoluteness : bool, optional</span>
 <span class="sd">            Set to `False` to obtain an irresolute outcome, where all tied budget allocations are returned.</span>
 <span class="sd">            Defaults to True.</span>
+<span class="sd">        skipped_project: MESProject, optional,</span>
+<span class="sd">            Project from instance which shouldn&#39;t be considered in calculations and for which effective support</span>
+<span class="sd">            will be calculated, if analytics is true. Solely used by analytics module.</span>
 <span class="sd">        analytics: bool, optional</span>
 <span class="sd">            (De)Activate the calculation of analytics.</span>
 <span class="sd">        verbose : bool, optional</span>
@@ -595,7 +603,9 @@ document.write(`
     <span class="n">tied_projects</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MESProject</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">analytics</span><span class="p">:</span>
         <span class="n">current_iteration</span> <span class="o">=</span> <span class="n">MESIteration</span><span class="p">()</span>
-        <span class="n">current_iteration</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">MESProjectDetails</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">current_iteration</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">projects</span><span class="p">])</span>
+        <span class="n">current_iteration</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">MESProjectDetails</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">current_iteration</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">projects</span><span class="p">]</span>
+        <span class="p">)</span>
         <span class="n">current_iteration</span><span class="o">.</span><span class="n">voters_budget</span> <span class="o">=</span> <span class="p">[</span><span class="n">voter</span><span class="o">.</span><span class="n">budget</span> <span class="k">for</span> <span class="n">voter</span> <span class="ow">in</span> <span class="n">voters</span><span class="p">]</span>
     <span class="n">best_afford</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
@@ -641,7 +651,9 @@ document.write(`
                 <span class="c1"># found the best afford_factor for this project</span>
                 <span class="n">project</span><span class="o">.</span><span class="n">affordability</span> <span class="o">=</span> <span class="n">afford_factor</span>
                 <span class="k">if</span> <span class="n">analytics</span><span class="p">:</span>
-                    <span class="n">current_iteration</span><span class="o">.</span><span class="n">update_project_details_as_effective_vote_count_reduced</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+                    <span class="n">current_iteration</span><span class="o">.</span><span class="n">update_project_details_as_effective_vote_count_reduced</span><span class="p">(</span>
+                        <span class="n">project</span>
+                    <span class="p">)</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                     <span class="n">eff_vote_count</span> <span class="o">=</span> <span class="n">frac</span><span class="p">(</span>
                         <span class="n">denominator</span><span class="p">,</span> <span class="n">project</span><span class="o">.</span><span class="n">cost</span> <span class="o">-</span> <span class="n">current_contribution</span>
@@ -661,6 +673,12 @@ document.write(`
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tied_projects</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">tied_projects</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">analytics</span> <span class="ow">and</span> <span class="n">skipped_project</span><span class="p">:</span>
+            <span class="n">cover</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">voters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">budget</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">skipped_project</span><span class="o">.</span><span class="n">supporter_indices</span><span class="p">)</span>
+            <span class="n">new_eff</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cover</span> <span class="o">/</span> <span class="n">skipped_project</span><span class="o">.</span><span class="n">cost</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="n">current_alloc</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">skipped_project_eff_support</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="n">new_eff</span><span class="p">,</span> <span class="n">current_alloc</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">skipped_project_eff_support</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">resoluteness</span><span class="p">:</span>
             <span class="n">all_allocs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_alloc</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -695,9 +713,22 @@ document.write(`
                 <span class="p">)</span>
             <span class="k">if</span> <span class="n">analytics</span> <span class="ow">and</span> <span class="n">current_iteration</span><span class="p">:</span>
                 <span class="n">current_iteration</span><span class="o">.</span><span class="n">selected_project</span> <span class="o">=</span> <span class="n">selected_project</span>
-                <span class="n">current_iteration</span><span class="o">.</span><span class="n">voters_budget_after_selection</span> <span class="o">=</span> <span class="p">[</span><span class="n">voter</span><span class="o">.</span><span class="n">budget</span> <span class="k">for</span> <span class="n">voter</span> <span class="ow">in</span> <span class="n">new_voters</span><span class="p">]</span>
+                <span class="n">current_iteration</span><span class="o">.</span><span class="n">voters_budget_after_selection</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">voter</span><span class="o">.</span><span class="n">budget</span> <span class="k">for</span> <span class="n">voter</span> <span class="ow">in</span> <span class="n">new_voters</span>
+                <span class="p">]</span>
                 <span class="n">current_alloc</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">iterations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_iteration</span><span class="p">)</span>
-                <span class="n">current_iteration</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># to avoid double appending</span>
+                <span class="n">current_iteration</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># to avoid double appending</span>
+                <span class="k">if</span> <span class="n">skipped_project</span><span class="p">:</span>
+                    <span class="n">cover</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">skipped_project</span><span class="o">.</span><span class="n">supporter_indices</span><span class="p">:</span>
+                        <span class="n">cover</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span>
+                            <span class="n">voters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">budget</span><span class="p">,</span>
+                            <span class="n">best_afford</span> <span class="o">*</span> <span class="n">skipped_project</span><span class="o">.</span><span class="n">supporters_sat</span><span class="p">(</span><span class="n">voters</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+                        <span class="p">)</span>
+                    <span class="n">new_eff</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cover</span> <span class="o">/</span> <span class="n">skipped_project</span><span class="o">.</span><span class="n">cost</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+                    <span class="n">current_alloc</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">skipped_project_eff_support</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                        <span class="n">new_eff</span><span class="p">,</span> <span class="n">current_alloc</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">skipped_project_eff_support</span>
+                    <span class="p">)</span>
             <span class="n">mes_inner_algo</span><span class="p">(</span>
                 <span class="n">instance</span><span class="p">,</span>
                 <span class="n">profile</span><span class="p">,</span>
@@ -707,6 +738,7 @@ document.write(`
                 <span class="n">new_alloc</span><span class="p">,</span>
                 <span class="n">all_allocs</span><span class="p">,</span>
                 <span class="n">resoluteness</span><span class="p">,</span>
+                <span class="n">skipped_project</span><span class="p">,</span>
                 <span class="n">analytics</span><span class="p">,</span>
                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
             <span class="p">)</span>
@@ -722,6 +754,7 @@ document.write(`
     <span class="n">resoluteness</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">voter_budget_increment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">binary_sat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">skipped_project</span><span class="p">:</span> <span class="n">Project</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">analytics</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BudgetAllocation</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">BudgetAllocation</span><span class="p">]:</span>
@@ -752,6 +785,9 @@ document.write(`
 <span class="sd">        binary_sat : bool, optional</span>
 <span class="sd">            Uses the inner algorithm for binary satisfaction if set to `True`. Should typically be used with approval</span>
 <span class="sd">            ballots to gain on the runtime. Automatically set to `True` if an approval profile is given.</span>
+<span class="sd">        skipped_project: MESProject, optional,</span>
+<span class="sd">            Project from instance which shouldn&#39;t be considered in calculations and for which effective support</span>
+<span class="sd">            will be calculated, if analytics is true. Solely used by analytics module.</span>
 <span class="sd">        analytics: bool, optional</span>
 <span class="sd">            (De)Activate the computation of analytics. These are additional details that can be accessed from the</span>
 <span class="sd">            :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` object returned by the rule to perform</span>
@@ -806,8 +842,20 @@ document.write(`
 
     <span class="n">budget_allocation</span> <span class="o">=</span> <span class="n">BudgetAllocation</span><span class="p">(</span>
         <span class="n">initial_budget_allocation</span><span class="p">,</span>
-        <span class="n">MESAllocationDetails</span><span class="p">([</span><span class="n">voter</span><span class="o">.</span><span class="n">multiplicity</span> <span class="k">for</span> <span class="n">voter</span> <span class="ow">in</span> <span class="n">voters</span><span class="p">])</span> <span class="k">if</span> <span class="n">analytics</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">(</span>
+            <span class="n">MESAllocationDetails</span><span class="p">([</span><span class="n">voter</span><span class="o">.</span><span class="n">multiplicity</span> <span class="k">for</span> <span class="n">voter</span> <span class="ow">in</span> <span class="n">voters</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">analytics</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">),</span>
     <span class="p">)</span>
+
+    <span class="n">skipped_mes_project</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">skipped_project</span><span class="p">:</span>
+        <span class="n">skipped_mes_project</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+            <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">projects</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">skipped_project</span><span class="o">.</span><span class="n">name</span>
+        <span class="p">)</span>
+        <span class="n">projects</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">projects</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">skipped_project</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">budget_allocation</span><span class="o">.</span><span class="n">details</span><span class="o">.</span><span class="n">skipped_project_eff_support</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="n">previous_outcome</span><span class="p">:</span> <span class="n">BudgetAllocation</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">BudgetAllocation</span><span class="p">]</span> <span class="o">=</span> <span class="n">budget_allocation</span>
 
@@ -822,6 +870,7 @@ document.write(`
             <span class="n">deepcopy</span><span class="p">(</span><span class="n">budget_allocation</span><span class="p">),</span>
             <span class="n">all_budget_allocations</span><span class="p">,</span>
             <span class="n">resoluteness</span><span class="p">,</span>
+            <span class="n">skipped_mes_project</span><span class="p">,</span>
             <span class="n">analytics</span><span class="p">,</span>
             <span class="n">verbose</span><span class="p">,</span>
         <span class="p">)</span>
@@ -865,6 +914,7 @@ document.write(`
     <span class="n">initial_budget_allocation</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Project</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">voter_budget_increment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">binary_sat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">skipped_project</span><span class="p">:</span> <span class="n">Project</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">analytics</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BudgetAllocation</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">BudgetAllocation</span><span class="p">]:</span>
@@ -902,6 +952,9 @@ document.write(`
 <span class="sd">        binary_sat : bool, optional</span>
 <span class="sd">            Uses the inner algorithm for binary satisfaction if set to `True`. Should typically be used with approval</span>
 <span class="sd">            ballots to gain on the runtime. Automatically set to `True` if an approval profile is given.</span>
+<span class="sd">        skipped_project: MESProject, optional,</span>
+<span class="sd">            Project from instance which shouldn&#39;t be considered in calculations and for which effective support</span>
+<span class="sd">            will be calculated, if analytics is true. Solely used by analytics module.</span>
 <span class="sd">        analytics: bool, optional</span>
 <span class="sd">            (De)Activate the computation of analytics. These are additional details that can be accessed from the</span>
 <span class="sd">            :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` object returned by the rule to perform</span>
@@ -943,6 +996,7 @@ document.write(`
         <span class="n">resoluteness</span><span class="o">=</span><span class="n">resoluteness</span><span class="p">,</span>
         <span class="n">voter_budget_increment</span><span class="o">=</span><span class="n">voter_budget_increment</span><span class="p">,</span>
         <span class="n">binary_sat</span><span class="o">=</span><span class="n">binary_sat</span><span class="p">,</span>
+        <span class="n">skipped_project</span><span class="o">=</span><span class="n">skipped_project</span><span class="p">,</span>
         <span class="n">analytics</span><span class="o">=</span><span class="n">analytics</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
     <span class="p">)</span></div>

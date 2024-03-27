@@ -65,7 +65,8 @@ def calculate_project_loss(
     allocation_details: AllocationDetails,
     verbose: bool = False,
 ) -> list[ProjectLoss]:
-    """Returns a list of :py:class:`~pabutools.analysis.projectloss.ProjectLoss` objects for the projects.
+    """
+    Returns a list of :py:class:`~pabutools.analysis.mesanalytics.ProjectLoss` objects for the projects.
 
     Parameters
     ----------
@@ -77,8 +78,8 @@ def calculate_project_loss(
 
     Returns
     -------
-        list[:py:class:`~pabutools.analysis.projectloss.ProjectLoss`]
-            List of :py:class:`~pabutools.analysis.projectloss.ProjectLoss` objects.
+        list[:py:class:`~pabutools.analysis.mesanalytics.ProjectLoss`]
+            List of :py:class:`~pabutools.analysis.mesanalytics.ProjectLoss` objects.
 
     """
     if not hasattr(allocation_details, "iterations"):
@@ -139,14 +140,15 @@ def calculate_effective_supports(
     mes_params: dict | None = None,
     final_budget: Numeric | None = None,
 ) -> dict[Project, int]:
-    """Returns a dictionary of :py:class:`~pabutools.election.instance.project` and their effective support
-    in a given instance, profile and mes election. Effective support for a project is an analytical metric 
+    """
+    Returns a dictionary of :py:class:`~pabutools.election.instance.project` and their effective support
+    in a given instance, profile and mes election. Effective support for a project is an analytical metric
     which allows to measure the ratio of initial budget received to minimal budget required to win.
     Effective support is represented in percentages.
 
     Parameters
     ----------
-       instance: :py:class:`~pabutools.election.instance.Instance`
+        instance: :py:class:`~pabutools.election.instance.Instance`
             The instance.
         profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`
             The profile.
@@ -179,13 +181,14 @@ def calculate_effective_support(
     project: Project,
     mes_params: dict | None = None,
 ) -> int:
-    """Calculates the effective support of a given project in a given instance, profile and mes election.
+    """
+    Calculates the effective support of a given project in a given instance, profile and mes election.
     Effective support for a project is an analytical metric which allows to measure the ratio of 
     initial budget received to minimal budget required to win. Effective support is represented in percentages.
 
     Parameters
     ----------
-       instance: :py:class:`~pabutools.election.instance.Instance`
+        instance: :py:class:`~pabutools.election.instance.Instance`
             The instance.
         profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`
             The profile.
@@ -198,7 +201,7 @@ def calculate_effective_support(
     Returns
     -------
         int
-            effective support value in percentages for project.
+            The effective support value in percentages for project.
     """
     if project not in instance:
         raise RuntimeError("Provided instance does not match the allocation details")

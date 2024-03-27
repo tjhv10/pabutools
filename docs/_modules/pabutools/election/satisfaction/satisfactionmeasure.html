@@ -27,16 +27,16 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" href="../../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-    <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pabutools/election/satisfaction/satisfactionmeasure';</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -127,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/libraries.html">Preference Libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/satisfaction.html">Satisfaction Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../usage/outcomevisualisation.html">Outcome Visualisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/tiebreaking.html">Tie-Breaking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/fractions.html">Fractions</a></li>
 </ul>
@@ -284,7 +285,9 @@ document.write(`
     <span class="kn">from</span> <span class="nn">pabutools.election.profile</span> <span class="kn">import</span> <span class="n">AbstractProfile</span>
 
 
-<div class="viewcode-block" id="SatisfactionMeasure"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.SatisfactionMeasure">[docs]</a><span class="k">class</span> <span class="nc">SatisfactionMeasure</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="SatisfactionMeasure">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.SatisfactionMeasure">[docs]</a>
+<span class="k">class</span> <span class="nc">SatisfactionMeasure</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract class representing a satisfaction measure for a given ballot. Importantly, a satisfaction measure is always</span>
 <span class="sd">    linked to a specific ballot, part of a specific profile, given a specific instance.</span>
@@ -345,7 +348,9 @@ document.write(`
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;SAT[</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ballot</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SatisfactionMeasure.sat"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.SatisfactionMeasure.sat">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="SatisfactionMeasure.sat">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.SatisfactionMeasure.sat">[docs]</a>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">sat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given the internal attributes of the satisfaction measure (ballot, profile, instance), returns the satisfaction</span>
@@ -362,7 +367,10 @@ document.write(`
 <span class="sd">                The corresponding satisfaction</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="SatisfactionMeasure.sat_project"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.SatisfactionMeasure.sat_project">[docs]</a>    <span class="nd">@abstractmethod</span>
+
+<div class="viewcode-block" id="SatisfactionMeasure.sat_project">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.SatisfactionMeasure.sat_project">[docs]</a>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">sat_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given the internal attributes of the satisfaction measure (ballot, profile, instance), returns the satisfaction</span>
@@ -377,10 +385,14 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">            Numeric</span>
 <span class="sd">                The corresponding satisfaction</span>
-<span class="sd">        &quot;&quot;&quot;</span></div></div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+</div>
 
 
-<div class="viewcode-block" id="GroupSatisfactionMeasure"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure">[docs]</a><span class="k">class</span> <span class="nc">GroupSatisfactionMeasure</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">SatisfactionMeasure</span><span class="p">]):</span>
+
+<div class="viewcode-block" id="GroupSatisfactionMeasure">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure">[docs]</a>
+<span class="k">class</span> <span class="nc">GroupSatisfactionMeasure</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">SatisfactionMeasure</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract class representing a collection of satisfaction measure, one per voter.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -389,7 +401,9 @@ document.write(`
         <span class="n">ABC</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">Iterable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GroupSatisfactionMeasure.multiplicity"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure.multiplicity">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="GroupSatisfactionMeasure.multiplicity">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure.multiplicity">[docs]</a>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">multiplicity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sat</span><span class="p">:</span> <span class="n">SatisfactionMeasure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the multiplicity of the given satisfaction measure.</span>
@@ -405,7 +419,10 @@ document.write(`
 <span class="sd">                The multiplicity of the satisfaction measure.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="GroupSatisfactionMeasure.total_satisfaction"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure.total_satisfaction">[docs]</a>    <span class="k">def</span> <span class="nf">total_satisfaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
+
+<div class="viewcode-block" id="GroupSatisfactionMeasure.total_satisfaction">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure.total_satisfaction">[docs]</a>
+    <span class="k">def</span> <span class="nf">total_satisfaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sums up the satisfaction of all the satisfaction measures for the given collection of projects.</span>
 
@@ -422,7 +439,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sat</span><span class="o">.</span><span class="n">sat</span><span class="p">(</span><span class="n">projects</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplicity</span><span class="p">(</span><span class="n">sat</span><span class="p">)</span> <span class="k">for</span> <span class="n">sat</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GroupSatisfactionMeasure.total_satisfaction_project"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure.total_satisfaction_project">[docs]</a>    <span class="k">def</span> <span class="nf">total_satisfaction_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
+
+<div class="viewcode-block" id="GroupSatisfactionMeasure.total_satisfaction_project">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure.total_satisfaction_project">[docs]</a>
+    <span class="k">def</span> <span class="nf">total_satisfaction_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Numeric</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sums up the satisfaction of all the satisfaction measures for the given project.</span>
 
@@ -439,7 +459,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sat</span><span class="o">.</span><span class="n">sat_project</span><span class="p">(</span><span class="n">project</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplicity</span><span class="p">(</span><span class="n">sat</span><span class="p">)</span> <span class="k">for</span> <span class="n">sat</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GroupSatisfactionMeasure.remove_satisfied"><a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure.remove_satisfied">[docs]</a>    <span class="nd">@abstractmethod</span>
+
+<div class="viewcode-block" id="GroupSatisfactionMeasure.remove_satisfied">
+<a class="viewcode-back" href="../../../../reference/election/satisfaction.html#pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure.remove_satisfied">[docs]</a>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">remove_satisfied</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">sat_bound</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">AbstractBallot</span><span class="p">,</span> <span class="n">Numeric</span><span class="p">],</span> <span class="n">projects</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Project</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GroupSatisfactionMeasure</span><span class="p">:</span>
@@ -460,7 +483,9 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">            :py:class:`~pabutools.election.satisfaction.satisfactionmeasure.GroupSatisfactionMeasure`</span>
 <span class="sd">                The new satisfaction profile.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div></div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+</div>
+
 </pre></div>
 
                 </article>

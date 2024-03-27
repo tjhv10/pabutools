@@ -27,16 +27,16 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pabutools/election/pabulib';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -127,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/libraries.html">Preference Libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/satisfaction.html">Satisfaction Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/rules.html">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../usage/outcomevisualisation.html">Outcome Visualisation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/tiebreaking.html">Tie-Breaking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/fractions.html">Fractions</a></li>
 </ul>
@@ -472,7 +473,9 @@ document.write(`
     <span class="k">return</span> <span class="n">instance</span><span class="p">,</span> <span class="n">profile</span>
 
 
-<div class="viewcode-block" id="parse_pabulib"><a class="viewcode-back" href="../../../reference/election/libraries.html#pabutools.election.pabulib.parse_pabulib">[docs]</a><span class="k">def</span> <span class="nf">parse_pabulib</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Instance</span><span class="p">,</span> <span class="n">Profile</span><span class="p">]:</span>
+<div class="viewcode-block" id="parse_pabulib">
+<a class="viewcode-back" href="../../../reference/election/libraries.html#pabutools.election.pabulib.parse_pabulib">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_pabulib</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Instance</span><span class="p">,</span> <span class="n">Profile</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parses a PaBuLib files and returns the corresponding instance and profile. The returned profile will be of the</span>
 <span class="sd">    correct type depending on the metadata in the file.</span>
@@ -495,6 +498,7 @@ document.write(`
     <span class="n">instance</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">instance</span><span class="p">,</span> <span class="n">profile</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">parse_pabulib_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Instance</span><span class="p">,</span> <span class="n">Profile</span><span class="p">]:</span>
@@ -525,7 +529,9 @@ document.write(`
     <span class="k">return</span> <span class="n">instance</span><span class="p">,</span> <span class="n">profile</span>
 
 
-<div class="viewcode-block" id="election_as_pabulib_string"><a class="viewcode-back" href="../../../reference/election/libraries.html#pabutools.election.pabulib.election_as_pabulib_string">[docs]</a><span class="k">def</span> <span class="nf">election_as_pabulib_string</span><span class="p">(</span><span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="n">AbstractProfile</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="election_as_pabulib_string">
+<a class="viewcode-back" href="../../../reference/election/libraries.html#pabutools.election.pabulib.election_as_pabulib_string">[docs]</a>
+<span class="k">def</span> <span class="nf">election_as_pabulib_string</span><span class="p">(</span><span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="n">AbstractProfile</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a string representing the instance and the profile according to the Pabulib standard</span>
 <span class="sd">    (as specified in https://arxiv.org/pdf/2305.11035.pdf).</span>
@@ -688,7 +694,10 @@ document.write(`
     <span class="k">return</span> <span class="n">file_str</span></div>
 
 
-<div class="viewcode-block" id="write_pabulib"><a class="viewcode-back" href="../../../reference/election/libraries.html#pabutools.election.pabulib.write_pabulib">[docs]</a><span class="k">def</span> <span class="nf">write_pabulib</span><span class="p">(</span><span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="n">AbstractProfile</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="write_pabulib">
+<a class="viewcode-back" href="../../../reference/election/libraries.html#pabutools.election.pabulib.write_pabulib">[docs]</a>
+<span class="k">def</span> <span class="nf">write_pabulib</span><span class="p">(</span><span class="n">instance</span><span class="p">:</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="n">AbstractProfile</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Writes an instance and a profile to a file using the pabulib format (as specified in</span>
 <span class="sd">    https://arxiv.org/pdf/2305.11035.pdf).</span>
 
@@ -704,6 +713,7 @@ document.write(`
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8-sig&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">election_as_pabulib_string</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">))</span></div>
+
 </pre></div>
 
                 </article>
