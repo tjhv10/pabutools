@@ -1,10 +1,12 @@
 from unittest import TestCase
+from parameterized import parameterized
+
 
 from pabutools.analysis.instanceproperties import *
 from pabutools.analysis.profileproperties import *
 from pabutools.analysis.votersatisfaction import *
 from pabutools.analysis.category import *
-from pabutools.analysis.projectloss import *
+from pabutools.analysis.mesanalytics import *
 from pabutools.election import CardinalProfile
 from pabutools.election.profile.approvalprofile import (
     ApprovalProfile,
@@ -316,3 +318,37 @@ class TestAnalysis(TestCase):
         # No iterations
         project_losses = calculate_project_loss(MESAllocationDetails([1]))
         assert project_losses == []
+
+    @parameterized.expand(
+        [
+            ([1, 1, 2, 1, 2], [200, 150, 37, 75, 50]),
+            ([5, 1, 2, 1, 2], [60, 200, 50, 100, 50]),
+            ([5, 5, 5, 5, 5], [80, 40, 30, 20, 20])
+        ]
+    )
+    def test_effective_support(self, costs, expected_effective_support):
+        projects = [Project(chr(ord("a") + idx), costs[idx]) for idx in range(0, 5)]
+        instance = Instance(projects, budget_limit=2)
+        profile = ApprovalProfile(
+            [
+                ApprovalBallot({projects[0], projects[1]}),
+                ApprovalBallot({projects[0], projects[1]}),
+                ApprovalBallot({projects[0]}),
+                ApprovalBallot({projects[0], projects[1], projects[2]}),
+                ApprovalBallot({projects[0], projects[1], projects[2]}),
+                ApprovalBallot({projects[0], projects[2]}),
+                ApprovalBallot({projects[0], projects[3]}),
+                ApprovalBallot({projects[0], projects[3]}),
+                ApprovalBallot({projects[4]}),
+                ApprovalBallot({projects[4]}),
+            ]
+        )
+        
+        result = calculate_effective_supports(instance, profile, {"sat_class": Cost_Sat}, 5)
+        assert len(result) == len(projects)
+        sorted_projects = sorted(list(result), key=lambda proj: proj.name)
+
+        for idx, project in enumerate(sorted_projects):
+            assert project.name == chr(ord("a") + idx)
+            assert result[project] == expected_effective_support[idx]
+

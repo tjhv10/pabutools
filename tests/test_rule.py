@@ -491,7 +491,7 @@ class TestRule(TestCase):
                 assert outcome1 == outcome2
 
     def test_max_welfare(self):
-        run_sat_rule(max_additive_utilitarian_welfare, verbose=True)
+        run_sat_rule(max_additive_utilitarian_welfare, verbose=False)
         with self.assertRaises(ValueError):
             max_additive_utilitarian_welfare(Instance(), ApprovalProfile())
 
