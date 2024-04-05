@@ -194,6 +194,7 @@ class MESVisualiser(Visualiser):
         round_analysis_page_output = MESVisualiser.template.render( # TODO: Some redudant data is being passed to the template that can be calculated within template directly
             election_name=self.instance.meta["description"] if "description" in self.instance.meta else "No description provided.", 
             # total_votes=sum(votes_count_by_project(self.profile).values()),
+            currency=self.instance.meta["currency"] if "currency" in self.instance.meta else "CUR",
             rounds=self.rounds, 
             projects=self.instance.project_meta,
             number_of_elected_projects=len(outcome),
@@ -206,7 +207,8 @@ class MESVisualiser(Visualiser):
 
         # Page Summary
         summary_page_output = MESVisualiser.page_summary_template.render( # TODO: Some redudant data is being passed to the template that can be calculated within template directly
-            election_name=self.instance.meta["description"] if "description" in self.instance.meta else "No description provided.", 
+            election_name=self.instance.meta["description"] if "description" in self.instance.meta else "No description provided.",
+            currency=self.instance.meta["currency"] if "currency" in self.instance.meta else "CUR", 
             rounds=self.rounds, 
             projects=self.instance.project_meta,
             number_of_elected_projects=len(outcome),
@@ -280,7 +282,8 @@ class GreedyWelfareVisualiser(Visualiser):
 
         # Round by Round
         round_analysis_page_output = GreedyWelfareVisualiser.template.render( # TODO: Some redudant data is being passed to the template that can be calculated within template directly
-            election_name=self.instance.meta["description"] if "description" in self.instance.meta else "No description provided.", 
+            election_name=self.instance.meta["description"] if "description" in self.instance.meta else "No description provided.",
+            currency=self.instance.meta["currency"] if "currency" in self.instance.meta else "CUR", 
             projects_selected_or_rejected = json.dumps({int(str(p)): (p in outcome) for p in self.project_votes.keys()}),
             project_votes=self.project_votes,
             rounds=self.rounds, 
