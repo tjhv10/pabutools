@@ -3,7 +3,7 @@ from __future__ import annotations
 from pabutools.utils import Numeric
 from pabutools.election.instance import Instance, Project
 from pabutools.election.profile import Profile
-from pabutools.rules.budgetallocation import AllocationDetails
+from pabutools.rules.budgetallocation import BudgetAllocation, AllocationDetails
 from pabutools.rules.mes.mes_rule import method_of_equal_shares
 
 
@@ -95,11 +95,12 @@ def calculate_project_loss(
     project_losses = []
     voter_count = len(allocation_details.iterations[0].voters_budget)
     voter_multiplicity = allocation_details.voter_multiplicity
+    iterations_count = len(allocation_details.iterations)
     voter_spendings: dict[int, list[tuple[Project, Numeric]]] = {}
     for idx in range(voter_count):
         voter_spendings[idx] = []
 
-    for iteration in allocation_details.iterations:
+    for idx, iteration in enumerate(allocation_details.iterations):
         project_losses.append(
             _create_project_loss(
                 iteration.selected_project,
@@ -120,7 +121,10 @@ def calculate_project_loss(
             )
 
         for project_detail in iteration:
-            if project_detail.discarded:
+            if project_detail.discarded or (
+                idx == iterations_count - 1
+                and project_detail.project != iteration.selected_project
+            ):
                 project_losses.append(
                     _create_project_loss(
                         project_detail.project,
@@ -137,6 +141,7 @@ def calculate_project_loss(
 def calculate_effective_supports(
     instance: Instance,
     profile: Profile,
+    allocation: BudgetAllocation,
     mes_params: dict | None = None,
     final_budget: Numeric | None = None,
 ) -> dict[Project, int]:
@@ -150,8 +155,10 @@ def calculate_effective_supports(
     ----------
         instance: :py:class:`~pabutools.election.instance.Instance`
             The instance.
-        profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`
+        profile: :py:class:`~pabutools.election.profile.profile.AbstractProfile`
             The profile.
+        allocation: :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`
+            Resulting allocation of the above instance & profile.
         mes_params: dict, optional
             Dictionary of additional parameters that are passed as keyword arguments to the MES rule.
             Defaults to None.
@@ -164,12 +171,14 @@ def calculate_effective_supports(
         dict[:py:class:`~pabutools.election.instance.Project`, int]
             Dictionary of pairs (:py:class:`~pabutools.election.instance.Project`, effective support).
     """
+    if mes_params is None:
+        mes_params = {}
     effective_supports: dict[Project, int] = {}
     if final_budget:
         instance.budget_limit = final_budget
     for project in instance:
         effective_supports[project] = calculate_effective_support(
-            instance, profile, project, mes_params
+            instance, profile, project, project in allocation, mes_params
         )
 
     return effective_supports
@@ -179,11 +188,12 @@ def calculate_effective_support(
     instance: Instance,
     profile: Profile,
     project: Project,
+    was_picked: bool,
     mes_params: dict | None = None,
 ) -> int:
     """
     Calculates the effective support of a given project in a given instance, profile and mes election.
-    Effective support for a project is an analytical metric which allows to measure the ratio of 
+    Effective support for a project is an analytical metric which allows to measure the ratio of
     initial budget received to minimal budget required to win. Effective support is represented in percentages.
 
     Parameters
@@ -194,6 +204,8 @@ def calculate_effective_support(
             The profile.
         project: :py:class:`~pabutools.election.instance.Project`
             Project for which effective support is calculated. Must be a part of the instance.
+        was_picked: bool
+            Whether the considerd project was picked as a winner in the allocation.
         mes_params: dict, optional
             Dictionary of additional parameters that are passed as keyword arguments to the MES rule.
             Defaults to `{}`.
@@ -210,9 +222,13 @@ def calculate_effective_support(
     mes_params["analytics"] = True
     mes_params["skipped_project"] = project
     mes_params["resoluteness"] = True
-    return method_of_equal_shares(
+    details = method_of_equal_shares(
         instance, profile, **mes_params
-    ).details.skipped_project_eff_support
+    ).details
+    effective_support = details.skipped_project_eff_support
+    if was_picked:
+        effective_support = max(effective_support, 100)
+    return effective_support
 
 
 def _create_project_loss(
