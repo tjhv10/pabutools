@@ -19,6 +19,25 @@ class Visualiser:
     pass
 
 class MESVisualiser(Visualiser):
+    """
+    Class used to visualise the results of a MES election. The visualisation result consits of two pages: a summary page called 'summary.html' and a round by round analysis page called 'round_analysis.html'.
+
+    Parameters
+    ----------
+    profile : :py:class:`~pabutools.election.profile.AbstractProfile`
+        The profile.
+    instance : Instance
+        The election instance.
+    mes_details : :py:class:`~pabutools.rules.mes.mes_details.MESAllocationDetails`
+        The details of the MES allocation.
+    verbose : bool, optional
+        Whether to print the results to the console. The default is False.
+
+    Returns
+    -------
+    None
+    """
+
     # TODO make sure the variable name 'p' isn't used both in an outer loop and an inner loop at the same time.
     template = ENV.get_template('./templates/mes_round_analysis_template.html') 
     page_summary_template = ENV.get_template('./templates/mes_page_summary_template.html')
@@ -34,6 +53,17 @@ class MESVisualiser(Visualiser):
         self.rounds = []
 
     def _calculate_rounds_dictinary(self):
+        """
+        Calculate the round by round dictionary that will be used to render the template.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
         initial_budget_per_voter = float(self.instance.meta["budget"]) / float(self.instance.meta["num_votes"])
         budgetSpent = 0 
         for i in range(len(self.mes_iterations)-1):
@@ -145,6 +175,18 @@ class MESVisualiser(Visualiser):
         })
 
     def _calculate_pie_charts(self, projectVotes):
+        """
+        Calculate the data necessary for the pie charts in the round by round analysis page.
+
+        Parameters
+        ----------
+        projectVotes : dict
+            A dictionary containing the number of votes for each project.
+
+        Returns
+        -------
+        None
+        """
         winners = []
         for round in self.rounds:
             pie_chart_items = []
@@ -169,14 +211,51 @@ class MESVisualiser(Visualiser):
             round["pie_chart_triplet"] = [pie_chart_items[i:i + 3] for i in range(0, len(pie_chart_items), 3)]
 
     def _calculate_avg_voter_budget(self, voters_budget, supporters):
+        """
+        Calculate the average budget of the supporters for a project.
+
+        Parameters
+        ----------
+        voters_budget : dict 
+            A dictionary containing the budget of each voter.
+        supporters : list
+            A list of the supporters of the project.
+
+        Returns
+        -------
+        float
+            The average budget of the supporters for the project.
+
+        """
         return sum(voters_budget[s] for s in supporters) / len(supporters)
 
     def _get_voters_for_project(self, project):
+        """
+        Get the supporters of a project.
+
+        Parameters
+        ----------
+        project : :py:class:`~pabutools.election.instance.Project`
+            The project.
+
+        """
         for project_details in self.details.get_all_project_details():
             if project_details.project == project:
                 return project_details.project.supporter_indices
 
     def _calculate(self):
+        """
+        Calculate the data necessary for the visualisation.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
+        """
         self._calculate_rounds_dictinary()
         projectVotes = votes_count_by_project(self.profile)
         for round in self.rounds:
@@ -184,6 +263,14 @@ class MESVisualiser(Visualiser):
         self._calculate_pie_charts(projectVotes)
 
     def render(self, outcome, output_folder_path):
+        """
+        Render the visualisation.
+
+        Parameters
+        ----------
+
+
+        """
         self._calculate()
         for round in self.rounds:
             del round["_current_iteration"]
@@ -223,6 +310,26 @@ class MESVisualiser(Visualiser):
             o.write(summary_page_output)
 
 class GreedyWelfareVisualiser(Visualiser):
+    """
+    Class used to visualise the results of a Greedy Welfare election. The visualisation result consits of a round by round analysis page called 'round_analysis.html'.
+
+    Parameters
+    ----------
+    profile : :py:class:`~pabutools.election.profile.AbstractProfile`
+        The profile.
+    instance : :py:class:`~pabutools.election.instance.Instance`
+        The election instance.
+    greedy_details : :py:class:`~pabutools.rules.greedywelfare.greedywelfare_details.GreedyWelfareAllocationDetails`
+        The details of the Greedy Welfare allocation.
+    verbose : bool, optional
+        Whether to print the results to the console. The default is False.
+
+    Returns
+    -------
+    None
+
+    """
+
     template = ENV.get_template('./templates/greedy_round_analysis_template.html') 
 
     def __init__(self, profile, instance, greedy_details: GreedyWelfareAllocationDetails, verbose=False):
@@ -236,6 +343,19 @@ class GreedyWelfareVisualiser(Visualiser):
         
     
     def _calculate(self):
+        """
+        Calculate the data necessary for the visualisation.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
+        """
+
         self.rounds = []
         current_round = {}
         rejected_projects = []
@@ -268,6 +388,21 @@ class GreedyWelfareVisualiser(Visualiser):
             round["id"] = i + 1
 
     def render(self, outcome, output_folder_path):
+        """
+        Render the visualisation.
+
+        Parameters
+        ----------
+        outcome : list [:py:class:`~pabutools.election.instance.Project`]
+            The list of elected projects.
+        output_folder_path : str
+            The path to the folder where the visualisation will be saved.
+
+        Returns
+        -------
+        None
+
+        """
         self._calculate()
         if self.verbose:
             print(self.rounds)
