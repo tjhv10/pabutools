@@ -91,9 +91,7 @@
         .carousel-control-prev-icon,
         .carousel-control-next-icon {
             font-size: 24px;
-            /* Adjust the size as needed */
             color: black;
-            /* Adjust the color as needed */
         }
         
         .carousel-inner {
@@ -125,11 +123,6 @@
             height: 100%;
             width: 100%;
         }
-        /* zing-grid[loading] {
-            height: 800px;
-            width: 100%;
-        } */
-        
         h1,
         h3,
         p {
@@ -165,10 +158,6 @@
                 <a class="nav-link" href="https://pypi.org/project/pabutools/">Pabutools</a>
               </li>
             </ul>
-            <form class="form-inline mt-2 mt-md-0" data-dashlane-rid="586d21bb200ad9fc" data-form-type="">
-              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" data-dashlane-rid="ebb02837c4029767" data-form-type="">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit" data-dashlane-label="true" data-dashlane-rid="c66944f310795772" data-form-type="">Search</button>
-            </form>
           </div>
         </nav>
       </header>
@@ -272,7 +261,6 @@
                         <div class="col-1"></div>
                     </div>
 
-                    <!-- Just some space -->
                     <div class="spacer-1"></div>
                     <hr>
                     <div class="spacer-1"></div>
@@ -390,7 +378,6 @@
 
                     <!-- Green and Red Painted Chart -->
                     <div class="row featurette">
-                        <!-- <div class="row"> -->
                             <div class="col-1"></div>
                             <div class="col-10" style="min-height: 600px;">
                                 <div id="RGBarChart" style="height: 100%; width: 100%;">
@@ -398,7 +385,6 @@
                                 </div>
                             </div>
                             <div class="col-1"></div>
-                        <!-- </div> -->
                         
                     </div>
                     <div class="row">
@@ -430,7 +416,6 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
-        // Set the display of the first round to block
         document.getElementById("1Bars").style.display = "block";
 
         let currentRoundIndex = 1;
@@ -480,7 +465,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             projects_selected_or_rejected = JSON.parse('{{projects_selected_or_rejected | safe}}')
-            // Project Names
             var projects = {};
             {% for project_id in project_votes.keys() %}
             projects["{{ project_id }}"] = {
@@ -602,16 +586,13 @@
                 );
             }
 
-            // Initial render
             sortAndRenderChart('votes-desc', 'all');
 
-            // Function to update hidden input value and re-render chart
             document.getElementById('sortingCriteria').addEventListener('change', function() {
                 filter = document.getElementById('filterBy').value;
                 sortAndRenderChart(this.value, filter);
             });
 
-            // Listen for changes in the filter dropdown to re-render the chart
             document.getElementById('filterBy').addEventListener('change', function() {
                 sort = document.getElementById('sortingCriteria').value;
                 sortAndRenderChart(sort, this.value);

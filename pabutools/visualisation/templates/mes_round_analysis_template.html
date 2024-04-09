@@ -64,10 +64,6 @@
             height: 100%;
             width: 100%;
         }
-        /* zing-grid[loading] {
-            height: 800px;
-            width: 100%;
-        } */
         
         h1,
         h2,
@@ -79,12 +75,11 @@
 
       
         main {
-            padding-top: 100px; /* Adjust based on the actual height of your header */
+            padding-top: 100px; 
             }
 
         .info-button {
             margin-top: 25px;
-            /* padding-top: 100px; */
         }
     </style>
     <script>
@@ -113,10 +108,6 @@
                 <a class="nav-link" href="">MES</a>
               </li>
             </ul>
-            <form class="form-inline mt-2 mt-md-0" data-dashlane-rid="586d21bb200ad9fc" data-form-type="">
-              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" data-dashlane-rid="ebb02837c4029767" data-form-type="">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit" data-dashlane-label="true" data-dashlane-rid="c66944f310795772" data-form-type="">Search</button>
-            </form>
           </div>
         </nav>
     </header>
@@ -273,7 +264,7 @@
                     <hr>
                     <div class="spacer-1"></div>
 
-                    <!-- Reduced Effective Vote Count Graph (Centred Div) -->
+                    <!-- Reduced Effective Vote Count Graph -->
                     <div class="row featurette">
                         <div class="col-5">
                           <h2 class="featurette-heading">Reduced Effective Vote Count</h2>
@@ -311,29 +302,29 @@
             "type": "hbar",
             "title": {
                 "text": "Effective Vote Count",
-            "fontSize": 16, // Smaller font size to ensure it fits
-            "adjustLayout": true // ZingChart will try to adjust the layout 
+            "fontSize": 16, 
+            "adjustLayout": true 
             },
             "plotarea": {
             "marginLeft":'dynamic',
             "marginRight":'dynamic'
         },
             "scaleX": {
-                "labels": [], // Label that identifies each project in the round
+                "labels": [], 
                     "title": {
                     "text": "Project"
                     },
-                    "item": { // Explicitly control the appearance of the scale labels
-                    "font-size": 14, // Adjust font size as needed
-                    "offset-x": 0, // Adjust to move the label left or right if needed
-                    "offset-y": 0 // Adjust to move the label up or down if needed
+                    "item": { 
+                    "font-size": 14, 
+                    "offset-x": 0, 
+                    "offset-y": 0 
                     },"zooming": true,
                 "zoomTo": [0, 10],
                 "mirrored": true,
-                "itemsOverlap": true, // allows items to overlap if necessary
-                "maxItems": 999, // set to a high number to ensure all labels show
+                "itemsOverlap": true,
+                "maxItems": 999, 
                 "label": {
-                        "angle": 45 // rotates labels to fit better
+                        "angle": 45 
                     },
             },
 
@@ -354,8 +345,8 @@
                 },
             },
             "series": [{
-                "values": [], // Current votes values
-                'hover-state': { /* Hover object */
+                "values": [], 
+                'hover-state': { 
                 'background-color': "orange",
             }
             }, ],
@@ -384,8 +375,8 @@
         "stacked": true,
         "title": {
             "text": "Reduced Effective Vote Count",
-            "fontSize": 15, // Smaller font size to ensure it fits
-            "adjustLayout": true // ZingChart will try to adjust the layout 
+            "fontSize": 15, 
+            "adjustLayout": true 
         },
         "legend": {
             "layout": "x4",
@@ -419,14 +410,14 @@
             }
         },
         "scale-x": {
-            "labels": [], // Label that identifies each project in the round
+            "labels": [],
             "title": {
                 "text": "Projects"
             },
-            "item": { // Explicitly control the appearance of the scale labels
-                    "font-size": 14, // Adjust font size as needed
-                    "offset-x": 0, // Adjust to move the label left or right if needed
-                    "offset-y": 0 // Adjust to move the label up or down if needed
+            "item": { 
+                    "font-size": 14, 
+                    "offset-x": 0, 
+                    "offset-y": 0 
                 },"zooming": true,
             "zoomTo": [0, 6]
         },
@@ -434,9 +425,9 @@
             "title": {
                 "text": "Votes"
             },
-            "min-value": 0, // Set the minimum value to 0
-            "max-labels": 10, // Optional: Adjust the maximum number of labels displayed
-            "decimals": 0, // Optional: Adjust the number of decimal places
+            "min-value": 0, 
+            "max-labels": 10, 
+            "decimals": 0, 
         },
         "scrollX": {
                 "bar": {
@@ -449,17 +440,14 @@
             },
 
         "series": [{
-            "values":[], // Effective votes for next round
+            "values":[], 
             "background-color": "#0070C0",
             "text": "Current Votes",
-            'hover-state': { /* Hover object */
+            'hover-state': { 
                     'background-color': "orange",
-                    // 'border-width':3,
-                    // 'border-color': "purple",
-                    // 'line-style': "dotted"
                 }
         }, {
-            "values": [], // Effective votes lost this round
+            "values": [],
             "background-color": "#FF0000",
             "text": "Previous Votes"
         }]
@@ -495,29 +483,29 @@
                 "type": "hbar",
                 "title": {
                     "text": "Effective Vote Count",
-                "fontSize": 16, // Smaller font size to ensure it fits
-                "adjustLayout": true // ZingChart will try to adjust the layout 
+                "fontSize": 16,
+                "adjustLayout": true 
                 },
                 "plotarea": {
                 "marginLeft":'dynamic',
                 "marginRight":'dynamic'
             },
                 "scaleX": {
-                    "labels": x_labels, // Label that identifies each project in the round
+                    "labels": x_labels,
                         "title": {
                         "text": "Project"
                         },
-                        "item": { // Explicitly control the appearance of the scale labels
-                        "font-size": 14, // Adjust font size as needed
-                        "offset-x": 0, // Adjust to move the label left or right if needed
-                        "offset-y": 0 // Adjust to move the label up or down if needed
+                        "item": { 
+                        "font-size": 14, 
+                        "offset-x": 0, 
+                        "offset-y": 0 
                         },"zooming": true,
                     "zoomTo": [0, 10],
                     "mirrored": true,
-                    "itemsOverlap": true, // allows items to overlap if necessary
-                    "maxItems": 999, // set to a high number to ensure all labels show
+                    "itemsOverlap": true, 
+                    "maxItems": 999, 
                     "label": {
-                            "angle": 45 // rotates labels to fit better
+                            "angle": 45 
                         },
                 },
 
@@ -538,8 +526,8 @@
                     },
                 },
                 "series": [{
-                    "values": values, // Current votes values
-                    'hover-state': { /* Hover object */
+                    "values": values, 
+                    'hover-state': { 
                     'background-color': "orange",
                 }
                 }, ],
@@ -560,24 +548,6 @@
         }
 
         function updateStackedBarChart(x_labels, initial_values, reduced_values) {
-            // let args = {
-            //     "data":{
-            //     "scale-x":{
-            //         "labels": x_labels,
-            //     },
-            //     "series":[
-            //         {
-            //             "text": "Current Votes",
-            //             "values": initial_values,
-            //         },
-            //         {
-            //             "text": "Previous Votes",
-            //             "values": reduced_values
-            //         }
-            //     ]
-            //     }
-            // };
-            // zingchart.exec('StackedBarChart', 'modify', args);   
 
             zingchart.render({
                 id: 'StackedBarChart',
@@ -586,8 +556,8 @@
                 "stacked": true,
                 "title": {
                     "text": "Reduced Effective Vote Count",
-                    "fontSize": 15, // Smaller font size to ensure it fits
-                    "adjustLayout": true // ZingChart will try to adjust the layout 
+                    "fontSize": 15, 
+                    "adjustLayout": true 
                 },
                 "legend": {
                     "layout": "x4",
@@ -621,14 +591,14 @@
                     }
                 },
                 "scale-x": {
-                    "labels": x_labels, // Label that identifies each project in the round
+                    "labels": x_labels, 
                     "title": {
                         "text": "Projects"
                     },
-                    "item": { // Explicitly control the appearance of the scale labels
-                            "font-size": 14, // Adjust font size as needed
-                            "offset-x": 0, // Adjust to move the label left or right if needed
-                            "offset-y": 0 // Adjust to move the label up or down if needed
+                    "item": { 
+                            "font-size": 14, 
+                            "offset-x": 0,
+                            "offset-y": 0 
                         },"zooming": true,
                     "zoomTo": [0, 6]
                 },
@@ -636,9 +606,9 @@
                     "title": {
                         "text": "Votes"
                     },
-                    "min-value": 0, // Set the minimum value to 0
-                    "max-labels": 10, // Optional: Adjust the maximum number of labels displayed
-                    "decimals": 0, // Optional: Adjust the number of decimal places
+                    "min-value": 0, 
+                    "max-labels": 10,
+                    "decimals": 0, 
                 },
                 "scrollX": {
                         "bar": {
@@ -651,17 +621,14 @@
                     },
 
                 "series": [{
-                    "values":initial_values, // Effective votes for next round
+                    "values":initial_values,
                     "background-color": "#0070C0",
                     "text": "Current Votes",
-                    'hover-state': { /* Hover object */
+                    'hover-state': { 
                             'background-color': "orange",
-                            // 'border-width':3,
-                            // 'border-color': "purple",
-                            // 'line-style': "dotted"
                         }
                 }, {
-                    "values": reduced_values, // Effective votes lost this round
+                    "values": reduced_values,
                     "background-color": "#FF0000",
                     "text": "Previous Votes"
                 }]
@@ -703,7 +670,6 @@
             data.addColumn('string', 'To');
             data.addColumn('number', 'Weight');
             data.addRows(rows);
-            // Instantiates and draws our chart, passing in some options.
             chart.draw(data, options);
         }
 
@@ -760,7 +726,7 @@
                         "type":"all",
                         "placement":"in",
                         "text":"%v",
-                        "fontSize":10 // Adjust font size as needed
+                        "fontSize":10 
                     },
                     "animation":{
                         "effect":"ANIMATION_EXPAND_VERTICAL",
@@ -815,7 +781,6 @@
                     pieChart.style.width = "100%";
                     div.appendChild(pieChart);
                     pie_chart_data_for_render.push([pieChart.id, data.title, data.values_1, data.text_1, data.values_2, data.text_2])
-                    // renderPieChart(pieChart.id, data.title, data.values_1, data.text_1, data.values_2, data.text_2);
                     col.appendChild(div);
                     let pieChartText = document.createElement("div");
                     pieChartText.className = "pie-chart-text";
@@ -845,7 +810,6 @@
             updateStackedBarChart(round_data.effective_vote_count_stacked_bar_chart.x_labels, round_data.effective_vote_count_stacked_bar_chart.initial_values, round_data.effective_vote_count_stacked_bar_chart.reduced_values);
             updateSankeyChart(round_data.sankey_chart.rows);
             updateIntro(round_data.intro);
-            // renderChordChart(round_data.chord_chart.series);
             pie_chart_data_for_render.forEach(data => {
                 renderPieChart(data[0], data[1], data[2], data[3], data[4], data[5]);
             });

@@ -193,14 +193,12 @@ class MESVisualiser(Visualiser):
         # Round by Round
         round_analysis_page_output = MESVisualiser.template.render( # TODO: Some redudant data is being passed to the template that can be calculated within template directly
             election_name=self.instance.meta["description"] if "description" in self.instance.meta else "No description provided.", 
-            # total_votes=sum(votes_count_by_project(self.profile).values()),
             currency=self.instance.meta["currency"] if "currency" in self.instance.meta else "CUR",
             rounds=self.rounds, 
             projects=self.instance.project_meta,
             number_of_elected_projects=len(outcome),
             number_of_unelected_projects=len(self.instance) - len(outcome),
             spent=total_cost(p for p in self.instance if p.name in outcome),
-            currency=self.instance.meta["currency"] if "currency" in self.instance.meta else "CUR",
             budget=self.instance.meta["budget"],
             total_votes=self.instance.meta["num_votes"]
         )
@@ -234,8 +232,6 @@ class GreedyWelfareVisualiser(Visualiser):
         self.details = greedy_details
         self.rounds = []
         project_votes = votes_count_by_project(self.profile)
-
-        # Order the projects by votes
         self.project_votes = {str(k): project_votes[k] for k in sorted(project_votes, key=project_votes.get, reverse=False)}
         
     
@@ -247,7 +243,6 @@ class GreedyWelfareVisualiser(Visualiser):
         for project in projects:
             if project.discarded:
                 rejected_projects.append({
-                    #TODO: Should only have to store ID (name, cost and votes can be retrieved using 'projects' like it is done for MES)
                     "id": project.project.name,
                     "name": project.project.name,
                     "cost": int(project.project.cost),
@@ -263,15 +258,12 @@ class GreedyWelfareVisualiser(Visualiser):
                 current_round["rejected_projects"] = rejected_projects[:]
                 current_round["remaining_budget"] = int(project.remaining_budget) + int(project.project.cost)
                 rejected_cost=[int(p["cost"]) for p in rejected_projects]
-                current_round["max_cost"] = max(max(rejected_cost), current_round["remaining_budget"]) if rejected_cost else current_round["remaining_budget"] # TODO: Used 1 as default because unsure how to handle case where rejected projects is empty (0 throws divisionbyzero error)
+                current_round["max_cost"] = max(max(rejected_cost), current_round["remaining_budget"]) if rejected_cost else current_round["remaining_budget"]
                 self.rounds.append(current_round)
                 current_round = {}
                 rejected_projects = []
 
-        # Order the rounds by the remaining_budget at each staage
         self.rounds = sorted(self.rounds, key=lambda x: x["remaining_budget"], reverse=True)
-
-        # Go through each round then add an id for each round based on the order of the rounds
         for i, round in enumerate(self.rounds):
             round["id"] = i + 1
 
