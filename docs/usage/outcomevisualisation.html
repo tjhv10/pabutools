@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-theme="light">
+<html lang="en" data-content_root="../" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -18,27 +18,28 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script src="../_static/documentation_options.js?v=951a251d"></script>
+    <script src="../_static/documentation_options.js?v=2bf2fbde"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'usage/outcomevisualisation';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -53,7 +54,15 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -88,11 +97,14 @@
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -107,6 +119,7 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
   
 
 <a class="navbar-brand logo" href="../index.html">
@@ -115,10 +128,22 @@
   
   
   
+  
     <p class="title logo__title">Pabutools</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Pabutools</a></li>
@@ -272,24 +297,28 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
+
 
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -305,6 +334,15 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#greedy-utilitarian-welfare">Greedy Utilitarian Welfare</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#method-of-equal-shares">Method of Equal Shares</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -312,11 +350,48 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section id="outcome-visualisation">
 <h1>Outcome Visualisation<a class="headerlink" href="#outcome-visualisation" title="Link to this heading">#</a></h1>
-<p>To be done.</p>
+<p>For reference, see the module <code class="xref py py-mod docutils literal notranslate"><span class="pre">visualisation</span></code>.</p>
+<p>We provide the visualisation for the outcomes of <a class="reference internal" href="../reference/rules/index.html#pabutools.rules.greedywelfare.greedy_utilitarian_welfare" title="pabutools.rules.greedywelfare.greedy_utilitarian_welfare"><code class="xref py py-func docutils literal notranslate"><span class="pre">greedy_utilitarian_welfare()</span></code></a> and <a class="reference internal" href="../reference/rules/index.html#pabutools.rules.mes.method_of_equal_shares" title="pabutools.rules.mes.method_of_equal_shares"><code class="xref py py-func docutils literal notranslate"><span class="pre">method_of_equal_shares()</span></code></a>. This explains in depth the outcome of the election based on the chosen rule. This includes which projects were selected or rejected, summary statistics about the election, and rule specific information such as effective vote count in <a class="reference internal" href="../reference/rules/index.html#pabutools.rules.mes.method_of_equal_shares" title="pabutools.rules.mes.method_of_equal_shares"><code class="xref py py-func docutils literal notranslate"><span class="pre">method_of_equal_shares()</span></code></a>. The chart libraries we use are ZingChart and Google Developer Charts, and the visualisations are saved as HTML files.</p>
+<p>Note that selecting the visualisation option will increase the runtime of the election, however without this option, the runtime will remain the same.</p>
+<section id="greedy-utilitarian-welfare">
+<h2>Greedy Utilitarian Welfare<a class="headerlink" href="#greedy-utilitarian-welfare" title="Link to this heading">#</a></h2>
+<p>The visualisation for the Greedy Utilitarian Welfare currently works only on additive utility functions.</p>
+<p>We provide a way to visualise the results using the class <code class="xref py py-class docutils literal notranslate"><span class="pre">GreedyWelfareVisualiser</span></code>. Note the analytics flag in the function <a class="reference internal" href="../reference/rules/index.html#pabutools.rules.greedywelfare.greedy_utilitarian_welfare" title="pabutools.rules.greedywelfare.greedy_utilitarian_welfare"><code class="xref py py-func docutils literal notranslate"><span class="pre">greedy_utilitarian_welfare()</span></code></a> must be set to True to generate the visualisation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.visualisation</span> <span class="kn">import</span> <span class="n">GreedyWelfareVisualiser</span>
+<span class="kn">from</span> <span class="nn">pabutools.rules.greedywelfare</span> <span class="kn">import</span> <span class="n">greedy_utilitarian_welfare</span>
+<span class="kn">from</span> <span class="nn">pabutools</span> <span class="kn">import</span> <span class="n">election</span>
+<span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">Cost_Sat</span>
+
+<span class="n">instance</span><span class="p">,</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">election</span><span class="o">.</span><span class="n">parse_pabulib</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_election_file}</span><span class="s2">.pb&quot;</span><span class="p">)</span>
+<span class="n">outcome</span> <span class="o">=</span> <span class="n">greedy_utilitarian_welfare</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">sat_class</span><span class="o">=</span><span class="n">Cost_Sat</span><span class="p">,</span> <span class="n">analytics</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">visualiser</span> <span class="o">=</span> <span class="n">GreedyWelfareVisualiser</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">outcome</span><span class="o">.</span><span class="n">details</span><span class="p">)</span>
+<span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The visualisation will be saved in the specified path as a standalone HTML file called round_analysis.html.</p>
+<p>Note that the visualisation is only available for additive utility functions.</p>
+</section>
+<section id="method-of-equal-shares">
+<h2>Method of Equal Shares<a class="headerlink" href="#method-of-equal-shares" title="Link to this heading">#</a></h2>
+<p>We provide a way to visualise the results using the class <code class="xref py py-class docutils literal notranslate"><span class="pre">MESVisualiser</span></code>. Note the analytics flag in the function <a class="reference internal" href="../reference/rules/index.html#pabutools.rules.mes.method_of_equal_shares" title="pabutools.rules.mes.method_of_equal_shares"><code class="xref py py-func docutils literal notranslate"><span class="pre">method_of_equal_shares()</span></code></a> must be set to True to generate the visualisation. The visualisations for MES consist of two pages: one for the summary of the election, containing the allocation of the budget, information about all the elected projects, and summary statistics about the election as a whole. The second page contains the details of the election, giving statistics about each round of the election, including the selected project, and how each round impacts the effective vote count of others. This captures the essence of the method of equal shares, where the effective vote count of each project is updated after each round.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.visualisation</span> <span class="kn">import</span> <span class="n">MESVisualiser</span>
+<span class="kn">from</span> <span class="nn">pabutools.rules.mes</span> <span class="kn">import</span> <span class="n">method_of_equal_shares</span>
+<span class="kn">from</span> <span class="nn">pabutools</span> <span class="kn">import</span> <span class="n">election</span>
+
+<span class="n">instance</span><span class="p">,</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">election</span><span class="o">.</span><span class="n">parse_pabulib</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_election_file}</span><span class="s2">.pb&quot;</span><span class="p">)</span>
+<span class="n">outcome</span> <span class="o">=</span> <span class="n">method_of_equal_shares</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">analytics</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">visualiser</span> <span class="o">=</span> <span class="n">MESVisualiser</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">outcome</span><span class="o">.</span><span class="n">details</span><span class="p">)</span>
+<span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The visualisations will be saved with the filenames summary.html and round_analysis.html respectively in the specified path. These work as standalone HTML files, and must be stored in the same directory to ensure the links between different pages work correctly.</p>
+</section>
 </section>
 
 
@@ -325,11 +400,10 @@ document.write(`
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="rules.html"
@@ -349,15 +423,28 @@ document.write(`
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#greedy-utilitarian-welfare">Greedy Utilitarian Welfare</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#method-of-equal-shares">Method of Equal Shares</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
@@ -375,6 +462,7 @@ By Simon Rey, Grzegorz Pierczyński, Markus Utke and Piotr Skowron
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2023, Simon Rey, Grzegorz Pierczyński, Markus Utke and Piotr Skowron.
@@ -401,8 +489,8 @@ By Simon Rey, Grzegorz Pierczyński, Markus Utke and Piotr Skowron
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>
