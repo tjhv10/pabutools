@@ -425,4 +425,4 @@ class GreedyWelfareVisualiser(Visualiser):
             os.makedirs(output_folder_path)
         with open(f"{output_folder_path}/round_analysis.html", "w", encoding="utf-8") as o:
             o.write(round_analysis_page_output)
-    
+            
