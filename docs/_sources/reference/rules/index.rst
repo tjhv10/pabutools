@@ -15,6 +15,8 @@ Greedy Utilitarian Rule
 
 .. autofunction:: pabutools.rules.greedywelfare.greedy_utilitarian_welfare
 
+.. autoclass:: pabutools.rules.greedywelfare.GreedyWelfareAllocationDetails
+
 Additive Utilitarian Welfare Maximiser
 --------------------------------------
 

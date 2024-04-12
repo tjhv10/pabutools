@@ -29,18 +29,24 @@ class MaxAddUtilWelfareAlgo(DocEnum):
     maximising the additive utilitarian welfare.
     """
 
-    ILP_SOLVER = 1, "Converts the instance into a integer linear program (ILP) and uses an ILP " \
-                    "solver to compute the outcome."
+    ILP_SOLVER = (
+        1,
+        "Converts the instance into a integer linear program (ILP) and uses an ILP "
+        "solver to compute the outcome.",
+    )
 
-    PRIMAL_DUAL = 2, "Uses state-of-the-art primal/dual solvers for knapsack problems to compute " \
-                     "the outcome."
+    PRIMAL_DUAL = (
+        2,
+        "Uses state-of-the-art primal/dual solvers for knapsack problems to compute "
+        "the outcome.",
+    )
 
 
 def max_additive_utilitarian_welfare_ilp_scheme(
-        instance: Instance,
-        sat_profile: GroupSatisfactionMeasure,
-        initial_budget_allocation: Collection[Project],
-        resoluteness: bool = True,
+    instance: Instance,
+    sat_profile: GroupSatisfactionMeasure,
+    initial_budget_allocation: Collection[Project],
+    resoluteness: bool = True,
 ) -> BudgetAllocation | list[BudgetAllocation]:
     """
     The inner algorithm for the welfare maximizing rule. It generates the corresponding budget allocations using a
@@ -93,14 +99,14 @@ def max_additive_utilitarian_welfare_ilp_scheme(
     while True:
         # See http://yetanothermathprogrammingconsultant.blogspot.com/2011/10/integer-cuts.html
         mip_model += (
-                xsum(1 - p_vars[p] for p in previous_partial_alloc)
-                + xsum(p_vars[p] for p in p_vars if p not in previous_partial_alloc)
-                >= 1
+            xsum(1 - p_vars[p] for p in previous_partial_alloc)
+            + xsum(p_vars[p] for p in p_vars if p not in previous_partial_alloc)
+            >= 1
         )
         mip_model += (
-                xsum(p_vars[p] for p in previous_partial_alloc)
-                - xsum(p_vars[p] for p in p_vars if p not in previous_partial_alloc)
-                <= len(previous_partial_alloc) - 1
+            xsum(p_vars[p] for p in previous_partial_alloc)
+            - xsum(p_vars[p] for p in p_vars if p not in previous_partial_alloc)
+            <= len(previous_partial_alloc) - 1
         )
 
         opt_status = mip_model.optimize()
@@ -117,9 +123,9 @@ def max_additive_utilitarian_welfare_ilp_scheme(
 
 
 def max_additive_utilitarian_welfare_primal_dual_scheme(
-        instance: Instance,
-        sat_profile: GroupSatisfactionMeasure,
-        initial_budget_allocation: Collection[Project],
+    instance: Instance,
+    sat_profile: GroupSatisfactionMeasure,
+    initial_budget_allocation: Collection[Project],
 ) -> BudgetAllocation:
     budget_allocation = BudgetAllocation(initial_budget_allocation)
 
@@ -179,8 +185,18 @@ def primal_dual_branch(items: list[KnapsackItem], capacity: float):
     lower_bound = [0]
     a_star = [-1]
     b_star = [-1]
-    primal_dual_branch_impl(split_idx - 1, split_idx, split_profit, split_weight, items, capacity,
-                            solution, lower_bound, a_star, b_star)
+    primal_dual_branch_impl(
+        split_idx - 1,
+        split_idx,
+        split_profit,
+        split_weight,
+        items,
+        capacity,
+        solution,
+        lower_bound,
+        a_star,
+        b_star,
+    )
 
     result = []
     for i in range(len(items)):
@@ -194,8 +210,9 @@ def primal_dual_branch(items: list[KnapsackItem], capacity: float):
     return result
 
 
-def primal_dual_branch_impl(a, b, profit_sum, weight_sum, items, capacity, x, lower_bound, a_star,
-                            b_star):
+def primal_dual_branch_impl(
+    a, b, profit_sum, weight_sum, items, capacity, x, lower_bound, a_star, b_star
+):
     improved = False
 
     if weight_sum <= capacity:
@@ -214,13 +231,33 @@ def primal_dual_branch_impl(a, b, profit_sum, weight_sum, items, capacity, x, lo
 
         pb = items[b].profit
         wb = items[b].weight
-        if primal_dual_branch_impl(a, b + 1, profit_sum + pb, weight_sum + wb, items, capacity, x,
-                                   lower_bound, a_star, b_star):
+        if primal_dual_branch_impl(
+            a,
+            b + 1,
+            profit_sum + pb,
+            weight_sum + wb,
+            items,
+            capacity,
+            x,
+            lower_bound,
+            a_star,
+            b_star,
+        ):
             x[b] = 1
             improved = True
 
-        if primal_dual_branch_impl(a, b + 1, profit_sum, weight_sum, items, capacity, x,
-                                   lower_bound, a_star, b_star):
+        if primal_dual_branch_impl(
+            a,
+            b + 1,
+            profit_sum,
+            weight_sum,
+            items,
+            capacity,
+            x,
+            lower_bound,
+            a_star,
+            b_star,
+        ):
             x[b] = 0
             improved = True
     else:
@@ -233,13 +270,33 @@ def primal_dual_branch_impl(a, b, profit_sum, weight_sum, items, capacity, x, lo
 
         pa = items[a].profit
         wa = items[a].weight
-        if primal_dual_branch_impl(a - 1, b, profit_sum - pa, weight_sum - wa, items, capacity, x,
-                                   lower_bound, a_star, b_star):
+        if primal_dual_branch_impl(
+            a - 1,
+            b,
+            profit_sum - pa,
+            weight_sum - wa,
+            items,
+            capacity,
+            x,
+            lower_bound,
+            a_star,
+            b_star,
+        ):
             x[a] = 0
             improved = True
 
-        if primal_dual_branch_impl(a - 1, b, profit_sum, weight_sum, items, capacity, x,
-                                   lower_bound, a_star, b_star):
+        if primal_dual_branch_impl(
+            a - 1,
+            b,
+            profit_sum,
+            weight_sum,
+            items,
+            capacity,
+            x,
+            lower_bound,
+            a_star,
+            b_star,
+        ):
             x[a] = 1
             improved = True
 
@@ -247,13 +304,13 @@ def primal_dual_branch_impl(a, b, profit_sum, weight_sum, items, capacity, x, lo
 
 
 def max_additive_utilitarian_welfare(
-        instance: Instance,
-        profile: AbstractProfile,
-        sat_class: type[SatisfactionMeasure] | None = None,
-        sat_profile: GroupSatisfactionMeasure | None = None,
-        resoluteness: bool = True,
-        initial_budget_allocation: Collection[Project] | None = None,
-        inner_algo: MaxAddUtilWelfareAlgo | None = None,
+    instance: Instance,
+    profile: AbstractProfile,
+    sat_class: type[SatisfactionMeasure] | None = None,
+    sat_profile: GroupSatisfactionMeasure | None = None,
+    resoluteness: bool = True,
+    initial_budget_allocation: Collection[Project] | None = None,
+    inner_algo: MaxAddUtilWelfareAlgo | None = None,
 ) -> BudgetAllocation | list[BudgetAllocation]:
     """
     Rule returning the budget allocation(s) maximizing the utilitarian social welfare. The
@@ -311,7 +368,9 @@ def max_additive_utilitarian_welfare(
             sat_profile = profile.as_sat_profile(sat_class=sat_class)
     if inner_algo:
         if inner_algo == MaxAddUtilWelfareAlgo.PRIMAL_DUAL and not resoluteness:
-            raise ValueError("The primal/dual algorithm does not support irresolute outcomes.")
+            raise ValueError(
+                "The primal/dual algorithm does not support irresolute outcomes."
+            )
     else:
         if resoluteness:
             inner_algo = MaxAddUtilWelfareAlgo.PRIMAL_DUAL
@@ -326,5 +385,7 @@ def max_additive_utilitarian_welfare(
             instance, sat_profile, budget_allocation, resoluteness
         )
     else:
-        raise ValueError("The parameter 'inner_algo' needs to be a member of the "
-                         "MaxAddUtilWelfareAlgo enumeration.")
+        raise ValueError(
+            "The parameter 'inner_algo' needs to be a member of the "
+            "MaxAddUtilWelfareAlgo enumeration."
+        )

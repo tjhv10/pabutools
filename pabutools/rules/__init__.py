@@ -25,7 +25,7 @@ from pabutools.rules.exhaustion import (
 from pabutools.rules.greedywelfare import greedy_utilitarian_welfare
 from pabutools.rules.maxwelfare import (
     max_additive_utilitarian_welfare,
-    MaxAddUtilWelfareAlgo
+    MaxAddUtilWelfareAlgo,
 )
 from pabutools.rules.mes import (
     method_of_equal_shares,

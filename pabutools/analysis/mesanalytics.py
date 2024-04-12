@@ -222,9 +222,7 @@ def calculate_effective_support(
     mes_params["analytics"] = True
     mes_params["skipped_project"] = project
     mes_params["resoluteness"] = True
-    details = method_of_equal_shares(
-        instance, profile, **mes_params
-    ).details
+    details = method_of_equal_shares(instance, profile, **mes_params).details
     effective_support = details.skipped_project_eff_support
     if was_picked:
         effective_support = max(effective_support, 100)

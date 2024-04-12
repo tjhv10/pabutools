@@ -109,9 +109,9 @@ def dummy_elections():
     test_election.irr_results_sat[max_additive_utilitarian_welfare][Cost_Sat] = sorted(
         [[p[0], p[2]], [p[1]], [p[2], p[3]]]
     )
-    test_election.irr_results_sat[max_additive_utilitarian_welfare][Cardinality_Sat] = (
-        sorted([[p[0], p[3]], [p[0], p[2]], [p[2], p[3]]])
-    )
+    test_election.irr_results_sat[max_additive_utilitarian_welfare][
+        Cardinality_Sat
+    ] = sorted([[p[0], p[3]], [p[0], p[2]], [p[2], p[3]]])
     res.append(test_election)
 
     # Approval example 2
@@ -193,9 +193,9 @@ def dummy_elections():
     test_election.irr_results_sat[max_additive_utilitarian_welfare][Cost_Sat] = sorted(
         [[p[0], p[2]], [p[2]]]
     )
-    test_election.irr_results_sat[max_additive_utilitarian_welfare][Cardinality_Sat] = (
-        sorted([[p[0], p[2]]])
-    )
+    test_election.irr_results_sat[max_additive_utilitarian_welfare][
+        Cardinality_Sat
+    ] = sorted([[p[0], p[2]]])
     test_election.irr_results_sat[method_of_equal_shares][Cost_Sat] = sorted([[]])
     test_election.irr_results_sat[mes_iterated][Cost_Sat] = sorted([[p[2]]])
     test_election.irr_results_sat[method_of_equal_shares][Cardinality_Sat] = sorted(
@@ -212,9 +212,9 @@ def dummy_elections():
     prof = ApprovalProfile([ApprovalBallot()], instance=inst)
     test_election = DummyElection("EmptyProfile", p, inst, prof)
     for sat_class in ALL_SAT:
-        test_election.irr_results_sat[max_additive_utilitarian_welfare][sat_class] = (
-            sorted([sorted(list(b)) for b in inst.budget_allocations()])
-        )
+        test_election.irr_results_sat[max_additive_utilitarian_welfare][
+            sat_class
+        ] = sorted([sorted(list(b)) for b in inst.budget_allocations()])
         test_election.irr_results_sat[greedy_utilitarian_welfare][sat_class] = sorted(
             [
                 sorted(list(b))
@@ -239,9 +239,9 @@ def dummy_elections():
     initial_alloc = p[:1]
     test_election = DummyElection("EmptyProfile_Initial", p, inst, prof, initial_alloc)
     for sat_class in ALL_SAT:
-        test_election.irr_results_sat[max_additive_utilitarian_welfare][sat_class] = (
-            sorted([sorted(list(b)) for b in inst.budget_allocations() if p[0] in b])
-        )
+        test_election.irr_results_sat[max_additive_utilitarian_welfare][
+            sat_class
+        ] = sorted([sorted(list(b)) for b in inst.budget_allocations() if p[0] in b])
         test_election.irr_results_sat[greedy_utilitarian_welfare][sat_class] = sorted(
             [
                 sorted(list(b))
@@ -541,7 +541,7 @@ class TestRule(TestCase):
             method_of_equal_shares,
             {"sat_class": Cost_Sat},
             budget_step=frac(1, 24),
-            exhaustive_stop=exhaustive_stop
+            exhaustive_stop=exhaustive_stop,
         )
         assert sorted(budget_allocation_mes_iterated) == [
             projects[0],
@@ -557,7 +557,7 @@ class TestRule(TestCase):
             {"sat_class": Cost_Sat},
             budget_step=frac(1, 24),
             initial_budget_allocation=[projects[6]],
-            exhaustive_stop=exhaustive_stop
+            exhaustive_stop=exhaustive_stop,
         )
         assert sorted(budget_allocation_mes_iterated) == [
             projects[0],
@@ -572,7 +572,7 @@ class TestRule(TestCase):
             method_of_equal_shares,
             {"sat_class": Cost_Sat},
             budget_step=5,
-            exhaustive_stop=exhaustive_stop
+            exhaustive_stop=exhaustive_stop,
         )
         assert budget_allocation_mes_iterated_big_steps == [projects[0]]
 
@@ -695,7 +695,18 @@ class TestRule(TestCase):
                 [0, 2],
                 [0],
                 [
-                    [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
+                    [
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
                 ],
             ),
             (
@@ -704,8 +715,30 @@ class TestRule(TestCase):
                 [0],
                 [0, 1],
                 [
-                    [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
-                    [frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(1, 2), frac(1, 2)],
+                    [
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
+                    [
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
                 ],
             ),
             (
@@ -714,8 +747,30 @@ class TestRule(TestCase):
                 [0, 1, 2],
                 [0, 1],
                 [
-                    [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
-                    [frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(3, 8), frac(1, 2), frac(1, 2)],
+                    [
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
+                    [
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
                 ],
             ),
             (
@@ -724,25 +779,55 @@ class TestRule(TestCase):
                 [0, 1, 2],
                 [1, 3],
                 [
-                    [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2),  frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
-                    [frac(1, 4), frac(1, 4), frac(1, 2), frac(1, 4),  frac(1, 4), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)] 
+                    [
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
+                    [
+                        frac(1, 4),
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 4),
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
                 ],
             ),
-            (
-                [5, 5, 5, 5, 5],
-                [0, 1, 2],
-                [0, 1, 2],
-                [],
-                []
-            ),
+            ([5, 5, 5, 5, 5], [0, 1, 2], [0, 1, 2], [], []),
             (
                 [5, 1, 2, 1, 2],
                 [0, 1, 2],
                 [0, 1, 2],
                 [1, 3],
                 [
-                    [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
-                    [frac(1, 4), frac(1, 2), frac(1, 4), frac(1, 2), frac(1, 2), frac(1, 2)],
+                    [
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
+                    [
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
                 ],
                 True,
                 [2, 1, 2, 1, 2, 2],
@@ -753,8 +838,22 @@ class TestRule(TestCase):
                 [0, 1, 2],
                 [1, 3],
                 [
-                    [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
-                    [frac(1, 4), frac(1, 2), frac(1, 4), frac(1, 2), frac(1, 2), frac(1, 2)],
+                    [
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
+                    [
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
                 ],
                 True,
                 [2, 1, 2, 1, 2, 2],
@@ -765,8 +864,22 @@ class TestRule(TestCase):
                 [0, 1, 2],
                 [1, 3],
                 [
-                    [frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2), frac(1, 2)],
-                    [frac(1, 4), frac(1, 2), frac(1, 4), frac(1, 2), frac(1, 2), frac(1, 2)],
+                    [
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
+                    [
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ],
                 ],
                 True,
                 [2, 1, 2, 1, 2, 2],
@@ -810,14 +923,17 @@ class TestRule(TestCase):
             assert result.details.iterations[0].voters_budget[0] == frac(1, 2)
         assert result.details.voter_multiplicity == expected_multiplicity
         for idx, anl in enumerate(
-            sorted(result.details.get_all_project_details(), key=lambda proj_details: proj_details.project.name)
+            sorted(
+                result.details.get_all_project_details(),
+                key=lambda proj_details: proj_details.project.name,
+            )
         ):
             assert anl.project.name == projects[idx].name
             assert not anl.was_picked() or anl.project in result
 
         for idx, it in enumerate(result.details.iterations):
             assert it.voters_budget == expected_voter_budgets[idx]
-        
+
     def test_mes_analytics_irresolute(self):
         projects = [Project(chr(ord("a") + idx), 3) for idx in range(0, 3)]
         instance = Instance(projects, budget_limit=6)
@@ -831,7 +947,7 @@ class TestRule(TestCase):
         result = method_of_equal_shares(
             instance, profile, Cost_Sat, resoluteness=False, analytics=True
         )
-        #TODO: Support for analytics in non-resolute case
+        # TODO: Support for analytics in non-resolute case
         assert True
         # assert all(elem in result for elem in [[proj] for proj in projects])
         # assert len(result) == 3
@@ -874,17 +990,24 @@ class TestRule(TestCase):
             [frac(2, 3)] * 10,
             [frac(1, 2)] * 6 + [frac(2, 3)] * 4,
             [frac(1, 6)] * 2 + [frac(1, 2)] * 4 + [frac(1, 3)] + [frac(2, 3)] * 3,
-            [frac(1, 6)] * 4 + [frac(1, 2)] * 2 + [0] + [frac(2, 3)] * 3
+            [frac(1, 6)] * 4 + [frac(1, 2)] * 2 + [0] + [frac(2, 3)] * 3,
         ]
 
         assert sorted(
             list(budget_allocation_mes_iterated), key=lambda proj: proj.name
         ) == [projects[idx] for idx in range(4)]
 
-        assert len(budget_allocation_mes_iterated.details.get_all_project_details()) == 7
-        assert budget_allocation_mes_iterated.details.iterations[0].voters_budget[0] == frac(
-            2, 3
+        assert (
+            len(budget_allocation_mes_iterated.details.get_all_project_details()) == 7
         )
-        assert budget_allocation_mes_iterated.details.get_all_selected_projects() == list(budget_allocation_mes_iterated)
-        for idx, iteration in enumerate(budget_allocation_mes_iterated.details.iterations):
+        assert budget_allocation_mes_iterated.details.iterations[0].voters_budget[
+            0
+        ] == frac(2, 3)
+        assert (
+            budget_allocation_mes_iterated.details.get_all_selected_projects()
+            == list(budget_allocation_mes_iterated)
+        )
+        for idx, iteration in enumerate(
+            budget_allocation_mes_iterated.details.iterations
+        ):
             assert iteration.voters_budget == expected_voter_budgets[idx]

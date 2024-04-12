@@ -651,9 +651,9 @@ def method_of_equal_shares(
     verbose: bool = False,
 ) -> BudgetAllocation | list[BudgetAllocation]:
     """
-    The Method of Equal Shares (MES). See the website
-    `equalshares.net <https://equalshares.net/>`_ for details about how to compute the outcome of the rule. Note that
-    the satisfaction measure is asssumed to be additive.
+    The Method of Equal Shares (MES). See the website `equalshares.net <https://equalshares.net/>`_
+    for details about how to compute the outcome of the rule. Note that the satisfaction measure is
+    assumed to be additive.
 
     Parameters
     ----------

@@ -4,6 +4,7 @@ from collections.abc import Iterable
 
 from pabutools.election.instance import Project
 
+
 class AllocationDetails:
     """
     Class representing participatory budgeting rule run details.

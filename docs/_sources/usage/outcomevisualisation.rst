@@ -1,3 +1,5 @@
+.. _outcome-visualisation:
+
 Outcome Visualisation
 =====================
 

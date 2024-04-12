@@ -233,7 +233,10 @@ def votes_count_by_project(profile: AbstractCardinalProfile) -> dict[str, int]:
 
     return project_votes
 
-def voter_flow_matrix(instance: Instance, profile: AbstractCardinalProfile) -> dict[str, dict[str, int]]:
+
+def voter_flow_matrix(
+    instance: Instance, profile: AbstractCardinalProfile
+) -> dict[str, dict[str, int]]:
     """
     Returns the voter flow matrix. The voter flow matrix is a 2D dictionary where voter_flow[a][b] is the number of
     voters for 'a' who voted for 'b'

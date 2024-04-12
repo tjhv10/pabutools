@@ -17,6 +17,7 @@ class GreedyWelfareAllocationDetails(AllocationDetails):
         proj.remaining_budget = remaining_budget
         proj.discarded = False
 
+
 class GreedyWelfareProjectDetails:
     def __init__(
         self,

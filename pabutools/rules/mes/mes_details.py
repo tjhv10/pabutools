@@ -150,9 +150,9 @@ class MESIteration(list[MESProjectDetails]):
         selected_project: Project | None = None,
     ):
         self.voters_budget: list[Numeric] | None = voters_budget
-        self.voters_budget_after_selection: list[Numeric] | None = (
-            voters_budget_after_selection
-        )
+        self.voters_budget_after_selection: list[
+            Numeric
+        ] | None = voters_budget_after_selection
         self.selected_project: Project | None = selected_project
         super().__init__()
 

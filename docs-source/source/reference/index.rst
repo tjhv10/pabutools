@@ -8,6 +8,7 @@ Reference
     election/index
     rules/index
     analysis/index
+    visualisation/index
     tiebreaking
     fractions
     utils

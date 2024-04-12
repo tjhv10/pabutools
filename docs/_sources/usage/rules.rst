@@ -452,7 +452,8 @@ We also provide a similar comparison using utilitarian social welfare through th
 Details for the Budget Allocation Rule
 --------------------------------------
 
-Some rules, for instance :py:func:`~pabutools.rules.mes.method_of_equal_shares`, accept a
+Some rules, for instance :py:func:`~pabutools.rules.greedywelfare.greedy_utilitarian_welfare` or
+:py:func:`~pabutools.rules.mes.method_of_equal_shares`, accept a
 :code:`analytics` boolean argument to activate the storage of additional information
 regarding the budget allocations output by the rule. When :code:`analytics = True`,
 the rule populate the :code:`details` member of the
@@ -465,5 +466,9 @@ The stored information can then be used for analytical purposes.
 
    * - Rule
      - Details class
+   * - :py:func:`~pabutools.rules.greedywelfare.greedy_utilitarian_welfare`
+     - :py:class:`~pabutools.rules.greedywelfare.GreedyWelfareAllocationDetails`
    * - :py:func:`~pabutools.rules.mes.method_of_equal_shares`
      - :py:class:`~pabutools.rules.mes.MESAllocationDetails`
+
+See the :ref:`outcome-visualisation` page for more details.

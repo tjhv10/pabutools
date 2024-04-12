@@ -24,7 +24,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.autodoc",
     "sphinx.ext.imgmath",
-    'enum_tools.autoenum'
+    "enum_tools.autoenum",
 ]
 
 add_module_names = False

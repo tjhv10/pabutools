@@ -9,7 +9,10 @@ from collections.abc import Collection, Iterable
 from math import inf
 
 from pabutools.rules.budgetallocation import BudgetAllocation
-from pabutools.rules.greedywelfare.greedywelfare_details import GreedyWelfareAllocationDetails, GreedyWelfareProjectDetails
+from pabutools.rules.greedywelfare.greedywelfare_details import (
+    GreedyWelfareAllocationDetails,
+    GreedyWelfareProjectDetails,
+)
 from pabutools.utils import Numeric
 
 from pabutools.election import AbstractBallot
@@ -63,6 +66,7 @@ def greedy_utilitarian_scheme(
             The selected projects if resolute (:code:`resoluteness == True`), or the set of selected projects if irresolute
             (:code:`resoluteness == False`).
     """
+
     def aux(inst, prof, feasible, sats, allocs, alloc, tie, resolute):
         if len(feasible) == 0:
             if resolute:
@@ -195,9 +199,19 @@ def greedy_utilitarian_scheme_additive(
                 return frac(total_sat, proj.cost)
             return inf
         return 0
-    selection = BudgetAllocation(budget_allocation, details=GreedyWelfareAllocationDetails())
+
+    selection = BudgetAllocation(
+        budget_allocation, details=GreedyWelfareAllocationDetails()
+    )
     if analytics:
-        selection.details.projects.extend([GreedyWelfareProjectDetails(project, score=satisfaction_density(project)) for project in projects])
+        selection.details.projects.extend(
+            [
+                GreedyWelfareProjectDetails(
+                    project, score=satisfaction_density(project)
+                )
+                for project in projects
+            ]
+        )
     # We sort based on a tuple to ensure ties are broken as intended
     ordered_projects = sorted(
         projects, key=lambda p: (-satisfaction_density(p), projects.index(p))
