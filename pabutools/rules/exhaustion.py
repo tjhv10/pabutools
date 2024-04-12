@@ -103,6 +103,7 @@ def exhaustion_by_budget_increase(
     rule_params: dict | None = None,
     initial_budget_allocation: Iterable[Project] | None = None,
     resoluteness: bool = True,
+    exhaustive_stop: bool = True,
     budget_step: Numeric | None = None,
     budget_bound: Numeric | None = None,
 ) -> BudgetAllocation | list[BudgetAllocation]:
@@ -127,6 +128,9 @@ def exhaustion_by_budget_increase(
         resoluteness : bool, optional
             Set to `False` to obtain an irresolute outcome, where all tied budget allocations are returned.
             Defaults to True.
+        exhaustive_stop: bool, optional
+            Set to `False` to disable the exhaustive allocation stop condition, leaving only non-feasibility as
+            th stop condition of this rule. Defaults to True.
         budget_step: Numeric
             The step at which the budget is increased. Defaults to 1% of the budget limit.
         budget_bound: Numeric
@@ -161,14 +165,14 @@ def exhaustion_by_budget_increase(
         if resoluteness:
             if not instance.is_feasible(outcome):
                 return previous_outcome
-            if instance.is_exhaustive(outcome):
+            if exhaustive_stop and instance.is_exhaustive(outcome):
                 return outcome
             current_instance.budget_limit += budget_step
             previous_outcome = outcome
         else:
             if any(not instance.is_feasible(o) for o in outcome):
                 return previous_outcome
-            if any(instance.is_exhaustive(o) for o in outcome):
+            if exhaustive_stop and any(instance.is_exhaustive(o) for o in outcome):
                 return outcome
             current_instance.budget_limit += budget_step
             previous_outcome = outcome

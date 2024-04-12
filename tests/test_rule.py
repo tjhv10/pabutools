@@ -504,7 +504,8 @@ class TestRule(TestCase):
         with self.assertRaises(ValueError):
             method_of_equal_shares(Instance(), ApprovalProfile())
 
-    def test_iterated_exhaustion(self):
+    @parameterized.expand([(True,), (False,)])
+    def test_iterated_exhaustion(self, exhaustive_stop):
         projects = [
             Project("a", 1),
             Project("b", 1),
@@ -540,6 +541,7 @@ class TestRule(TestCase):
             method_of_equal_shares,
             {"sat_class": Cost_Sat},
             budget_step=frac(1, 24),
+            exhaustive_stop=exhaustive_stop
         )
         assert sorted(budget_allocation_mes_iterated) == [
             projects[0],
@@ -555,6 +557,7 @@ class TestRule(TestCase):
             {"sat_class": Cost_Sat},
             budget_step=frac(1, 24),
             initial_budget_allocation=[projects[6]],
+            exhaustive_stop=exhaustive_stop
         )
         assert sorted(budget_allocation_mes_iterated) == [
             projects[0],
@@ -569,6 +572,7 @@ class TestRule(TestCase):
             method_of_equal_shares,
             {"sat_class": Cost_Sat},
             budget_step=5,
+            exhaustive_stop=exhaustive_stop
         )
         assert budget_allocation_mes_iterated_big_steps == [projects[0]]
 

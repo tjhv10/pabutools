@@ -310,6 +310,7 @@ class TestAnalysis(TestCase):
             {},
         ]
 
+        assert len(project_losses) == len(projects)
         for idx, project_loss in enumerate(project_losses):
             assert project_loss.name == projects[idx].name
             assert project_loss.supporters_budget == expected_budgets[idx]
@@ -321,12 +322,12 @@ class TestAnalysis(TestCase):
 
     @parameterized.expand(
         [
-            ([1, 1, 2, 1, 2], [200, 150, 37, 75, 50]),
-            ([5, 1, 2, 1, 2], [60, 200, 50, 100, 50]),
-            ([5, 5, 5, 5, 5], [80, 40, 30, 20, 20])
+            ([1, 1, 2, 1, 2], [0, 1], [200, 150, 37, 75, 50]),
+            ([5, 1, 2, 1, 2], [1, 3], [60, 200, 50, 100, 50]),
+            ([5, 5, 5, 5, 5], [], [80, 40, 30, 20, 20]),
         ]
     )
-    def test_effective_support(self, costs, expected_effective_support):
+    def test_effective_support(self, costs, allocation, expected_effective_support):
         projects = [Project(chr(ord("a") + idx), costs[idx]) for idx in range(0, 5)]
         instance = Instance(projects, budget_limit=2)
         profile = ApprovalProfile(
@@ -343,12 +344,14 @@ class TestAnalysis(TestCase):
                 ApprovalBallot({projects[4]}),
             ]
         )
-        
-        result = calculate_effective_supports(instance, profile, {"sat_class": Cost_Sat}, 5)
+        budget_allocation = BudgetAllocation(allocation)
+
+        result = calculate_effective_supports(
+            instance, profile, budget_allocation, {"sat_class": Cost_Sat}, 5
+        )
         assert len(result) == len(projects)
         sorted_projects = sorted(list(result), key=lambda proj: proj.name)
 
         for idx, project in enumerate(sorted_projects):
             assert project.name == chr(ord("a") + idx)
             assert result[project] == expected_effective_support[idx]
-
