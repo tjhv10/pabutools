@@ -692,6 +692,8 @@ document.write(`
             <span class="nb">round</span><span class="p">[</span><span class="s2">&quot;voter_flow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">voter_flow_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_pie_charts</span><span class="p">(</span><span class="n">projectVotes</span><span class="p">)</span>
 
+<div class="viewcode-block" id="MESVisualiser.render">
+<a class="viewcode-back" href="../../../reference/visualisation/index.html#pabutools.visualisation.MESVisualiser.render">[docs]</a>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">output_folder_path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Render the visualisation.</span>
@@ -750,6 +752,7 @@ document.write(`
             <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">round_analysis_page_output</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_folder_path</span><span class="si">}</span><span class="s2">/summary.html&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o</span><span class="p">:</span>
             <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">summary_page_output</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -761,19 +764,14 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`</span>
-<span class="sd">        The profile.</span>
-<span class="sd">    instance : :py:class:`~pabutools.election.instance.Instance`</span>
-<span class="sd">        The election instance.</span>
-<span class="sd">    greedy_details : :py:class:`~pabutools.rules.greedywelfare.greedywelfare_details.GreedyWelfareAllocationDetails`</span>
-<span class="sd">        The details of the Greedy Welfare allocation.</span>
-<span class="sd">    verbose : bool, optional</span>
-<span class="sd">        Whether to print the results to the console. The default is False.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    None</span>
-
+<span class="sd">        profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`</span>
+<span class="sd">            The profile.</span>
+<span class="sd">        instance : :py:class:`~pabutools.election.instance.Instance`</span>
+<span class="sd">            The election instance.</span>
+<span class="sd">        greedy_details : :py:class:`~pabutools.rules.greedywelfare.greedywelfare_details.GreedyWelfareAllocationDetails`</span>
+<span class="sd">            The details of the Greedy Welfare allocation.</span>
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            Whether to print the results to the console. The default is False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">template</span> <span class="o">=</span> <span class="n">ENV</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s2">&quot;./templates/greedy_round_analysis_template.html&quot;</span><span class="p">)</span>
@@ -799,15 +797,6 @@ document.write(`
     <span class="k">def</span> <span class="nf">_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the data necessary for the visualisation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">rounds</span> <span class="o">=</span> <span class="p">[]</span>
@@ -855,20 +844,22 @@ document.write(`
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="nb">round</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rounds</span><span class="p">):</span>
             <span class="nb">round</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
 
+<div class="viewcode-block" id="GreedyWelfareVisualiser.render">
+<a class="viewcode-back" href="../../../reference/visualisation/index.html#pabutools.visualisation.GreedyWelfareVisualiser.render">[docs]</a>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">output_folder_path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Render the visualisation.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        outcome : list [:py:class:`~pabutools.election.instance.Project`]</span>
-<span class="sd">            The list of elected projects.</span>
-<span class="sd">        output_folder_path : str</span>
-<span class="sd">            The path to the folder where the visualisation will be saved.</span>
+<span class="sd">            outcome : list [:py:class:`~pabutools.election.instance.Project`]</span>
+<span class="sd">                The list of elected projects.</span>
+<span class="sd">            output_folder_path : str</span>
+<span class="sd">                The path to the folder where the visualisation will be saved.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        None</span>
+<span class="sd">            None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_calculate</span><span class="p">()</span>
@@ -902,6 +893,7 @@ document.write(`
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_folder_path</span><span class="si">}</span><span class="s2">/round_analysis.html&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
         <span class="p">)</span> <span class="k">as</span> <span class="n">o</span><span class="p">:</span>
             <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">round_analysis_page_output</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
 

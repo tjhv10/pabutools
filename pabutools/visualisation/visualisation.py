@@ -482,23 +482,19 @@ class MESVisualiser(Visualiser):
 
 class GreedyWelfareVisualiser(Visualiser):
     """
-    Class used to visualise the results of a Greedy Welfare election. The visualisation result consits of a round by round analysis page called 'round_analysis.html'.
+    Class used to visualise the results of a Greedy Welfare election. The visualisation result
+    consits of a round by round analysis page called 'round_analysis.html'.
 
     Parameters
     ----------
-    profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`
-        The profile.
-    instance : :py:class:`~pabutools.election.instance.Instance`
-        The election instance.
-    greedy_details : :py:class:`~pabutools.rules.greedywelfare.greedywelfare_details.GreedyWelfareAllocationDetails`
-        The details of the Greedy Welfare allocation.
-    verbose : bool, optional
-        Whether to print the results to the console. The default is False.
-
-    Returns
-    -------
-    None
-
+        profile : :py:class:`~pabutools.election.profile.profile.AbstractProfile`
+            The profile.
+        instance : :py:class:`~pabutools.election.instance.Instance`
+            The election instance.
+        greedy_details : :py:class:`~pabutools.rules.greedywelfare.greedywelfare_details.GreedyWelfareAllocationDetails`
+            The details of the Greedy Welfare allocation.
+        verbose : bool, optional
+            Whether to print the results to the console. The default is False.
     """
 
     template = ENV.get_template("./templates/greedy_round_analysis_template.html")
@@ -524,15 +520,6 @@ class GreedyWelfareVisualiser(Visualiser):
     def _calculate(self):
         """
         Calculate the data necessary for the visualisation.
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
-
         """
 
         self.rounds = []
@@ -586,14 +573,14 @@ class GreedyWelfareVisualiser(Visualiser):
 
         Parameters
         ----------
-        outcome : list [:py:class:`~pabutools.election.instance.Project`]
-            The list of elected projects.
-        output_folder_path : str
-            The path to the folder where the visualisation will be saved.
+            outcome : list [:py:class:`~pabutools.election.instance.Project`]
+                The list of elected projects.
+            output_folder_path : str
+                The path to the folder where the visualisation will be saved.
 
         Returns
         -------
-        None
+            None
 
         """
         self._calculate()
