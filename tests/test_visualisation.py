@@ -17,12 +17,10 @@ class TestUtils(TestCase):
             "poland_czestochowa_2020_grabowka.pb",
         )
         instance, profile = election.parse_pabulib(file_path)
-        outcome = method_of_equal_shares(
-            instance, profile, sat_class=Cost_Sat, analytics=True
-        )
-        vis = MESVisualiser(profile, instance, outcome.details)
+        outcome = method_of_equal_shares(instance, profile, sat_class=Cost_Sat, analytics=True)
+        vis = MESVisualiser(profile, instance, outcome)
         with tempfile.TemporaryDirectory() as temp_dir:
-            vis.render(outcome, temp_dir)
+            vis.render(temp_dir)
             summary_file_path = os.path.join(temp_dir, "summary.html")
             round_analysis_file_path = os.path.join(temp_dir, "round_analysis.html")
             assert os.path.isfile(summary_file_path)
