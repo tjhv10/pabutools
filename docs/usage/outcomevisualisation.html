@@ -367,11 +367,11 @@ document.write(`
 <span class="c1"># The visualiser takes the profile, instance, and outcome as arguments</span>
 <span class="n">visualiser</span> <span class="o">=</span> <span class="n">MESVisualiser</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 
-<span class="c1"># summary_filename and round_analysis_filename are optional and default to summary.html and round_analysis.html respectively</span>
-<span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{summary_page_filename}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{round_analysis_filename}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># name is optional and defaults to the empty string</span>
+<span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The visualisations will be saved with the filenames summary.html and round_analysis.html respectively in the specified path. These work as standalone HTML files, and must be stored in the same directory to ensure the links between different pages work correctly.</p>
+<p>The visualisations will be saved with the filenames {name}_summary.html and {name}_round_analysis.html respectively in the specified path. These work as standalone HTML files, and must be stored in the same directory to ensure the links between different pages work correctly.</p>
 </section>
 </section>
 

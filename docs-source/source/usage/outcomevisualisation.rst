@@ -54,7 +54,7 @@ We provide a way to visualise the results using the class :py:class:`~pabutools.
     # The visualiser takes the profile, instance, and outcome as arguments
     visualiser = MESVisualiser(profile, instance, outcome)
 
-    # summary_filename and round_analysis_filename are optional and default to summary.html and round_analysis.html respectively
-    visualiser.render("./{path_to_output_file}/", "{summary_page_filename}", "{round_analysis_filename}")
+    # name is optional and defaults to the empty string
+    visualiser.render("./{path_to_output_file}/", name="{name}")
 
-The visualisations will be saved with the filenames summary.html and round_analysis.html respectively in the specified path. These work as standalone HTML files, and must be stored in the same directory to ensure the links between different pages work correctly.
+The visualisations will be saved with the filenames {name}_summary.html and {name}_round_analysis.html respectively in the specified path. These work as standalone HTML files, and must be stored in the same directory to ensure the links between different pages work correctly.

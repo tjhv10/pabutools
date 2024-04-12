@@ -369,7 +369,7 @@ class MESVisualiser(Visualiser):
             round["voter_flow"] = voter_flow_matrix(self.instance, self.profile)
         self._calculate_pie_charts(projectVotes)
 
-    def render(self, output_folder_path, summary_filename="summary.html", round_by_round_filename="round_analysis.html",):
+    def render(self, output_folder_path, name=""):
         """
         Render the visualisation.
 
@@ -377,10 +377,8 @@ class MESVisualiser(Visualiser):
         ----------
         output_folder_path : str
             The path to the folder where the visualisation will be saved.
-        summary_filename : str, optional
-            The name of the summary file. The default is "summary.html".
-        round_by_round_filename : str, optional
-            The name of the round by round file. The default is "round_analysis.html".
+        name : str, optional
+            The prefix of the output files. The default is "".
 
         Returns
         -------
@@ -403,6 +401,7 @@ class MESVisualiser(Visualiser):
             spent=total_cost(p for p in self.instance if p.name in self.outcome),
             budget=self.instance.meta["budget"],
             total_votes=self.instance.meta["num_votes"],
+            name=name
         )
 
         # Page Summary
@@ -416,12 +415,13 @@ class MESVisualiser(Visualiser):
             spent=total_cost(p for p in self.instance if p.name in self.outcome),
             budget=self.instance.meta["budget"],
             total_votes=self.instance.meta["num_votes"],
+            name=name
         )
         if not os.path.exists(output_folder_path):
             os.makedirs(output_folder_path)
-        with open(f"{output_folder_path}/{round_by_round_filename}", "w", encoding="utf-8") as o:
+        with open(f"{output_folder_path}/{name}_round_analysis.html", "w", encoding="utf-8") as o:
             o.write(round_analysis_page_output)
-        with open(f"{output_folder_path}/{summary_filename}", "w", encoding="utf-8") as o:
+        with open(f"{output_folder_path}/{name}_summary.html", "w", encoding="utf-8") as o:
             o.write(summary_page_output)
 
 
