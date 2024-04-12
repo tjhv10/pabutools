@@ -343,8 +343,11 @@ document.write(`
 <span class="n">instance</span><span class="p">,</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">election</span><span class="o">.</span><span class="n">parse_pabulib</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_election_file}</span><span class="s2">.pb&quot;</span><span class="p">)</span>
 <span class="n">outcome</span> <span class="o">=</span> <span class="n">greedy_utilitarian_welfare</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">sat_class</span><span class="o">=</span><span class="n">Cost_Sat</span><span class="p">,</span> <span class="n">analytics</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">visualiser</span> <span class="o">=</span> <span class="n">GreedyWelfareVisualiser</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">outcome</span><span class="o">.</span><span class="n">details</span><span class="p">)</span>
-<span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">)</span>
+<span class="c1"># The visualiser takes the profile, instance, and outcome as arguments</span>
+<span class="n">visualiser</span> <span class="o">=</span> <span class="n">GreedyWelfareVisualiser</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+
+<span class="c1"># output_filename is option and defaults to greedy_explanation.html</span>
+<span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">,</span> <span class="n">output_filename</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{output_filename}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The visualisation will be saved in the specified path as a standalone HTML file called round_analysis.html.</p>
@@ -356,12 +359,16 @@ document.write(`
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.visualisation</span> <span class="kn">import</span> <span class="n">MESVisualiser</span>
 <span class="kn">from</span> <span class="nn">pabutools.rules.mes</span> <span class="kn">import</span> <span class="n">method_of_equal_shares</span>
 <span class="kn">from</span> <span class="nn">pabutools</span> <span class="kn">import</span> <span class="n">election</span>
+<span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">Cost_Sat</span>
 
 <span class="n">instance</span><span class="p">,</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">election</span><span class="o">.</span><span class="n">parse_pabulib</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_election_file}</span><span class="s2">.pb&quot;</span><span class="p">)</span>
-<span class="n">outcome</span> <span class="o">=</span> <span class="n">method_of_equal_shares</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">analytics</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">outcome</span> <span class="o">=</span> <span class="n">method_of_equal_shares</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">sat_class</span><span class="o">=</span><span class="n">Cost_Sat</span> <span class="n">analytics</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">visualiser</span> <span class="o">=</span> <span class="n">MESVisualiser</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">outcome</span><span class="o">.</span><span class="n">details</span><span class="p">)</span>
-<span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">)</span>
+<span class="c1"># The visualiser takes the profile, instance, and outcome as arguments</span>
+<span class="n">visualiser</span> <span class="o">=</span> <span class="n">MESVisualiser</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+
+<span class="c1"># summary_filename and round_analysis_filename are optional and default to summary.html and round_analysis.html respectively</span>
+<span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{summary_page_filename}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{round_analysis_filename}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The visualisations will be saved with the filenames summary.html and round_analysis.html respectively in the specified path. These work as standalone HTML files, and must be stored in the same directory to ensure the links between different pages work correctly.</p>

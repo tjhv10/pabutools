@@ -46,9 +46,10 @@ We provide a way to visualise the results using the class :py:class:`~pabutools.
     from pabutools.visualisation import MESVisualiser
     from pabutools.rules.mes import method_of_equal_shares
     from pabutools import election
+    from pabutools.election import Cost_Sat
 
     instance, profile = election.parse_pabulib("./{path_to_election_file}.pb")
-    outcome = method_of_equal_shares(instance, profile, analytics=True)
+    outcome = method_of_equal_shares(instance, profile, sat_class=Cost_Sat analytics=True)
 
     # The visualiser takes the profile, instance, and outcome as arguments
     visualiser = MESVisualiser(profile, instance, outcome)
