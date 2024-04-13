@@ -60,8 +60,9 @@ class MESVisualiser(Visualiser):
         self.details = outcome.details
         self.outcome = outcome
         self.mes_iterations = outcome.details.iterations
+        self.were_projects_selected = True
         if not self.mes_iterations:
-            raise ValueError("No projects were selected in this election.")
+            self.were_projects_selected = False
         self.rounds = []
 
     def _calculate_rounds_dictinary(self):
@@ -384,6 +385,9 @@ class MESVisualiser(Visualiser):
         -------
         None
         """
+        if not self.were_projects_selected:
+            print("No projects were selected in this election - therefore no visualisation will be created.")
+            return
         self._calculate()
         for round in self.rounds:
             del round["_current_iteration"]
@@ -456,12 +460,11 @@ class GreedyWelfareVisualiser(Visualiser):
         self.outcome = outcome
         self.details = outcome.details
         self.rounds = []
-        project_votes = votes_count_by_project(self.profile)
-        self.project_votes = {
-            str(k): project_votes[k]
-            for k in sorted(project_votes, key=project_votes.get, reverse=False)
-        }
-
+        project_votes = outcome.details.projects
+        project_votes = {project_votes[k].project.name: float(project_votes[k].score) for k in range(len(project_votes))}
+        self.project_votes = {k: project_votes[k] for k in sorted(project_votes, key=project_votes.get, reverse=True)}
+        
+    
     def _calculate(self):
         """
         Calculate the data necessary for the visualisation.
@@ -470,11 +473,7 @@ class GreedyWelfareVisualiser(Visualiser):
         self.rounds = []
         current_round = {}
         rejected_projects = []
-        projects = sorted(
-            self.details.projects,
-            key=lambda x: self.project_votes[x.project.name],
-            reverse=True,
-        )
+        projects = sorted(self.details.projects, key=lambda x: float(x.score), reverse=True)
         for project in projects:
             if project.discarded:
                 rejected_projects.append(
@@ -535,7 +534,7 @@ class GreedyWelfareVisualiser(Visualiser):
         round_analysis_page_output = GreedyWelfareVisualiser.template.render(
             election_name=self.instance.meta["description"] if "description" in self.instance.meta else "No description provided.",
             currency=self.instance.meta["currency"] if "currency" in self.instance.meta else "CUR", 
-            projects_selected_or_rejected = json.dumps({int(str(p)): (p in self.outcome) for p in self.project_votes.keys()}),
+            projects_selected_or_rejected = json.dumps({str(p): (p in self.outcome) for p in self.project_votes.keys()}),
             project_votes=self.project_votes,
             rounds=self.rounds,
             projects=self.instance.project_meta,
