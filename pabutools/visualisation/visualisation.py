@@ -57,9 +57,9 @@ class MESVisualiser(Visualiser):
         self.profile = profile
         self.instance = instance
         self.verbose = verbose
-        self.details = outcome.details
         self.outcome = outcome
-        self.mes_iterations = outcome.details.iterations
+        self.details = outcome.details
+        self.mes_iterations = [iteration for iteration in outcome.details.iterations if iteration.selected_project is not None]
         self.were_projects_selected = True
         if not self.mes_iterations:
             self.were_projects_selected = False
@@ -81,10 +81,11 @@ class MESVisualiser(Visualiser):
             self.instance.meta["num_votes"]
         )
         budgetSpent = 0
+        last_iteration = self.mes_iterations[-1]
         for i in range(len(self.mes_iterations) - 1):
-            round = dict()
             current_iteration = self.mes_iterations[i]
             next_iteration = self.mes_iterations[i+1]
+            round = dict()
             round["_current_iteration"] = current_iteration
             round["id"] = current_iteration.selected_project.name
             round["name"] = current_iteration.selected_project.name 
@@ -170,17 +171,13 @@ class MESVisualiser(Visualiser):
                 float(
                     sum(
                         self.mes_iterations[r].voters_budget[p]
-                        for p in self.mes_iterations[
-                            -1
-                        ].selected_project.supporter_indices
+                        for p in last_iteration.selected_project.supporter_indices
                     )
                 )
                 - float(
                     sum(
                         self.mes_iterations[r + 1].voters_budget[p]
-                        for p in self.mes_iterations[
-                            -1
-                        ].selected_project.supporter_indices
+                        for p in last_iteration.selected_project.supporter_indices
                     )
                 )
             )
@@ -188,7 +185,7 @@ class MESVisualiser(Visualiser):
         }
 
         dropped_projects = []
-        for p in self.mes_iterations[-1]:
+        for p in last_iteration:
             if p.discarded:
                 unsorted_funding_lost_per_round = {
                     r: (
@@ -224,34 +221,34 @@ class MESVisualiser(Visualiser):
                     ),
                     "final_voter_funding": float(
                         sum(
-                            self.mes_iterations[-1].voters_budget[p]
+                            last_iteration.voters_budget[p]
                             for p in p.project.supporter_indices
                         )
                     ),
                 }
                 dropped_projects.append(rejected)
 
-        budgetSpent += self.mes_iterations[-1].selected_project.cost
+        budgetSpent += last_iteration.selected_project.cost
         data = {
             p.name: float(1 / p.affordability)
-            for p in self.mes_iterations[-1].get_all_projects()
+            for p in last_iteration.get_all_projects()
         }
         self.rounds.append(
             {
-                "name": self.mes_iterations[-1].selected_project.name,
-                "_current_iteration": self.mes_iterations[-1],
+                "name": last_iteration.selected_project.name,
+                "_current_iteration": last_iteration,
                 "effective_vote_count": dict(
                     sorted(data.items(), key=lambda item: item[1], reverse=True)
                 ),
                 "effective_vote_count_reduction": {
-                    p.name: 0 for p in self.mes_iterations[-1].get_all_projects()
+                    p.name: 0 for p in last_iteration.get_all_projects()
                 },
-                "cost": self.mes_iterations[-1].selected_project.cost,
+                "cost": last_iteration.selected_project.cost,
                 "totalvotes": len(
-                    self.mes_iterations[-1].selected_project.supporter_indices
+                    last_iteration.selected_project.supporter_indices
                 ),
                 "initial_voter_funding": initial_budget_per_voter
-                * len(self.mes_iterations[-1].selected_project.supporter_indices),
+                * len(last_iteration.selected_project.supporter_indices),
                 "funding_lost_per_round": dict(
                     sorted(
                         unsorted_funding_lost_per_round.items(),
@@ -261,10 +258,8 @@ class MESVisualiser(Visualiser):
                 ),
                 "final_voter_funding": float(
                     sum(
-                        self.mes_iterations[-1].voters_budget[p]
-                        for p in self.mes_iterations[
-                            -1
-                        ].selected_project.supporter_indices
+                        last_iteration.voters_budget[p]
+                        for p in last_iteration.selected_project.supporter_indices
                     )
                 ),
                 "dropped_projects": dropped_projects,
@@ -335,6 +330,8 @@ class MESVisualiser(Visualiser):
             The average budget of the supporters for the project.
 
         """
+        if not supporters:
+            return 0
         return sum(voters_budget[s] for s in supporters) / len(supporters)
 
     def _get_voters_for_project(self, project):
