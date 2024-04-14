@@ -349,7 +349,7 @@
                     {% for round in rounds %}
                         <div class='bar bar-blue bar-border'
                             style='width: {{ (round.cost / budget | float) * 100 }}&#37;;'
-                            data-tippy-content='Project {{ round.id }}: <q>{{ projects[round.id]["name"] }}</q> was voted in round {{ loop.index }}, costing {{ "{:,}".format( (round.cost | int) ) }} {{ currency }}. This is {{ ((round.cost / budget | int) * 100) | int }}&#37; of the budget.'>
+                            data-tippy-content="Project {{ round.id }}: <q>{{ projects[round.id]['name'] }}</q> was voted in round {{ loop.index }}, costing {{ '{:,}'.format( (round.cost | int) ) }} {{ currency }}. This is {{ ((round.cost / budget | int) * 100) | int }}&#37; of the budget.">
                         </div>
                     {% endfor %}
                 </div>
