@@ -286,7 +286,10 @@ class MESVisualiser(Visualiser):
             round["id"] = round["name"]
             selected = round["name"]
             winners.append(selected)
+            num_projects = 0
             for project in projectVotes:
+                if num_projects > 11:
+                    break
                 if project.name not in winners:
                     round_voters = round["voter_flow"][project.name][selected]
                     non_round_voters = projectVotes[project.name] - round_voters
@@ -304,6 +307,7 @@ class MESVisualiser(Visualiser):
                         "reduction": reduction,
                     }
                     pie_chart_items.append(pie_chart_item)
+                    num_projects += 1
 
             pie_chart_items = sorted(
                 pie_chart_items, key=lambda x: x["roundVoters"], reverse=True
