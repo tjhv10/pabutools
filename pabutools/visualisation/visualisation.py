@@ -288,7 +288,7 @@ class MESVisualiser(Visualiser):
             winners.append(selected)
             num_projects = 0
             for project in projectVotes:
-                if num_projects > 11:
+                if num_projects > 9:
                     break
                 if project.name not in winners:
                     round_voters = round["voter_flow"][project.name][selected]
