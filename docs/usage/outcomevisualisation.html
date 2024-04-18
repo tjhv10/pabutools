@@ -35,7 +35,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script src="../_static/documentation_options.js?v=56240083"></script>
+    <script src="../_static/documentation_options.js?v=a1e11e36"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
@@ -334,7 +334,10 @@ document.write(`
 <section id="greedy-utilitarian-welfare">
 <h2>Greedy Utilitarian Welfare<a class="headerlink" href="#greedy-utilitarian-welfare" title="Link to this heading">#</a></h2>
 <p>The visualisation for the Greedy Utilitarian Welfare currently works only on additive utility functions.</p>
-<p>We provide a way to visualise the results using the class <code class="xref py py-class docutils literal notranslate"><span class="pre">GreedyWelfareVisualiser</span></code>. Note the analytics flag in the function <a class="reference internal" href="../reference/rules/index.html#pabutools.rules.greedywelfare.greedy_utilitarian_welfare" title="pabutools.rules.greedywelfare.greedy_utilitarian_welfare"><code class="xref py py-func docutils literal notranslate"><span class="pre">greedy_utilitarian_welfare()</span></code></a> must be set to True to generate the visualisation.</p>
+<p>We provide a way to visualise the results using the class
+<a class="reference internal" href="../reference/visualisation/index.html#pabutools.visualisation.GreedyWelfareVisualiser" title="pabutools.visualisation.GreedyWelfareVisualiser"><code class="xref py py-class docutils literal notranslate"><span class="pre">GreedyWelfareVisualiser</span></code></a>. Note the analytics flag in the
+function <a class="reference internal" href="../reference/rules/index.html#pabutools.rules.greedywelfare.greedy_utilitarian_welfare" title="pabutools.rules.greedywelfare.greedy_utilitarian_welfare"><code class="xref py py-func docutils literal notranslate"><span class="pre">greedy_utilitarian_welfare()</span></code></a> must be set to True to
+generate the visualisation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.visualisation.visualisation</span> <span class="kn">import</span> <span class="n">GreedyWelfareVisualiser</span>
 <span class="kn">from</span> <span class="nn">pabutools.rules.greedywelfare</span> <span class="kn">import</span> <span class="n">greedy_utilitarian_welfare</span>
 <span class="kn">from</span> <span class="nn">pabutools</span> <span class="kn">import</span> <span class="n">election</span>
@@ -352,17 +355,27 @@ document.write(`
 </div>
 <p>The visualisation will be saved in the specified path as a standalone HTML file called round_analysis.html.</p>
 <p>Note that the visualisation is only available for additive utility functions.</p>
+<p>An example of the generated visualisation can be found
+<a class="reference external" href="../outcome_vis_ex_greedy.html">here</a>.</p>
 </section>
 <section id="method-of-equal-shares">
 <h2>Method of Equal Shares<a class="headerlink" href="#method-of-equal-shares" title="Link to this heading">#</a></h2>
-<p>We provide a way to visualise the results using the class <code class="xref py py-class docutils literal notranslate"><span class="pre">MESVisualiser</span></code>. Note the analytics flag in the function <a class="reference internal" href="../reference/rules/index.html#pabutools.rules.mes.method_of_equal_shares" title="pabutools.rules.mes.method_of_equal_shares"><code class="xref py py-func docutils literal notranslate"><span class="pre">method_of_equal_shares()</span></code></a> must be set to True to generate the visualisation. The visualisations for MES consist of two pages: one for the summary of the election, containing the allocation of the budget, information about all the elected projects, and summary statistics about the election as a whole. The second page contains the details of the election, giving statistics about each round of the election, including the selected project, and how each round impacts the effective vote count of others. This captures the essence of the method of equal shares, where the effective vote count of each project is updated after each round.</p>
+<p>We provide a way to visualise the results using the class <a class="reference internal" href="../reference/visualisation/index.html#pabutools.visualisation.MESVisualiser" title="pabutools.visualisation.MESVisualiser"><code class="xref py py-class docutils literal notranslate"><span class="pre">MESVisualiser</span></code></a>.
+Note the analytics flag in the function
+<a class="reference internal" href="../reference/rules/index.html#pabutools.rules.mes.method_of_equal_shares" title="pabutools.rules.mes.method_of_equal_shares"><code class="xref py py-func docutils literal notranslate"><span class="pre">method_of_equal_shares()</span></code></a> must be set to True to generate the visualisation.
+The visualisations for MES consist of two pages: one for the summary of the election, containing the
+allocation of the budget, information about all the elected projects, and summary statistics about
+the election as a whole. The second page contains the details of the election, giving statistics
+about each round of the election, including the selected project, and how each round impacts
+the effective vote count of others. This captures the essence of the method of equal shares, where
+the effective vote count of each project is updated after each round.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pabutools.visualisation.visualisation</span> <span class="kn">import</span> <span class="n">MESVisualiser</span>
 <span class="kn">from</span> <span class="nn">pabutools.rules.mes</span> <span class="kn">import</span> <span class="n">method_of_equal_shares</span>
 <span class="kn">from</span> <span class="nn">pabutools</span> <span class="kn">import</span> <span class="n">election</span>
 <span class="kn">from</span> <span class="nn">pabutools.election</span> <span class="kn">import</span> <span class="n">Cost_Sat</span>
 
 <span class="n">instance</span><span class="p">,</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">election</span><span class="o">.</span><span class="n">parse_pabulib</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_election_file}</span><span class="s2">.pb&quot;</span><span class="p">)</span>
-<span class="n">outcome</span> <span class="o">=</span> <span class="n">method_of_equal_shares</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">sat_class</span><span class="o">=</span><span class="n">Cost_Sat</span> <span class="n">analytics</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">outcome</span> <span class="o">=</span> <span class="n">method_of_equal_shares</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">sat_class</span><span class="o">=</span><span class="n">Cost_Sat</span><span class="p">,</span> <span class="n">analytics</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># The visualiser takes the profile, instance, and outcome as arguments</span>
 <span class="n">visualiser</span> <span class="o">=</span> <span class="n">MESVisualiser</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
@@ -371,7 +384,11 @@ document.write(`
 <span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The visualisations will be saved with the filenames {name}_summary.html and {name}_round_analysis.html respectively in the specified path. These work as standalone HTML files, and must be stored in the same directory to ensure the links between different pages work correctly.</p>
+<p>The visualisations will be saved with the filenames {name}_summary.html and
+{name}_round_analysis.html respectively in the specified path. These work as standalone HTML files,
+and must be stored in the same directory to ensure the links between different pages work correctly.</p>
+<p>An example of the generated visualisation can be found
+<a class="reference external" href="../outcome_vis_ex_mes_summary.html">here</a>.</p>
 </section>
 </section>
 
