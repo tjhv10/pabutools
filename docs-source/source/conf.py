@@ -51,6 +51,7 @@ pygments_style = "sphinx"
 
 html_theme = "sphinx_book_theme"
 # html_static_path = ["_static"]
+html_extra_path = ["outcome_vis_ex/outcome_vis_ex_greedy.html", "outcome_vis_ex/outcome_vis_ex_mes_rounds.html", "outcome_vis_ex/outcome_vis_ex_mes_summary.html"]
 
 html_title = "Pabutools"
 html_theme_options = {

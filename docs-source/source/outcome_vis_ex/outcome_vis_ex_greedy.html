@@ -1,0 +1,3312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Municipal PB in Warsaw</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script nonce="undefined" src="https://cdn.zingchart.com/zingchart.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        /* Custom CSS to color the borders black */
+        .budget-container {
+            position: relative;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .budget{
+            color: black
+        }
+        .bar {
+            position: relative;
+            height: 30px;
+            margin: 10px 0;
+            background-color: #ddd;
+            position: relative;
+            align-items: center;
+            justify-content: center;
+            color: black;
+        }
+        .bar-inner {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .dashed-line {
+            position: absolute;
+            top: 0;
+            height: 600%;
+            border-left: 2px dashed black;
+        }
+        .green {
+            background-color: #4CAF50;
+            color: white;
+            justify-content: center;
+        }
+        .red {
+            background-color: #F44336;
+            color: white;
+            justify-content: center;
+        }
+        .rejected-mark {
+            position: absolute;
+            right: -50px;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: black;
+            background-color: white;
+            border-radius: 15px; 
+        }
+        .border-black {
+            border: 1px solid black;
+        }
+        
+        .nested {
+            padding: 1rem;
+        }
+        
+        .wrapper {
+            padding: 0rem;
+        }
+        
+        .spacer {
+            padding: 1rem;
+        }
+        
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            font-size: 24px;
+            color: black;
+        }
+        
+        .carousel-inner {
+            padding: 1rem;
+            padding-left: 7rem;
+            padding-right: 7rem;
+        }
+        
+        .carousel-inner-pie {
+            padding-top: 0.5rem;
+            height: 400px;
+        }
+        
+        .hidden-section {
+            display: none;
+        }
+        
+        .chord-wrapper {
+            height: 100%;
+        }
+        
+        #myChordChart {
+            height: 100%;
+            width: 100%;
+        }
+        
+        #myBarChart1,
+        #myStackedBarChart1 {
+            height: 100%;
+            width: 100%;
+        }
+        h1,
+        h3,
+        p {
+            text-align: center;
+        }
+        .spacer-2 {
+            padding: 2rem;
+        }
+        .bar-container {
+            position: relative;
+            width: 100%;
+        }
+        .budget {
+            color: black;
+        }
+        .text-outside-bar{
+            display: inline-flex; 
+            align-items: center;
+        }
+        .text-outside{
+            margin-left: 10px; 
+            display: inline-flex;
+        }
+
+    </style>
+</head>
+<body > 
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+          <a class="navbar-brand" href="./summary.html">Summary</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="./round_analysis.html">Round By Round <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://pypi.org/project/pabutools/">Pabutools</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+
+      <main role="main">
+    
+        <div class="container-fluid upper-page">
+            <!-- General Explanations -->
+            <div class="container">
+                <div class="spacer-2"></div>
+                <div class="spacer-2"></div>
+
+
+                <div class="row mb-3">
+                    <div class="col-12  justify-content-center">
+                        <h1>
+                            Municipal PB in Warsaw
+                        </h1>
+                        <div class="spacer-1"><hr></div>
+                        <p>
+                            This is the explanation for the outcome of the participatory budgeting election decided using the Greedy Utilitarian Welfare algorithm.<br>
+                            Some of the key features of the election are: The election has a total budget of 24,933,409 CUR of which 24,931,960 CUR was spent. The election had a 
+                            total of 86721 voters. Note that each participant can vote for multiple projects. Therefore, the total votes for all projects may be 
+                            higher than 86721<br>
+                            This page shows and explains the outcome of the election. The first graph shows the satisfaction scores for the projects and allows you to filter and examine the data in greater detail.
+                            The bars show the budget at each stage of the election and the projects selected or rejected in each round. Finally, the final bar chart shows an overview of the selected and rejected projects.
+                        </p>
+                        <p>
+                            To view the list of the projects selected, click this: <button type="button" id="electionOutcome" class="btn btn-secondary">View Election Outcome</button>
+                            <div style="display: none;" id="outcomeList" class="row">
+                                
+                                    <p>Project: "2020 drzew dla Warszawy" with cost: 2,888,600 CUR and had 40990.0 votes.</p>
+                                
+                                    <p>Project: "Nasze miasto w szpalerach zieleni" with cost: 1,500,000 CUR and had 30791.0 votes.</p>
+                                
+                                    <p>Project: "Nie! - dla smogu – altana solarna w każdym parku Warszawy!" with cost: 369,880 CUR and had 30222.0 votes.</p>
+                                
+                                    <p>Project: "Nowe drogi rowerowe - chcemy spójnej sieci" with cost: 2,502,400 CUR and had 29570.0 votes.</p>
+                                
+                                    <p>Project: "Czyste powietrze - lepsze życie" with cost: 567,430 CUR and had 23969.0 votes.</p>
+                                
+                                    <p>Project: "Kwiaty dla Warszawy, aby Warszawa była jeszcze piękniejsza" with cost: 1,231,500 CUR and had 22896.0 votes.</p>
+                                
+                                    <p>Project: "Miejskie łąkostrady antysmogowe" with cost: 2,853,520 CUR and had 21067.0 votes.</p>
+                                
+                                    <p>Project: "Wiaty rowerowe przy szkołach" with cost: 3,600,000 CUR and had 18561.0 votes.</p>
+                                
+                                    <p>Project: "Posiłki dla osób ubogich i bezdomnych na terenie miasta (tylko w opakowaniach eko)" with cost: 96,000 CUR and had 13875.0 votes.</p>
+                                
+                                    <p>Project: "Pomagamy ginącym w Warszawie jaskółkom oknówkom – budowa „jaskółkownika”" with cost: 54,500 CUR and had 13735.0 votes.</p>
+                                
+                                    <p>Project: "Dbajmy o ptactwo zimą" with cost: 13,440 CUR and had 13715.0 votes.</p>
+                                
+                                    <p>Project: "Do lasku na kole - ścieżki pieszo- rowerowe Powązkowska, Dygata, Kozielska, Szamocka, Prymasa Tysiąclecia" with cost: 423,612 CUR and had 12550.0 votes.</p>
+                                
+                                    <p>Project: "Szanujmy Naszą Wisłę" with cost: 386,000 CUR and had 12451.0 votes.</p>
+                                
+                                    <p>Project: "600 ławek dla Warszawy" with cost: 1,990,000 CUR and had 12246.0 votes.</p>
+                                
+                                    <p>Project: "Paleniska na Plażach Miejskich" with cost: 28,810 CUR and had 11201.0 votes.</p>
+                                
+                                    <p>Project: "Nowy chodnik i drzewa wyciszające na granicy Ursynowa oraz Mokotowa" with cost: 669,245 CUR and had 11145.0 votes.</p>
+                                
+                                    <p>Project: "Ogrody deszczowe i naturalne place zabaw na terenie m.st Warszawy, w tym plac Zabaw w Parku Dolina Służewiecka" with cost: 3,000,000 CUR and had 10751.0 votes.</p>
+                                
+                                    <p>Project: "Zdrowe powietrze w naszej dzielnicy" with cost: 1,708,317 CUR and had 9767.0 votes.</p>
+                                
+                                    <p>Project: "Hamaki Miejskie dla Warszawy" with cost: 380,000 CUR and had 9003.0 votes.</p>
+                                
+                                    <p>Project: "Warsztaty komputerowe dla osób niepełnosprawnych" with cost: 52,228 CUR and had 8704.0 votes.</p>
+                                
+                                    <p>Project: "Rozwijanie umiejętności społecznych u dzieci" with cost: 46,300 CUR and had 8612.0 votes.</p>
+                                
+                                    <p>Project: "Edukacja w zakresie szczepień dla kobiet w ciąży oraz szczepień dzieci" with cost: 12,500 CUR and had 7936.0 votes.</p>
+                                
+                                    <p>Project: "Aplikacja Bezpłatne toalety" with cost: 110,000 CUR and had 7516.0 votes.</p>
+                                
+                                    <p>Project: "Wielka Garażówka Warszawska - wyprzedaż garażowa w Warszawie w różnych lokalizacjach" with cost: 45,500 CUR and had 7190.0 votes.</p>
+                                
+                                    <p>Project: "Joga w parku" with cost: 50,000 CUR and had 6531.0 votes.</p>
+                                
+                                    <p>Project: "Szkolenia komputerowe dla osób z dysfunkcją narządu wzroku" with cost: 70,000 CUR and had 6070.0 votes.</p>
+                                
+                                    <p>Project: "Zajęcia aktywizujące dla osób z niepełnosprawnością" with cost: 7,800 CUR and had 5287.0 votes.</p>
+                                
+                                    <p>Project: "Miejskie sauny" with cost: 272,278 CUR and had 5024.0 votes.</p>
+                                
+                                    <p>Project: "Plakaty informujące o dobrowolności prac domowych" with cost: 2,100 CUR and had 1264.0 votes.</p>
+                                
+                            </div>
+                        </p>
+                    </div>
+                </div>
+                <div class="spacer-1"></div>
+            </div>
+        </div>
+        <div class="container">
+
+            
+            
+            <div class="spacer-1"></div>
+            <hr>
+            <div class="spacer-1"></div>
+            
+
+            <!-- Round specific visualisations -->
+                <section id="1">
+
+                    
+                    <div class="row featurette">
+                        <div class="col-1"></div>
+                        <div class="col-10" style="min-height: 600px;">
+                            <div id="SortableBarChart" style="height: 100%; width: 100%;">
+                                <button class = "info-button" style = "position: absolute; z-index: 2000; right: 50px;" data-tippy-content= "<b>Project Satisfaction Measures:</b><br> The following graphs shows the votes for each of the projects along with the corresponding budget.">i</button>
+                            </div>
+                        </div>
+                        <div class="col-1"></div>
+                    </div>
+                    <!-- Satisfaction Measures -->
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-10">
+                            <div class="row justify-content-center">
+                                <div class="col-auto">
+                                    <select id="sortingCriteria" class="form-control">
+                                        <option value="name-asc">Name Ascending</option>
+                                        <option value="name-desc">Name Descending</option>
+                                        <option value="cost-asc">Cost Ascending</option>
+                                        <option value="cost-desc">Cost Descending</option>
+                                        <option value="votes-asc">Satisfaction Score Ascending</option>
+                                        <option value="votes-desc">Satisfaction Score Descending</option>
+                                      </select>
+                                </div>
+                                <div class="col-auto">
+                                    <select class="form-control" id="filterBy">
+                                        <option value="all">All</option>
+                                        <option value="selected">Selected</option>
+                                        <option value="rejected">Rejected</option>
+                                      </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1"></div>
+
+                    </div>
+                    <div class="spacer-1"></div>
+                    
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-10">
+                            <div class="spacer-1"></div>
+                            <div class="spacer-1"></div>
+                            <p> 
+                                The chart above shows the satisfaction measures for each project. To investigate further, you can filter the bar chart by selected or rejected projects, and sort by name, cost or satisfaction score. Use the dropdowns above to filter and sort the data.
+                            </p>
+                        </div>
+                        <div class="col-1"></div>
+                    </div>
+
+                    <div class="spacer-1"></div>
+                    <hr>
+                    <div class="spacer-1"></div>
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8" style="justify-content: center;">
+                            <div class="spacer-1"></div>
+
+                            <h3>Round by Round Analysis</h3>
+                            <hr>
+                            <p>
+                                    The following section of the visualisations allows you to click through 'round by round' of this section of the election. It shows at each point the remaining budget, and the projects with the highest satisfaction up to the selected project. The selected project is shown in green, and any rejected projects are shown in red. A project will be shown in red if it is the next most popular project however there is not enough budget remaining to purchase the project. This means, the next most popular project will be considered - and so on until a project is found that can be purchased with the remaining budget. Use the previous and next round buttons to move through the different rounds of the election.
+                            </p>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-10">
+                            <div class="row justify-content-center">
+                                <div class="col-auto">
+                                    <button id="prevButton" class="btn btn-secondary">Previous Round</button>
+                                </div>
+                                <div class="col-auto">
+                                    <button id="nextButton" class="btn btn-secondary">Next Round</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1"></div>
+                    </div>
+
+                    
+                    <div class="container" id="1Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 1</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 24,933,409 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 10.426733063256613%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 774: 2020 drzew dla Warszawy - 2,888,600 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 24,933,409 CUR, and the selected project "2020 drzew dla Warszawy" with cost 2,888,600 CUR. The selected project was chosen because it had the highest satisfaction score (40990) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="2Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 2</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 22,044,809 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 6.123890662876689%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 2166: Nasze miasto w szpalerach zieleni - 1,500,000 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 22,044,809 CUR, and the selected project "Nasze miasto w szpalerach zieleni" with cost 1,500,000 CUR. The selected project was chosen because it had the highest satisfaction score (30791) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="3Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 3</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 20,544,809 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 1.620321707541793%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1719: Nie! - dla smogu – altana solarna w każdym pa - 369,880 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 20,544,809 CUR, and the selected project "Nie! - dla smogu – altana solarna w każdym parku Warszawy!" with cost 369,880 CUR. The selected project was chosen because it had the highest satisfaction score (30222) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="4Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 4</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 20,174,929 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 11.163161962056966%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 888: Nowe drogi rowerowe - chcemy spójnej sieci - 2,502,400 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 20,174,929 CUR, and the selected project "Nowe drogi rowerowe - chcemy spójnej sieci" with cost 2,502,400 CUR. The selected project was chosen because it had the highest satisfaction score (29570) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="5Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 5</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 17,672,529 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 2.889722235001001%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 2152: Czyste powietrze - lepsze życie - 567,430 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 17,672,529 CUR, and the selected project "Czyste powietrze - lepsze życie" with cost 567,430 CUR. The selected project was chosen because it had the highest satisfaction score (23969) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="6Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 6</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 17,105,099 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 6.47964680005652%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1822: Kwiaty dla Warszawy, aby Warszawa była jeszcz - 1,231,500 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 17,105,099 CUR, and the selected project "Kwiaty dla Warszawy, aby Warszawa była jeszcze piękniejsza" with cost 1,231,500 CUR. The selected project was chosen because it had the highest satisfaction score (22896) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="7Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 7</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 15,873,599 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 16.17886403707187%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1160: Miejskie łąkostrady antysmogowe - 2,853,520 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 15,873,599 CUR, and the selected project "Miejskie łąkostrady antysmogowe" with cost 2,853,520 CUR. The selected project was chosen because it had the highest satisfaction score (21067) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="8Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 8</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 13,020,079 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 24.884641636967025%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1449: Wiaty rowerowe przy szkołach - 3,600,000 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 13,020,079 CUR, and the selected project "Wiaty rowerowe przy szkołach" with cost 3,600,000 CUR. The selected project was chosen because it had the highest satisfaction score (18561) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="9Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 9</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 9,420,079 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 0.9171897602981886%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1910: Posiłki dla osób ubogich i bezdomnych na tere - 96,000 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 9,420,079 CUR, and the selected project "Posiłki dla osób ubogich i bezdomnych na terenie miasta (tylko w opakowaniach eko)" with cost 96,000 CUR. The selected project was chosen because it had the highest satisfaction score (13875) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="10Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 10</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 9,324,079 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 0.5260573189051702%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 2159: Pomagamy ginącym w Warszawie jaskółkom oknówk - 54,500 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 9,324,079 CUR, and the selected project "Pomagamy ginącym w Warszawie jaskółkom oknówkom – budowa „jaskółkownika”" with cost 54,500 CUR. The selected project was chosen because it had the highest satisfaction score (13735) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="11Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 11</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 9,269,579 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 0.13049136319999%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1637: Dbajmy o ptactwo zimą - 13,440 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 9,269,579 CUR, and the selected project "Dbajmy o ptactwo zimą" with cost 13,440 CUR. The selected project was chosen because it had the highest satisfaction score (13715) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="12Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 12</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 9,256,139 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 4.1188966587472375%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1780: Do lasku na kole - ścieżki pieszo- rowerowe P - 423,612 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 9,256,139 CUR, and the selected project "Do lasku na kole - ścieżki pieszo- rowerowe Powązkowska, Dygata, Kozielska, Szamocka, Prymasa Tysiąclecia" with cost 423,612 CUR. The selected project was chosen because it had the highest satisfaction score (12550) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="13Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 13</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 8,832,527 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 3.9331892220652143%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1851: Szanujmy Naszą Wisłę - 386,000 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 8,832,527 CUR, and the selected project "Szanujmy Naszą Wisłę" with cost 386,000 CUR. The selected project was chosen because it had the highest satisfaction score (12451) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="14Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 14</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 8,446,527 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 21.203981233943843%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 811: 600 ławek dla Warszawy - 1,990,000 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 8,446,527 CUR, and the selected project "600 ławek dla Warszawy" with cost 1,990,000 CUR. The selected project was chosen because it had the highest satisfaction score (12246) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="15Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 15</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 6,456,527 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 0.40159361216951467%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1563: Paleniska na Plażach Miejskich - 28,810 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 6,456,527 CUR, and the selected project "Paleniska na Plażach Miejskich" with cost 28,810 CUR. The selected project was chosen because it had the highest satisfaction score (11201) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="16Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 16</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 6,427,717 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 9.370675466888166%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1297: Nowy chodnik i drzewa wyciszające na granicy  - 669,245 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 6,427,717 CUR, and the selected project "Nowy chodnik i drzewa wyciszające na granicy Ursynowa oraz Mokotowa" with cost 669,245 CUR. The selected project was chosen because it had the highest satisfaction score (11145) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="17Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 17</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 5,758,472 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div class="bar green" style="width: 46.88743819541017%;">
+                                                <div class="bar-inner"><nobr>&nbsp; 1235: Ogrody deszczowe i naturalne place zabaw na t - 3,000,000 CUR</nobr></div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 5,758,472 CUR, and the selected project "Ogrody deszczowe i naturalne place zabaw na terenie m.st Warszawy, w tym plac Zabaw w Parku Dolina Służewiecka" with cost 3,000,000 CUR. The selected project was chosen because it had the highest satisfaction score (10751) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="18Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 18</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 2,758,472 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div class="bar green" style="width: 55.73684634101778%;">
+                                                <div class="bar-inner"><nobr>&nbsp; 2119: Zdrowe powietrze w naszej dzielnicy - 1,708,317 CUR</nobr></div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 2,758,472 CUR, and the selected project "Zdrowe powietrze w naszej dzielnicy" with cost 1,708,317 CUR. The selected project was chosen because it had the highest satisfaction score (9767) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="19Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 19</h4>
+                                            
+                                            <div>
+                                                <div class="bar budget text-outside-bar" style="width: 26.387130006532995%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 50px;">&nbsp; Remaining Budget: 1,050,155 CUR</p></div>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 90.0%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1763: Fablab Rój Pszczół - 380,000 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 8.593396653098145%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1240: Hamaki Miejskie dla Warszawy - 380,000 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                    <!-- Check if the length is larger than 1 -->
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 1,050,155 CUR. 1763: Fablab Rój Pszczół was rejected in this round, even though it had a higher or equal satisfaction score than the selected project which had a score of 9003.
+                                        </p>
+                                    
+
+
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="20Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 20</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 670,155 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 7.014078832508898%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1731: Warsztaty komputerowe dla osób niepełnosprawn - 52,228 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 670,155 CUR, and the selected project "Warsztaty komputerowe dla osób niepełnosprawnych" with cost 52,228 CUR. The selected project was chosen because it had the highest satisfaction score (8704) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="21Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 21</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 617,927 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 6.743515010672782%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 601: Rozwijanie umiejętności społecznych u dzieci - 46,300 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 617,927 CUR, and the selected project "Rozwijanie umiejętności społecznych u dzieci" with cost 46,300 CUR. The selected project was chosen because it had the highest satisfaction score (8612) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="22Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 22</h4>
+                                            
+                                                <div class="bar budget" style="width: 44.135173670448225%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 571,627 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 90.0%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1007: Stop bazgrołom w Warszawie - 12,500 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 0.9651217855010397%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1971: Edukacja w zakresie szczepień dla kobiet w ci - 12,500 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                    <!-- Check if the length is larger than 1 -->
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 571,627 CUR. 1007: Stop bazgrołom w Warszawie was rejected in this round, even though it had a higher or equal satisfaction score than the selected project which had a score of 7936.
+                                        </p>
+                                    
+
+
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="23Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 23</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 559,127 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 17.70617408924985%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 580: Aplikacja Bezpłatne toalety - 110,000 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 559,127 CUR, and the selected project "Aplikacja Bezpłatne toalety" with cost 110,000 CUR. The selected project was chosen because it had the highest satisfaction score (7516) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="24Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 24</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 449,127 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 9.117688315331742%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1684: Wielka Garażówka Warszawska - wyprzedaż garaż - 45,500 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 449,127 CUR, and the selected project "Wielka Garażówka Warszawska - wyprzedaż garażowa w Warszawie w różnych lokalizacjach" with cost 45,500 CUR. The selected project was chosen because it had the highest satisfaction score (7190) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="25Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 25</h4>
+                                            
+                                                <div class="bar budget" style="width: 38.12997795738428%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 403,627 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 90.0%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 551: 200 000 toreb bawełnianych, wielorazowych z d - 50,000 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 4.723417655085546%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 937: Joga w parku - 50,000 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                    <!-- Check if the length is larger than 1 -->
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 403,627 CUR. 551: 200 000 toreb bawełnianych, wielorazowych z długim uchem rozdanych za darmo. Krok dla ekologii w Warszawie was rejected in this round, even though it had a higher or equal satisfaction score than the selected project which had a score of 6531.
+                                        </p>
+                                    
+
+
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="26Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 26</h4>
+                                            
+                                                <div class="bar budget" style="width: 90.0%;">
+                                                    <div class="bar-inner">&nbsp; Remaining Budget: 353,627 CUR</div>
+                                                </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 17.815381744041037%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1393: Szkolenia komputerowe dla osób z dysfunkcją n - 70,000 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 353,627 CUR, and the selected project "Szkolenia komputerowe dla osób z dysfunkcją narządu wzroku" with cost 70,000 CUR. The selected project was chosen because it had the highest satisfaction score (6070) and was within budget.
+                                        </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="27Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 27</h4>
+                                            
+                                            <div>
+                                                <div class="bar budget text-outside-bar" style="width: 14.239196736743018%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 50px;">&nbsp; Remaining Budget: 283,627 CUR</p></div>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 90.0%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1290: Białołęka, Praga-Południe, Praga-Północ, Targ - 7,800 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 51.96109193598996%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 582: Teatr pod chmurką - 7,800 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 13.238782554126136%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1864: Muranów - tak dla zieleni na Al.Solidarności - 7,800 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 36.606589268904926%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 984: Drzewa i zieleń na Powązkowskiej - 7,800 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 44.92601192343897%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1738: Środowisko to nie śmietnisko! Pikniki edukacy - 7,800 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 0.35243175400062754%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 1518: Zajęcia aktywizujące dla osób z niepełnospraw - 7,800 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                    <!-- Check if the length is larger than 1 -->
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 283,627 CUR. Various other projects were rejected in this round, even though they had a higher or equal satisfaction score than the selected project which had a score of 5287.  
+                                        </p>
+                                    
+
+
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="28Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 28</h4>
+                                            
+                                            <div>
+                                                <div class="bar budget text-outside-bar" style="width: 10.992408090066753%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 50px;">&nbsp; Remaining Budget: 275,827 CUR</p></div>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 90.0%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 55: Maski antysmogowe dla każdego - 272,278 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 9.765874265218692%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 56: Miejskie sauny - 272,278 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                    <!-- Check if the length is larger than 1 -->
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 275,827 CUR. 55: Maski antysmogowe dla każdego was rejected in this round, even though it had a higher or equal satisfaction score than the selected project which had a score of 5024.
+                                        </p>
+                                    
+
+
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="container" id="29Bars" style="display: none;">
+                        
+                        <!-- Budget Breakdown -->
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="budget-container">
+                                        <!-- Remaining Budget Bar -->
+                                        <div class="bar-container">
+                                            <h4>Round 29</h4>
+                                            
+                                            <div>
+                                                <div class="bar budget text-outside-bar" style="width: 0.07116958153128303%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 50px;">&nbsp; Remaining Budget: 3,549 CUR</p></div>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <!-- Project Bars -->
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 1.7966860121992967%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 547: Silent Disco nad Wisłą - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 35.94951231089376%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1288: Mokotów, Ursynów, Wilanów, Włochy - wcześnie  - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 3.4201104903241255%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 645: Warsztaty Wiem, co jem w wakacje i ferie w sz - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.7959201721545854%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 845: Zajęcia sensoryczne dla mam z dziećmi od 6 mi - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 90.0%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 205: Warszawskie Posiadówki Sąsiedzkie - w każdej  - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 5.300720058090742%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 575: Warszawskie szklane wiaty przystankowe bezpie - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 6.994532034433324%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1005: Altany śmietnikowe dla Warszawy – projekt i p - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.44037306577260504%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1572: Pomigaj do mnie - bezpłatne zajęcia nauki jęz - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 35.01868276715515%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 913: Cztery letnie skwery na Placu Teatralnym i ul - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 35.94951231089376%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1289: Bemowo, Bielany, Wola, Żoliborz - wcześnie wy - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 1.3969211184753947%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1145: Eksperymentujemy! - warsztaty naukowe dla dzi - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.9024038233045186%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 564: Podstawowy kurs pierwszej pomocy pediatryczne - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 19.555090851008917%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1832: Ratujmy warszawskie drewniaki - drewniak Burk - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 58.99284514088629%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 979: Powązkowska - w dobrym stylu - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 2.6747971245804574%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 133: Mierniki jakości powietrza dla szkół na Biało - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.3050124922769273%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1711: Spacery z przewodnikiem szlakiem patronów war - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 18.360903775477116%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1113: Razem z sąsiadem - imprezy plenerowe w Wawrze - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.8121634409740667%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 681: Samoobrona dla kobiet - warsztaty Wen do - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.9742351676395582%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1083: Warsztaty radzenia sobie ze stresem i trening - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 1.8048076466090373%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1161: Audyt Zarządu Miejskich Inwestycji Drogowych  - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 3.8893604784424753%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1468: Kwiaty i zieleń wokół pomnika Stefana Starzyń - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 4.8729806458444%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1966: Prosto na imprezę – stoisko edukacyjno-profil - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 12.935958807070275%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1733: Warszawskie Centrum Edukacji Odpadowej - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 1.5909379404858661%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1871: Joga, taniec, medytacja, w otwartych przestrz - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.30681729992353635%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1318: Podpórki rowerowe przy Rondzie ONZ - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 2.7577460840186085%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 856: Pilates 18+ Warszawa - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 1.010331320571739%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 828: Robotyka dla dzieci 6-8 lat - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 1.5160384231515913%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1952: Bezpieczny senior – warsztaty zwiększające be - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 9.706255523463401%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1912: Zielony zakątek Żoliborza Artystycznego - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 63.1682676313163%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1521: „Boisko pod balonem” w Dzielnicy Rembertów pr - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 2.33783953695855%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1828: Dobre warszawskie targi rękodzieła - hand mad - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 2.2290096358680254%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 622: Mierniki jakości powietrza w wybranych szkoła - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.42954421989295083%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 854: Aktywne spacery dla mam z wózkami w Warszawie - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 5.414422939827111%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1170: Aplikacja przyrodniczo-turystyczna przybliżaj - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 2.90574031104055%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 538: Dokończenie wydawania Atlasu Dawnej Architekt - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 2.8876922345744593%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1580: Montaż wyświetlaczy prędkości pojazdów na moś - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.7183134433503967%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 803: Nordic Walking - spacery dla zdrowia - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.16243268819481335%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1426: Ustawienie i udostępnienie przenośnych toalet - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 2.7433076228457365%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1419: Lato z komedią we Włochach i na Ochocie - fil - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 3.970576822539882%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1931: Praca przyjazna rowerzyście - Baza biur i mie - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 4.421778734192141%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 2093: Warszawa mojego dzieciństwa - przejażdżka mię - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 1.263365352626326%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1024: Nie czekaj, rusz się, Warszawo - warsztaty ru - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 7.219230586436149%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1278: Warsztaty edukacyjno - parentingowe - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 1.3897018878889587%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1758: 1000 x Stulecie Cudu nad Wisłą 1920-2020 - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 1.0117751666890262%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1898: Ekonomia+ekologia=energia+estetyka w nurcie z - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.2591703780530577%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1798: Aktywne niedziele - spacery Nordic Walking po - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.22289374435621612%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 328: Przeganiamy smog na Nowym Rembertowie - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 6.497307527792533%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1424: Zielony zakątek - zagospodarowanie terenu wok - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.4512019116522593%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 1150: Nauka tańca hawajskiego dla dorosłych i senio - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 2.65216483669198%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 554: Kulturalna Warszawa - poznaj jej legendy! Cyk - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.6894365210046521%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 342: Etykiety produktów spożywczych pod lupą, czyl - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+                                        <div class="bar-container">
+                                                <div>
+                                                    <div class="bar red text-outside-bar" style="width: 0.4458055367888983%;">
+                                                    </div>
+                                                    <div class="rejected-mark">✘</div>
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; 327: Przeganiamy smog na Wygodzie - 2,100 CUR</p></div>
+                                                </div>
+                                        </div>
+                                        
+
+                                        <!-- Selected Project Bar -->
+                                        <div class="bar-container">
+                                            
+                                            <div>
+                                                <div class="bar green text-outside-bar" style="width: 0.03790096057878978%;">
+                                                </div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; 10: Plakaty informujące o dobrowolności prac domo - 2,100 CUR</p></div>
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                    <!-- Check if the length is larger than 1 -->
+                                    
+                                        <p>
+                                            The chart above shows the current budget of 3,549 CUR. Various other projects were rejected in this round, even though they had a higher or equal satisfaction score than the selected project which had a score of 1264.  
+                                        </p>
+                                    
+
+
+                                    
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="spacer-1"></div>
+                    <hr>
+                    <div class="spacer-1"></div>
+
+                    <!-- Green and Red Painted Chart -->
+                    <div class="row featurette">
+                            <div class="col-1"></div>
+                            <div class="col-10" style="min-height: 600px;">
+                                <div id="RGBarChart" style="height: 100%; width: 100%;">
+                                    <button class = "info-button" style = "position: absolute; z-index: 2000; right: 50px;" data-tippy-content= "<b>Project Satisfaction Measures:</b><br> The following graphs shows the votes for each of the projects along with the corresponding budget.<br>The green bars correspond to selected projects, the red bars correspond to rejected projects.">i</button>
+                                </div>
+                            </div>
+                            <div class="col-1"></div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-10">
+                            <p>
+                                The chart above shows a colour coded bar chart, which shows the selected projects in order. Red for selected, green for rejected. This is a quick over-view visualisation showing that it is not always the most popular project which is selected, but the most popular projects within budget.
+                            </p>
+                        </div>
+                        <div class="col-1"></div>
+                    </div>
+                </section>
+            
+            <div class="spacer-8"></div>
+        </div>
+
+        <div class="spacer-1"></div>
+        <hr>
+        <div class="spacer-1"></div>
+
+        <!-- FOOTER -->
+        <footer class="container">
+            <p>© Pabutools. · <a href="https://getbootstrap.com/docs/4.0/examples/carousel/#">Privacy</a> · <a href="https://getbootstrap.com/docs/4.0/examples/carousel/#">Terms</a></p>
+        </footer>
+
+    </main>
+    <!-- Bootstrap JS and its dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById("1Bars").style.display = "block";
+
+        let currentRoundIndex = 1;
+        const roundsIds = document.querySelectorAll('.container').length;
+
+        function displayRound(index) {
+            const currentRoundId = index + 'Bars'; 
+            const currentRound = document.getElementById(currentRoundId);
+            if (currentRound) currentRound.style.display = 'block';
+        }
+        function hideRound(index) {
+            const currentRoundId = index + 'Bars'; 
+            const currentRound = document.getElementById(currentRoundId);
+            if (currentRound) currentRound.style.display = 'none';
+        }
+
+        displayRound(currentRoundIndex);
+
+        document.getElementById('prevButton').addEventListener('click', function() {
+
+            if (currentRoundIndex > 1) {
+                hideRound(currentRoundIndex);
+                currentRoundIndex--;
+                displayRound(currentRoundIndex);
+            }
+        });
+
+        document.getElementById('nextButton').addEventListener('click', function() {
+            if (currentRoundIndex < roundsIds - 3) {
+                hideRound(currentRoundIndex);
+                currentRoundIndex++; 
+                displayRound(currentRoundIndex);
+            }
+        });
+
+        document.getElementById('electionOutcome').addEventListener('click', function() {
+            const ul = document.getElementById('outcomeList');
+            if (ul.style.display === 'none') {
+                ul.style.display = 'block';
+            } else {
+                ul.style.display = 'none';
+            }
+        });
+        
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            projects_selected_or_rejected = JSON.parse('{"774": true, "2166": true, "1719": true, "888": true, "2152": true, "1822": true, "1160": true, "1449": true, "1910": true, "2159": true, "1637": true, "1780": true, "1851": true, "811": true, "1563": true, "1297": true, "1235": true, "2119": true, "1763": false, "1240": true, "1731": true, "601": true, "1007": false, "1971": true, "580": true, "1684": true, "551": false, "937": true, "1393": true, "1290": false, "582": false, "1864": false, "984": false, "1738": false, "1518": true, "55": false, "56": true, "547": false, "1288": false, "645": false, "845": false, "205": false, "575": false, "1005": false, "1572": false, "913": false, "1289": false, "1145": false, "564": false, "1832": false, "979": false, "133": false, "1711": false, "1113": false, "681": false, "1083": false, "1161": false, "1468": false, "1966": false, "1733": false, "1871": false, "1318": false, "856": false, "828": false, "1952": false, "1912": false, "1521": false, "1828": false, "622": false, "854": false, "1170": false, "538": false, "1580": false, "803": false, "1426": false, "1419": false, "1931": false, "2093": false, "1024": false, "1278": false, "1758": false, "1898": false, "1798": false, "328": false, "1424": false, "1150": false, "554": false, "342": false, "327": false, "10": true, "2008": false, "1340": false, "1044": false, "1041": false, "1436": false, "183": false, "1420": false, "1963": false, "853": false, "1218": false, "804": false}')
+            var projects = {};
+            
+            projects["774"] = {
+                name: "2020 drzew dla ",
+                votes: parseInt(40990.0),
+                cost: parseFloat(2888600),
+                selected: projects_selected_or_rejected["774"]
+            };
+            
+            projects["2166"] = {
+                name: "Nasze miasto w ",
+                votes: parseInt(30791.0),
+                cost: parseFloat(1500000),
+                selected: projects_selected_or_rejected["2166"]
+            };
+            
+            projects["1719"] = {
+                name: "Nie! - dla smog",
+                votes: parseInt(30222.0),
+                cost: parseFloat(369880),
+                selected: projects_selected_or_rejected["1719"]
+            };
+            
+            projects["888"] = {
+                name: "Nowe drogi rowe",
+                votes: parseInt(29570.0),
+                cost: parseFloat(2502400),
+                selected: projects_selected_or_rejected["888"]
+            };
+            
+            projects["2152"] = {
+                name: "Czyste powietrz",
+                votes: parseInt(23969.0),
+                cost: parseFloat(567430),
+                selected: projects_selected_or_rejected["2152"]
+            };
+            
+            projects["1822"] = {
+                name: "Kwiaty dla Wars",
+                votes: parseInt(22896.0),
+                cost: parseFloat(1231500),
+                selected: projects_selected_or_rejected["1822"]
+            };
+            
+            projects["1160"] = {
+                name: "Miejskie łąkost",
+                votes: parseInt(21067.0),
+                cost: parseFloat(2853520),
+                selected: projects_selected_or_rejected["1160"]
+            };
+            
+            projects["1449"] = {
+                name: "Wiaty rowerowe ",
+                votes: parseInt(18561.0),
+                cost: parseFloat(3600000),
+                selected: projects_selected_or_rejected["1449"]
+            };
+            
+            projects["1910"] = {
+                name: "Posiłki dla osó",
+                votes: parseInt(13875.0),
+                cost: parseFloat(96000),
+                selected: projects_selected_or_rejected["1910"]
+            };
+            
+            projects["2159"] = {
+                name: "Pomagamy ginący",
+                votes: parseInt(13735.0),
+                cost: parseFloat(54500),
+                selected: projects_selected_or_rejected["2159"]
+            };
+            
+            projects["1637"] = {
+                name: "Dbajmy o ptactw",
+                votes: parseInt(13715.0),
+                cost: parseFloat(13440),
+                selected: projects_selected_or_rejected["1637"]
+            };
+            
+            projects["1780"] = {
+                name: "Do lasku na kol",
+                votes: parseInt(12550.0),
+                cost: parseFloat(423612),
+                selected: projects_selected_or_rejected["1780"]
+            };
+            
+            projects["1851"] = {
+                name: "Szanujmy Naszą ",
+                votes: parseInt(12451.0),
+                cost: parseFloat(386000),
+                selected: projects_selected_or_rejected["1851"]
+            };
+            
+            projects["811"] = {
+                name: "600 ławek dla W",
+                votes: parseInt(12246.0),
+                cost: parseFloat(1990000),
+                selected: projects_selected_or_rejected["811"]
+            };
+            
+            projects["1563"] = {
+                name: "Paleniska na Pl",
+                votes: parseInt(11201.0),
+                cost: parseFloat(28810),
+                selected: projects_selected_or_rejected["1563"]
+            };
+            
+            projects["1297"] = {
+                name: "Nowy chodnik i ",
+                votes: parseInt(11145.0),
+                cost: parseFloat(669245),
+                selected: projects_selected_or_rejected["1297"]
+            };
+            
+            projects["1235"] = {
+                name: "Ogrody deszczow",
+                votes: parseInt(10751.0),
+                cost: parseFloat(3000000),
+                selected: projects_selected_or_rejected["1235"]
+            };
+            
+            projects["2119"] = {
+                name: "Zdrowe powietrz",
+                votes: parseInt(9767.0),
+                cost: parseFloat(1708317),
+                selected: projects_selected_or_rejected["2119"]
+            };
+            
+            projects["1763"] = {
+                name: "Fablab Rój Pszc",
+                votes: parseInt(9630.0),
+                cost: parseFloat(3979800),
+                selected: projects_selected_or_rejected["1763"]
+            };
+            
+            projects["1240"] = {
+                name: "Hamaki Miejskie",
+                votes: parseInt(9003.0),
+                cost: parseFloat(380000),
+                selected: projects_selected_or_rejected["1240"]
+            };
+            
+            projects["1731"] = {
+                name: "Warsztaty kompu",
+                votes: parseInt(8704.0),
+                cost: parseFloat(52228),
+                selected: projects_selected_or_rejected["1731"]
+            };
+            
+            projects["601"] = {
+                name: "Rozwijanie umie",
+                votes: parseInt(8612.0),
+                cost: parseFloat(46300),
+                selected: projects_selected_or_rejected["601"]
+            };
+            
+            projects["1007"] = {
+                name: "Stop bazgrołom ",
+                votes: parseInt(8494.0),
+                cost: parseFloat(1165656),
+                selected: projects_selected_or_rejected["1007"]
+            };
+            
+            projects["1971"] = {
+                name: "Edukacja w zakr",
+                votes: parseInt(7936.0),
+                cost: parseFloat(12500),
+                selected: projects_selected_or_rejected["1971"]
+            };
+            
+            projects["580"] = {
+                name: "Aplikacja Bezpł",
+                votes: parseInt(7516.0),
+                cost: parseFloat(110000),
+                selected: projects_selected_or_rejected["580"]
+            };
+            
+            projects["1684"] = {
+                name: "Wielka Garażówk",
+                votes: parseInt(7190.0),
+                cost: parseFloat(45500),
+                selected: projects_selected_or_rejected["1684"]
+            };
+            
+            projects["551"] = {
+                name: "200 000 toreb b",
+                votes: parseInt(7057.0),
+                cost: parseFloat(952700),
+                selected: projects_selected_or_rejected["551"]
+            };
+            
+            projects["937"] = {
+                name: "Joga w parku",
+                votes: parseInt(6531.0),
+                cost: parseFloat(50000),
+                selected: projects_selected_or_rejected["937"]
+            };
+            
+            projects["1393"] = {
+                name: "Szkolenia kompu",
+                votes: parseInt(6070.0),
+                cost: parseFloat(70000),
+                selected: projects_selected_or_rejected["1393"]
+            };
+            
+            projects["1290"] = {
+                name: "Białołęka, Prag",
+                votes: parseInt(5884.0),
+                cost: parseFloat(1991875),
+                selected: projects_selected_or_rejected["1290"]
+            };
+            
+            projects["582"] = {
+                name: "Teatr pod chmur",
+                votes: parseInt(5676.0),
+                cost: parseFloat(1150000),
+                selected: projects_selected_or_rejected["582"]
+            };
+            
+            projects["1864"] = {
+                name: "Muranów - tak d",
+                votes: parseInt(5623.0),
+                cost: parseFloat(293000),
+                selected: projects_selected_or_rejected["1864"]
+            };
+            
+            projects["984"] = {
+                name: "Drzewa i zieleń",
+                votes: parseInt(5440.0),
+                cost: parseFloat(810175),
+                selected: projects_selected_or_rejected["984"]
+            };
+            
+            projects["1738"] = {
+                name: "Środowisko to n",
+                votes: parseInt(5434.0),
+                cost: parseFloat(994300),
+                selected: projects_selected_or_rejected["1738"]
+            };
+            
+            projects["1518"] = {
+                name: "Zajęcia aktywiz",
+                votes: parseInt(5287.0),
+                cost: parseFloat(7800),
+                selected: projects_selected_or_rejected["1518"]
+            };
+            
+            projects["55"] = {
+                name: "Maski antysmogo",
+                votes: parseInt(5283.0),
+                cost: parseFloat(2509250),
+                selected: projects_selected_or_rejected["55"]
+            };
+            
+            projects["56"] = {
+                name: "Miejskie sauny",
+                votes: parseInt(5024.0),
+                cost: parseFloat(272278),
+                selected: projects_selected_or_rejected["56"]
+            };
+            
+            projects["547"] = {
+                name: "Silent Disco na",
+                votes: parseInt(4805.0),
+                cost: parseFloat(99550),
+                selected: projects_selected_or_rejected["547"]
+            };
+            
+            projects["1288"] = {
+                name: "Mokotów, Ursynó",
+                votes: parseInt(4614.0),
+                cost: parseFloat(1991875),
+                selected: projects_selected_or_rejected["1288"]
+            };
+            
+            projects["645"] = {
+                name: "Warsztaty Wiem,",
+                votes: parseInt(4495.0),
+                cost: parseFloat(189500),
+                selected: projects_selected_or_rejected["645"]
+            };
+            
+            projects["845"] = {
+                name: "Zajęcia sensory",
+                votes: parseInt(4464.0),
+                cost: parseFloat(44100),
+                selected: projects_selected_or_rejected["845"]
+            };
+            
+            projects["205"] = {
+                name: "Warszawskie Pos",
+                votes: parseInt(4431.0),
+                cost: parseFloat(4986681),
+                selected: projects_selected_or_rejected["205"]
+            };
+            
+            projects["575"] = {
+                name: "Warszawskie szk",
+                votes: parseInt(4393.0),
+                cost: parseFloat(293700),
+                selected: projects_selected_or_rejected["575"]
+            };
+            
+            projects["1005"] = {
+                name: "Altany śmietnik",
+                votes: parseInt(4146.0),
+                cost: parseFloat(387550),
+                selected: projects_selected_or_rejected["1005"]
+            };
+            
+            projects["1572"] = {
+                name: "Pomigaj do mnie",
+                votes: parseInt(4074.0),
+                cost: parseFloat(24400),
+                selected: projects_selected_or_rejected["1572"]
+            };
+            
+            projects["913"] = {
+                name: "Cztery letnie s",
+                votes: parseInt(4068.0),
+                cost: parseFloat(1940300),
+                selected: projects_selected_or_rejected["913"]
+            };
+            
+            projects["1289"] = {
+                name: "Bemowo, Bielany",
+                votes: parseInt(3939.0),
+                cost: parseFloat(1991875),
+                selected: projects_selected_or_rejected["1289"]
+            };
+            
+            projects["1145"] = {
+                name: "Eksperymentujem",
+                votes: parseInt(3855.0),
+                cost: parseFloat(77400),
+                selected: projects_selected_or_rejected["1145"]
+            };
+            
+            projects["564"] = {
+                name: "Podstawowy kurs",
+                votes: parseInt(3810.0),
+                cost: parseFloat(50000),
+                selected: projects_selected_or_rejected["564"]
+            };
+            
+            projects["1832"] = {
+                name: "Ratujmy warszaw",
+                votes: parseInt(3769.0),
+                cost: parseFloat(1083500),
+                selected: projects_selected_or_rejected["1832"]
+            };
+            
+            projects["979"] = {
+                name: "Powązkowska - w",
+                votes: parseInt(3741.0),
+                cost: parseFloat(3268650),
+                selected: projects_selected_or_rejected["979"]
+            };
+            
+            projects["133"] = {
+                name: "Mierniki jakośc",
+                votes: parseInt(3715.0),
+                cost: parseFloat(148204),
+                selected: projects_selected_or_rejected["133"]
+            };
+            
+            projects["1711"] = {
+                name: "Spacery z przew",
+                votes: parseInt(3576.0),
+                cost: parseFloat(16900),
+                selected: projects_selected_or_rejected["1711"]
+            };
+            
+            projects["1113"] = {
+                name: "Razem z sąsiade",
+                votes: parseInt(3566.0),
+                cost: parseFloat(1017333),
+                selected: projects_selected_or_rejected["1113"]
+            };
+            
+            projects["681"] = {
+                name: "Samoobrona dla ",
+                votes: parseInt(3501.0),
+                cost: parseFloat(45000),
+                selected: projects_selected_or_rejected["681"]
+            };
+            
+            projects["1083"] = {
+                name: "Warsztaty radze",
+                votes: parseInt(3469.0),
+                cost: parseFloat(53980),
+                selected: projects_selected_or_rejected["1083"]
+            };
+            
+            projects["1161"] = {
+                name: "Audyt Zarządu M",
+                votes: parseInt(3423.0),
+                cost: parseFloat(100000),
+                selected: projects_selected_or_rejected["1161"]
+            };
+            
+            projects["1468"] = {
+                name: "Kwiaty i zieleń",
+                votes: parseInt(3253.0),
+                cost: parseFloat(215500),
+                selected: projects_selected_or_rejected["1468"]
+            };
+            
+            projects["1966"] = {
+                name: "Prosto na impre",
+                votes: parseInt(3104.0),
+                cost: parseFloat(270000),
+                selected: projects_selected_or_rejected["1966"]
+            };
+            
+            projects["1733"] = {
+                name: "Warszawskie Cen",
+                votes: parseInt(3060.0),
+                cost: parseFloat(716750),
+                selected: projects_selected_or_rejected["1733"]
+            };
+            
+            projects["1871"] = {
+                name: "Joga, taniec, m",
+                votes: parseInt(2933.0),
+                cost: parseFloat(88150),
+                selected: projects_selected_or_rejected["1871"]
+            };
+            
+            projects["1318"] = {
+                name: "Podpórki rowero",
+                votes: parseInt(2910.0),
+                cost: parseFloat(17000),
+                selected: projects_selected_or_rejected["1318"]
+            };
+            
+            projects["856"] = {
+                name: "Pilates 18+ War",
+                votes: parseInt(2838.0),
+                cost: parseFloat(152800),
+                selected: projects_selected_or_rejected["856"]
+            };
+            
+            projects["828"] = {
+                name: "Robotyka dla dz",
+                votes: parseInt(2600.0),
+                cost: parseFloat(55980),
+                selected: projects_selected_or_rejected["828"]
+            };
+            
+            projects["1952"] = {
+                name: "Bezpieczny seni",
+                votes: parseInt(2576.0),
+                cost: parseFloat(84000),
+                selected: projects_selected_or_rejected["1952"]
+            };
+            
+            projects["1912"] = {
+                name: "Zielony zakątek",
+                votes: parseInt(2536.0),
+                cost: parseFloat(537800),
+                selected: projects_selected_or_rejected["1912"]
+            };
+            
+            projects["1521"] = {
+                name: "„Boisko pod bal",
+                votes: parseInt(2374.0),
+                cost: parseFloat(3500000),
+                selected: projects_selected_or_rejected["1521"]
+            };
+            
+            projects["1828"] = {
+                name: "Dobre warszawsk",
+                votes: parseInt(2303.0),
+                cost: parseFloat(129534),
+                selected: projects_selected_or_rejected["1828"]
+            };
+            
+            projects["622"] = {
+                name: "Mierniki jakośc",
+                votes: parseInt(2262.0),
+                cost: parseFloat(123504),
+                selected: projects_selected_or_rejected["622"]
+            };
+            
+            projects["854"] = {
+                name: "Aktywne spacery",
+                votes: parseInt(2162.0),
+                cost: parseFloat(23800),
+                selected: projects_selected_or_rejected["854"]
+            };
+            
+            projects["1170"] = {
+                name: "Aplikacja przyr",
+                votes: parseInt(2155.0),
+                cost: parseFloat(300000),
+                selected: projects_selected_or_rejected["1170"]
+            };
+            
+            projects["538"] = {
+                name: "Dokończenie wyd",
+                votes: parseInt(2155.0),
+                cost: parseFloat(161000),
+                selected: projects_selected_or_rejected["538"]
+            };
+            
+            projects["1580"] = {
+                name: "Montaż wyświetl",
+                votes: parseInt(2135.0),
+                cost: parseFloat(160000),
+                selected: projects_selected_or_rejected["1580"]
+            };
+            
+            projects["803"] = {
+                name: "Nordic Walking ",
+                votes: parseInt(2067.0),
+                cost: parseFloat(39800),
+                selected: projects_selected_or_rejected["803"]
+            };
+            
+            projects["1426"] = {
+                name: "Ustawienie i ud",
+                votes: parseInt(1975.0),
+                cost: parseFloat(9000),
+                selected: projects_selected_or_rejected["1426"]
+            };
+            
+            projects["1419"] = {
+                name: "Lato z komedią ",
+                votes: parseInt(1842.0),
+                cost: parseFloat(152000),
+                selected: projects_selected_or_rejected["1419"]
+            };
+            
+            projects["1931"] = {
+                name: "Praca przyjazna",
+                votes: parseInt(1774.0),
+                cost: parseFloat(220000),
+                selected: projects_selected_or_rejected["1931"]
+            };
+            
+            projects["2093"] = {
+                name: "Warszawa mojego",
+                votes: parseInt(1762.0),
+                cost: parseFloat(245000),
+                selected: projects_selected_or_rejected["2093"]
+            };
+            
+            projects["1024"] = {
+                name: "Nie czekaj, rus",
+                votes: parseInt(1756.0),
+                cost: parseFloat(70000),
+                selected: projects_selected_or_rejected["1024"]
+            };
+            
+            projects["1278"] = {
+                name: "Warsztaty eduka",
+                votes: parseInt(1698.0),
+                cost: parseFloat(400000),
+                selected: projects_selected_or_rejected["1278"]
+            };
+            
+            projects["1758"] = {
+                name: "1000 x Stulecie",
+                votes: parseInt(1681.0),
+                cost: parseFloat(77000),
+                selected: projects_selected_or_rejected["1758"]
+            };
+            
+            projects["1898"] = {
+                name: "Ekonomia+ekolog",
+                votes: parseInt(1650.0),
+                cost: parseFloat(56060),
+                selected: projects_selected_or_rejected["1898"]
+            };
+            
+            projects["1798"] = {
+                name: "Aktywne niedzie",
+                votes: parseInt(1521.0),
+                cost: parseFloat(14360),
+                selected: projects_selected_or_rejected["1798"]
+            };
+            
+            projects["328"] = {
+                name: "Przeganiamy smo",
+                votes: parseInt(1487.0),
+                cost: parseFloat(12350),
+                selected: projects_selected_or_rejected["328"]
+            };
+            
+            projects["1424"] = {
+                name: "Zielony zakątek",
+                votes: parseInt(1427.0),
+                cost: parseFloat(360000),
+                selected: projects_selected_or_rejected["1424"]
+            };
+            
+            projects["1150"] = {
+                name: "Nauka tańca haw",
+                votes: parseInt(1416.0),
+                cost: parseFloat(25000),
+                selected: projects_selected_or_rejected["1150"]
+            };
+            
+            projects["554"] = {
+                name: "Kulturalna Wars",
+                votes: parseInt(1382.0),
+                cost: parseFloat(146950),
+                selected: projects_selected_or_rejected["554"]
+            };
+            
+            projects["342"] = {
+                name: "Etykiety produk",
+                votes: parseInt(1356.0),
+                cost: parseFloat(38200),
+                selected: projects_selected_or_rejected["342"]
+            };
+            
+            projects["327"] = {
+                name: "Przeganiamy smo",
+                votes: parseInt(1318.0),
+                cost: parseFloat(24701),
+                selected: projects_selected_or_rejected["327"]
+            };
+            
+            projects["10"] = {
+                name: "Plakaty informu",
+                votes: parseInt(1264.0),
+                cost: parseFloat(2100),
+                selected: projects_selected_or_rejected["10"]
+            };
+            
+            projects["2008"] = {
+                name: "Joga funkcjonal",
+                votes: parseInt(1226.0),
+                cost: parseFloat(27600),
+                selected: projects_selected_or_rejected["2008"]
+            };
+            
+            projects["1340"] = {
+                name: "„Kodeks Dobrego",
+                votes: parseInt(1223.0),
+                cost: parseFloat(461700),
+                selected: projects_selected_or_rejected["1340"]
+            };
+            
+            projects["1044"] = {
+                name: "Aaaby... wiedzi",
+                votes: parseInt(1187.0),
+                cost: parseFloat(12350),
+                selected: projects_selected_or_rejected["1044"]
+            };
+            
+            projects["1041"] = {
+                name: "Aaaby... wiedzi",
+                votes: parseInt(1161.0),
+                cost: parseFloat(12350),
+                selected: projects_selected_or_rejected["1041"]
+            };
+            
+            projects["1436"] = {
+                name: "Wycieczka rower",
+                votes: parseInt(1130.0),
+                cost: parseFloat(3000),
+                selected: projects_selected_or_rejected["1436"]
+            };
+            
+            projects["183"] = {
+                name: "PING-PONG 8+ na",
+                votes: parseInt(983.0),
+                cost: parseFloat(215000),
+                selected: projects_selected_or_rejected["183"]
+            };
+            
+            projects["1420"] = {
+                name: "Festiwal filmow",
+                votes: parseInt(887.0),
+                cost: parseFloat(120100),
+                selected: projects_selected_or_rejected["1420"]
+            };
+            
+            projects["1963"] = {
+                name: "Bezpłatne zajęc",
+                votes: parseInt(829.0),
+                cost: parseFloat(96140),
+                selected: projects_selected_or_rejected["1963"]
+            };
+            
+            projects["853"] = {
+                name: "Warszawskie Fit",
+                votes: parseInt(779.0),
+                cost: parseFloat(164840),
+                selected: projects_selected_or_rejected["853"]
+            };
+            
+            projects["1218"] = {
+                name: "Widowisko tanec",
+                votes: parseInt(364.0),
+                cost: parseFloat(97200),
+                selected: projects_selected_or_rejected["1218"]
+            };
+            
+            projects["804"] = {
+                name: "Warsztaty eduka",
+                votes: parseInt(235.0),
+                cost: parseFloat(905500),
+                selected: projects_selected_or_rejected["804"]
+            };
+            
+
+            
+            function sortAndRenderChart(criteria, filterBy) {
+                console.log(projects);
+                var filteredProjects = Object.values(projects).filter(function(project) {
+                    if (filterBy === 'all') {
+                        return true; 
+                    } else if (filterBy === 'selected') {
+                        return project.selected === true; 
+                    } else if (filterBy === 'rejected') {
+                        return project.selected === false; 
+                    }
+                });
+                    var sortOrder = criteria.split('-')[1];
+                    var sortBy = criteria.split('-')[0];
+                    var sortedProjects = Object.values(filteredProjects).sort(function(a, b) {
+                        if (sortBy === 'name') {
+                            return sortOrder === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+                        } else {
+                            return sortOrder === 'asc' ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy];
+                        }
+                    });
+                  
+                    var labels = sortedProjects.map(function(p) { return p.name; });
+                    var values = sortedProjects.map(function(p) { return parseInt(p.votes, 10); });
+                    var data ={
+                        "type": "hbar",
+                        "title": {
+                            "text": "Satisfaction Measure Bar Chart"
+                        },
+                        shapes: [
+                            {
+                                "type": "circle",
+                                "background-color": "#5297b6",
+                                "size": 20,
+                                "x": 35,
+                                "y": 25,
+                                "tooltip": {
+                                    "text": "This bar chart shows the number of votes for each project.",
+                                    "background-color": "white",
+                                    "font-color": "gray",
+                                    "font-family": "Georgia",
+                                    "background-color": "white",
+                                    "border-color": "gray",
+                                    "border-width": 1,
+                                    "line-style": "dotted",
+                                    "padding": "15%",
+                                },
+                                label: {
+                                    text: 'i', 
+                                    fontSize: 28,
+                                    fontWeight: 'bold',
+                                    fontColor: '#fff'
+                                }
+                            }
+                        ],
+                        "scrollX": {
+                                        "bar": {
+                                        "backgroundColor": '#2596be',
+                                        "alpha": 0.5,
+                                        },
+                                        "handle": {
+                                        "backgroundColor": '#2596be',
+                                        },
+                                    },
+                        "plotarea": {
+                            "margin-left":"130px",
+                            "margin-right":"130px"
+                        },
+                        "scale-x": {
+                            "labels": labels,
+                            "title": {
+                            "text": "Project"
+                            },
+                            "item": { 
+                            "font-size": 14, 
+                            "offset-x": 0, 
+                            "offset-y": 0 
+                            },"zooming": true,
+                                "zoomTo": [0, 15]
+                        },
+                        "scale-y": {
+                            "title": {
+                            "text": "Number of Votes"
+                            }
+                        },
+                        "series": [{
+                            "values": values ,
+                            'hover-state': {
+                            'background-color': "orange",
+                        }
+                        }, ],
+                        "plot": {
+                            "tooltip": {
+                            "text": "Project %scale-key-label has %v votes"
+                        },
+                            "animation": {
+                            "effect": "ANIMATION_SLIDE_BOTTOM",
+                            "sequence": "ANIMATION_BY_PLOT_AND_NODE",
+                            "speed": 0
+                            }
+                        }
+                    }
+                    zingchart.render({
+                        id: 'SortableBarChart',
+                        data: data,
+                        height: '100%',
+                        width: '100%'
+                },
+                );
+            }
+
+            sortAndRenderChart('votes-desc', 'all');
+
+            document.getElementById('sortingCriteria').addEventListener('change', function() {
+                filter = document.getElementById('filterBy').value;
+                sortAndRenderChart(this.value, filter);
+            });
+
+            document.getElementById('filterBy').addEventListener('change', function() {
+                sort = document.getElementById('sortingCriteria').value;
+                sortAndRenderChart(sort, this.value);
+            });
+        });
+</script>
+<script>
+    projects_selected_or_rejected = JSON.parse('{"774": true, "2166": true, "1719": true, "888": true, "2152": true, "1822": true, "1160": true, "1449": true, "1910": true, "2159": true, "1637": true, "1780": true, "1851": true, "811": true, "1563": true, "1297": true, "1235": true, "2119": true, "1763": false, "1240": true, "1731": true, "601": true, "1007": false, "1971": true, "580": true, "1684": true, "551": false, "937": true, "1393": true, "1290": false, "582": false, "1864": false, "984": false, "1738": false, "1518": true, "55": false, "56": true, "547": false, "1288": false, "645": false, "845": false, "205": false, "575": false, "1005": false, "1572": false, "913": false, "1289": false, "1145": false, "564": false, "1832": false, "979": false, "133": false, "1711": false, "1113": false, "681": false, "1083": false, "1161": false, "1468": false, "1966": false, "1733": false, "1871": false, "1318": false, "856": false, "828": false, "1952": false, "1912": false, "1521": false, "1828": false, "622": false, "854": false, "1170": false, "538": false, "1580": false, "803": false, "1426": false, "1419": false, "1931": false, "2093": false, "1024": false, "1278": false, "1758": false, "1898": false, "1798": false, "328": false, "1424": false, "1150": false, "554": false, "342": false, "327": false, "10": true, "2008": false, "1340": false, "1044": false, "1041": false, "1436": false, "183": false, "1420": false, "1963": false, "853": false, "1218": false, "804": false}')
+    var projectNames = ['774', '2166', '1719', '888', '2152', '1822', '1160', '1449', '1910', '2159', '1637', '1780', '1851', '811', '1563', '1297', '1235', '2119', '1763', '1240', '1731', '601', '1007', '1971', '580', '1684', '551', '937', '1393', '1290', '582', '1864', '984', '1738', '1518', '55', '56', '547', '1288', '645', '845', '205', '575', '1005', '1572', '913', '1289', '1145', '564', '1832', '979', '133', '1711', '1113', '681', '1083', '1161', '1468', '1966', '1733', '1871', '1318', '856', '828', '1952', '1912', '1521', '1828', '622', '854', '1170', '538', '1580', '803', '1426', '1419', '1931', '2093', '1024', '1278', '1758', '1898', '1798', '328', '1424', '1150', '554', '342', '327', '10', '2008', '1340', '1044', '1041', '1436', '183', '1420', '1963', '853', '1218', '804'];
+    var projectValues = [40990.0, 30791.0, 30222.0, 29570.0, 23969.0, 22896.0, 21067.0, 18561.0, 13875.0, 13735.0, 13715.0, 12550.0, 12451.0, 12246.0, 11201.0, 11145.0, 10751.0, 9767.0, 9630.0, 9003.0, 8704.0, 8612.0, 8494.0, 7936.0, 7516.0, 7190.0, 7057.0, 6531.0, 6070.0, 5884.0, 5676.0, 5623.0, 5440.0, 5434.0, 5287.0, 5283.0, 5024.0, 4805.0, 4614.0, 4495.0, 4464.0, 4431.0, 4393.0, 4146.0, 4074.0, 4068.0, 3939.0, 3855.0, 3810.0, 3769.0, 3741.0, 3715.0, 3576.0, 3566.0, 3501.0, 3469.0, 3423.0, 3253.0, 3104.0, 3060.0, 2933.0, 2910.0, 2838.0, 2600.0, 2576.0, 2536.0, 2374.0, 2303.0, 2262.0, 2162.0, 2155.0, 2155.0, 2135.0, 2067.0, 1975.0, 1842.0, 1774.0, 1762.0, 1756.0, 1698.0, 1681.0, 1650.0, 1521.0, 1487.0, 1427.0, 1416.0, 1382.0, 1356.0, 1318.0, 1264.0, 1226.0, 1223.0, 1187.0, 1161.0, 1130.0, 983.0, 887.0, 829.0, 779.0, 364.0, 235.0];
+    var seriesData = [];
+    var pNames = projectNames;
+    colorsList = [] 
+
+    for (var i = 0; i < projectNames.length; i++) {
+        var projectName = projectNames[i];
+        var projectValue = projectValues[i];
+        var selectedOrRejected = projects_selected_or_rejected[projectName];
+        var color = selectedOrRejected ? 'green' : 'red';
+        colorsList.push(color);
+
+    }
+
+
+    var config = {
+        "type": "hbar",
+        "title": {
+            "text": "Satisfaction Measure Bar Chart"
+        },
+        shapes: [{
+            "type": "circle",
+            "background-color": "#5297b6",
+            "size": 20,
+            "x": 35,
+            "y": 25,
+            "tooltip": {
+                "text": "<b>Project Satisfaction Measures:</b><br> The following graphs shows the votes for each of the projects along with the corresponding budget.<br>The green bars correspond to selected projects, the red bars correspond to rejected projects.",
+                "background-color": "white",
+                "font-color": "gray",
+                "font-family": "Georgia",
+                "border-color": "gray",
+                "border-width": 1,
+                "line-style": "dotted",
+                "padding": "15%",
+            },
+            label: {
+                text: 'i',
+                fontSize: 28,
+                fontWeight: 'bold',
+                fontColor: '#fff'
+            }
+        }],
+        "scrollX": {
+            "bar": {
+                "backgroundColor": '#2596be',
+                "alpha": 0.5,
+            },
+            "handle": {
+                "backgroundColor": '#2596be',
+            },
+        },
+        "plotarea": {
+            "margin-left":"130px",
+            "margin-right":"130px"
+        },
+        "scale-x": {
+            "labels": ["2020 drzew dla ","Nasze miasto w ","Nie! - dla smog","Nowe drogi rowe","Czyste powietrz","Kwiaty dla Wars","Miejskie łąkost","Wiaty rowerowe ","Posiłki dla osó","Pomagamy ginący","Dbajmy o ptactw","Do lasku na kol","Szanujmy Naszą ","600 ławek dla W","Paleniska na Pl","Nowy chodnik i ","Ogrody deszczow","Zdrowe powietrz","Fablab Rój Pszc","Hamaki Miejskie","Warsztaty kompu","Rozwijanie umie","Stop bazgrołom ","Edukacja w zakr","Aplikacja Bezpł","Wielka Garażówk","200 000 toreb b","Joga w parku","Szkolenia kompu","Białołęka, Prag","Teatr pod chmur","Muranów - tak d","Drzewa i zieleń","Środowisko to n","Zajęcia aktywiz","Maski antysmogo","Miejskie sauny","Silent Disco na","Mokotów, Ursynó","Warsztaty Wiem,","Zajęcia sensory","Warszawskie Pos","Warszawskie szk","Altany śmietnik","Pomigaj do mnie","Cztery letnie s","Bemowo, Bielany","Eksperymentujem","Podstawowy kurs","Ratujmy warszaw","Powązkowska - w","Mierniki jakośc","Spacery z przew","Razem z sąsiade","Samoobrona dla ","Warsztaty radze","Audyt Zarządu M","Kwiaty i zieleń","Prosto na impre","Warszawskie Cen","Joga, taniec, m","Podpórki rowero","Pilates 18+ War","Robotyka dla dz","Bezpieczny seni","Zielony zakątek","„Boisko pod bal","Dobre warszawsk","Mierniki jakośc","Aktywne spacery","Aplikacja przyr","Dokończenie wyd","Montaż wyświetl","Nordic Walking ","Ustawienie i ud","Lato z komedią ","Praca przyjazna","Warszawa mojego","Nie czekaj, rus","Warsztaty eduka","1000 x Stulecie","Ekonomia+ekolog","Aktywne niedzie","Przeganiamy smo","Zielony zakątek","Nauka tańca haw","Kulturalna Wars","Etykiety produk","Przeganiamy smo","Plakaty informu","Joga funkcjonal","„Kodeks Dobrego","Aaaby... wiedzi","Aaaby... wiedzi","Wycieczka rower","PING-PONG 8+ na","Festiwal filmow","Bezpłatne zajęc","Warszawskie Fit","Widowisko tanec","Warsztaty eduka",],
+            "title": {
+                "text": "Project"
+            },
+            "item": {
+                "font-size": 14,
+                "offset-x": 0,
+                "offset-y": 0
+            },
+            "zooming": true,
+            "zoomTo": [0, 15]
+        },
+        "scale-y": {
+            "title": {
+                "text": "Number of Votes"
+            }
+        },
+        "series": [{
+            "values": [40990.0, 30791.0, 30222.0, 29570.0, 23969.0, 22896.0, 21067.0, 18561.0, 13875.0, 13735.0, 13715.0, 12550.0, 12451.0, 12246.0, 11201.0, 11145.0, 10751.0, 9767.0, 9630.0, 9003.0, 8704.0, 8612.0, 8494.0, 7936.0, 7516.0, 7190.0, 7057.0, 6531.0, 6070.0, 5884.0, 5676.0, 5623.0, 5440.0, 5434.0, 5287.0, 5283.0, 5024.0, 4805.0, 4614.0, 4495.0, 4464.0, 4431.0, 4393.0, 4146.0, 4074.0, 4068.0, 3939.0, 3855.0, 3810.0, 3769.0, 3741.0, 3715.0, 3576.0, 3566.0, 3501.0, 3469.0, 3423.0, 3253.0, 3104.0, 3060.0, 2933.0, 2910.0, 2838.0, 2600.0, 2576.0, 2536.0, 2374.0, 2303.0, 2262.0, 2162.0, 2155.0, 2155.0, 2135.0, 2067.0, 1975.0, 1842.0, 1774.0, 1762.0, 1756.0, 1698.0, 1681.0, 1650.0, 1521.0, 1487.0, 1427.0, 1416.0, 1382.0, 1356.0, 1318.0, 1264.0, 1226.0, 1223.0, 1187.0, 1161.0, 1130.0, 983.0, 887.0, 829.0, 779.0, 364.0, 235.0],
+            'hover-state': { 
+                'background-color': "orange",
+            }
+        }, ],
+        "plot": {
+            "styles": colorsList,
+            "tooltip": {
+                "text": "Project %scale-key-label has %v votes"
+            },
+            "animation": {
+                "effect": "ANIMATION_SLIDE_BOTTOM",
+                "sequence": "ANIMATION_BY_PLOT_AND_NODE",
+                "speed": 0
+            }
+        }
+    }
+
+
+
+    zingchart.render({
+    id: 'RGBarChart',
+    data: config,
+    height: '100%',
+    width: '100%'
+});
+</script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>tippy('[data-tippy-content]', { allowHTML: true, maxWidth: 1000});</script>
+    <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
+</body>
+</html>
