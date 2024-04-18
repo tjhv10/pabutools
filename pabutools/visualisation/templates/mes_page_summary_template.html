@@ -233,11 +233,6 @@
             height: 100%;
         }
         
-        /* zing-grid[loading] {
-            height: 800px;
-            width: 100%;
-        } */
-        
         h1,h2,h3,
         p {
             text-align: center;
@@ -290,18 +285,6 @@
 </head>
 
 <body>
-    <!-- <h1>!FILE!</h1> -->
-    <!-- !DESCRIPTION! -->
-
-    <!-- !SAMPLE_EXPLANATION1! -->
-
-    <!-- <table>
-        <tbody>
-            !SAMPLE_EXPLANATION_ROW!
-        </tbody>
-    </table> -->
-
-    <!-- !SAMPLE_EXPLANATION2! -->
     <header>
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
           <a class="navbar-brand active" href="./summary.html">Summary<span class="sr-only">(current)</span></a>
@@ -311,7 +294,7 @@
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
-                <a class="nav-link" href="./round_analysis.html">Round By Round</a>
+                <a class="nav-link" href="./{{name}}_round_analysis.html">Round By Round</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="">Pabutools</a>
@@ -366,7 +349,7 @@
                     {% for round in rounds %}
                         <div class='bar bar-blue bar-border'
                             style='width: {{ (round.cost / budget | float) * 100 }}&#37;;'
-                            data-tippy-content='Project {{ round.id }}: <q>{{ projects[round.id]["name"] }}</q> was voted in round {{ loop.index }}, costing {{ "{:,}".format( (round.cost | int) ) }} {{ currency }}. This is {{ ((round.cost / budget | int) * 100) | int }}&#37; of the budget.'>
+                            data-tippy-content="Project {{ round.id }}: <q>{{ projects[round.id]['name'] }}</q> was voted in round {{ loop.index }}, costing {{ '{:,}'.format( (round.cost | int) ) }} {{ currency }}. This is {{ ((round.cost / budget | int) * 100) | int }}&#37; of the budget.">
                         </div>
                     {% endfor %}
                 </div>
@@ -375,25 +358,6 @@
             <div class="spacer-1"></div>
             <hr>
             <div class="spacer-1"></div>
-
-            <!-- Fix issue where extra comma appears on final item in list. -->
-
-                <!-- {% for project in projects %}
-                    {{ project.name}}: {{project.totalvotes}} votes,
-                {% endfor %}
-                <br> -->
-
-                {# The elected projects were:<br>
-                {% for p in projects %}
-                    {{ projects[p]["name"] }},
-                {% endfor %} #}
-
-            {# <p>
-                The projects and their descriptions are as follows:<br>
-                {% for p in projects %}
-                    {{ projects[p]["name"] }}: {{ projects[p]["description"] }}<br>
-                {% endfor %}
-            </p> #}
 
             <!-- Summary Table -->
             <h2>Summary Table</h2>
@@ -446,55 +410,10 @@
                                     </div>
                                     <div class='bar bar-light'
                                         
-                                        onmouseover='highlight_project([
-                                            {% for r in round.funding_lost_per_round %}
-                                                {% if loop.index0 < 3 %}
-                                                    "project-{{ rounds[r].id }}",
-                                                {% endif %}
-                                            {% endfor %}
-                                        ])'
-                                        onmouseout='unhighlight_project([
-                                            {% for r in round.funding_lost_per_round %}
-                                                {% if loop.index0 < 3 %}
-                                                    "project-{{ rounds[r].id }}",
-                                                {% endif %}
-                                            {% endfor %}
-                                        ])'
+                                        onmouseover='highlight_project([{% for r in round.funding_lost_per_round %}{% if loop.index0 < 3 %}"project-{{ rounds[r].id }}",{% endif %}{% endfor %}])'
+                                        onmouseout='unhighlight_project([{% for r in round.funding_lost_per_round %}{% if loop.index0 < 3 %}"project-{{ rounds[r].id }}",{% endif %}{% endfor %}])'
                                         style='width: {{ ((round.initial_voter_funding - round.final_voter_funding) / budget | float) * 100 }}&#37;;'
-                                        data-tippy-content='<html lang=\"en\"><body">From the initial total funding, <b> {{ "{:,.2f}".format(((round.initial_voter_funding - round.final_voter_funding) | float)) }} {{ currency }} </b> was spent on previously selected projects. </br> 
-                                        Most of the funding was spent on:<br><br>
-                                        <ul>
-                                            {% for r in round.funding_lost_per_round %}
-                                                {% if loop.index0 < 3 %}
-                                                    <li>
-                                                        <b>Project {{ rounds[r].id }} - {{ projects[rounds[r].id]["name"] }}:</b> {{ "{:,.2f}".format((round.funding_lost_per_round[r] | float)) }} {{ currency }}
-                                                        {% if (round.initial_voter_funding - round.final_voter_funding) != 0 %}
-                                                            <hr style="width: {{ (round.funding_lost_per_round[r] / (round.initial_voter_funding - round.final_voter_funding)) * 100 }}&#37;;
-                                                                height: 10px;
-                                                                color: #f6c8c8;
-                                                                background-color: #f6c8c8;
-                                                                text-align: left;
-                                                                margin-left: 0;
-                                                                margin-right: 5px;
-                                                                margin-bottom: 7px;
-                                                                margin-top: 3px">
-                                                            </hr>
-                                                        {% endif %}
-                                                    </li>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
-                                        '
-                                        allowHTML: true>
-        {#                          <li>Project {candidate.name} ({display_short_string(candidate.id)}): {display_int(int(paid))} zł. 
-                                        <hr style=\"width:{100 * paid/ total_paid}%;
-                                                    height:10px;
-                                                    color:#f6c8c8;
-                                                    background-color:#f6c8c8;
-                                                    text-align:left;
-                                                    margin-left:0\">
-                                        </hr>
-                                    </li>" #}
+                                        data-tippy-content='<html lang=\"en\"><body">From the initial total funding, <b> {{ "{:,.2f}".format(((round.initial_voter_funding - round.final_voter_funding) | float)) }} {{ currency }} </b> was spent on previously selected projects. </br> Most of the funding was spent on:<br><br><ul>{% for r in round.funding_lost_per_round %}{% if loop.index0 < 3 %}<li><b>Project {{ rounds[r].id }} - {{ projects[rounds[r].id]["name"] }}:</b> {{ "{:,.2f}".format((round.funding_lost_per_round[r] | float)) }} {{ currency }}{% if (round.initial_voter_funding - round.final_voter_funding) != 0 %}<hr style="width: {{ (round.funding_lost_per_round[r] / (round.initial_voter_funding - round.final_voter_funding)) * 100 }}&#37;;height: 10px;color: #f6c8c8;background-color: #f6c8c8;text-align: left;margin: 3px 5px 7px 0"></hr>{% endif %}</li>{% endif %}{% endfor %}</ul>'allowHTML: true>
                                     </div>
                                 </div>
 
@@ -514,7 +433,7 @@
                         <tr class='hidden-row' id='hidden-{{ round.id }}'>
                             <td colspan=7>
                                 <div style='text-align: left'>
-                                    <b>Round Analysis:</b><a href='round_analysis.html?projectId={{ round.id }}'> Click Me!</a> <br>
+                                    <b>Round Analysis:</b><a href='{{name}}_round_analysis.html?projectId={{ round.id }}'> Click Me!</a> <br>
                                     <b>Description:</b> {{ projects[round.id]["description"] }} <br>
                                     <b>Categories:</b> <br>
                                     {% for category in projects[round.id]["categories"] %}
@@ -526,11 +445,6 @@
                                     <div>
                                         <h4>Why was this project selected?</h4>
                                         {% if round.initial_voter_funding != round.final_voter_funding %}
-                                            <!-- This project was accepted because its cost (<b>{{ "{:,}".format( (round.cost | int) ) }}</b> {{ currency }}) was less than or equal to the 
-                                            combined funds of its supporters at round {{ loop.index }} - <b>{{ "{:,.2f}".format((round.final_voter_funding | float)) }}</b> {{ currency }}.<br>
-                                            (sentence about its initial funding value)<br>
-                                            (sentence about how it lost some of its inital funding value)<br>
-                                            (conclusion sentence talking about the final funding value and comparing it to the cost?)<br> -->
                                             This project was accepted because its supporters were able to pay for the project's cost - <b>{{ "{:,}".format( (round.cost | int) ) }}</b> {{ currency }} -
                                             using the total funding available to them at the start of round {{ loop.index }} (<b>{{ "{:,.2f}".format((round.final_voter_funding | float)) }}</b> {{ currency }}). <br><br>
                                             Note that the supporters of this project initially had more funding available to them (<b>{{ "{:,.2f}".format((round.initial_voter_funding | float)) }} </b> {{ currency }}). However, this funding
@@ -538,39 +452,13 @@
                                             As a result, this project could still be afforded.<br><br>
                                             These projects and the specific funding lost can be seen below.
                                         {% else %}
-                                            <!-- This project was accepted because its cost (<b>{{ "{:,}".format( (round.cost | int) ) }}</b> {{ currency }}) was less than or equal to the
-                                            combined funds of its supporters (<b>{{ "{:,.2f}".format((round.final_voter_funding | float)) }}</b> {{ currency }}),
-                                            and no funding for this project was lost in the previous rounds. -->
                                             This project was accepted because its supporters were able to pay for the project's cost - <b>{{ "{:,}".format( (round.cost | int) ) }}</b> {{ currency}} -
                                             using the total funding available to them at the start of round {{ loop.index }} (<b>{{ "{:,.2f}".format((round.final_voter_funding | float)) }}</b> {{ currency }}).<br><br>
                                             Note that no funding was lost for this project in any of the previous rounds.
                                         {% endif %}
                                     </div>
                                     <br>
-                                    <h4>Funding spent in previous rounds.</h4>
-                                    {% if round.initial_voter_funding != round.final_voter_funding %}
-                                        From the initial total funding, <b> {{ "{:,.2f}".format(((round.initial_voter_funding - round.final_voter_funding) | float)) }} {{ currency }} </b> was spent on previously selected projects. <br> 
-                                        The funding was spent on:
-                                        <ul>
-                                            {% for r in round.funding_lost_per_round %}
-                                                {% if round.funding_lost_per_round != 0 %}
-                                                    <li>
-                                                        <b>Project {{ rounds[r].id }} - {{ projects[rounds[r].id]["name"] }}:</b> {{ "{:,.2f}".format((round.funding_lost_per_round[r] | float)) }} {{ currency }}
-                                                        {% if (round.initial_voter_funding - round.final_voter_funding) != 0 %}
-                                                            <hr style="width: {{ (round.funding_lost_per_round[r] / (round.initial_voter_funding - round.final_voter_funding))  * 100 }}&#37;;
-                                                                        height: 10px;
-                                                                        color: #f6c8c8;
-                                                                        background-color: #f6c8c8;
-                                                                        text-align: left;
-                                                                        margin-left: 0;
-                                                                        margin-right: 5px;
-                                                                        margin-bottom: 7px;
-                                                                        margin-top: 3px">
-                                                        {% endif %}
-                                                    </li>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
+                                    <h4>Funding spent in previous rounds.</h4>{% if round.initial_voter_funding != round.final_voter_funding %}From the initial total funding, <b> {{ "{:,.2f}".format(((round.initial_voter_funding - round.final_voter_funding) | float)) }} {{ currency }} </b> was spent on previously selected projects. <br> The funding was spent on:<ul>{% for r in round.funding_lost_per_round %}{% if round.funding_lost_per_round != 0 %}<li><b>Project {{ rounds[r].id }} - {{ projects[rounds[r].id]["name"] }}:</b> {{ "{:,.2f}".format((round.funding_lost_per_round[r] | float)) }} {{ currency }}{% if (round.initial_voter_funding - round.final_voter_funding) != 0 %}<hr style="width: {{ (round.funding_lost_per_round[r] / (round.initial_voter_funding - round.final_voter_funding))  * 100 }}&#37;;height: 10px;color: #f6c8c8;background-color: #f6c8c8;text-align: left;margin: 3px 5px 7px 0">{% endif %}</li>{% endif %}{% endfor %}</ul>
                                     {% else %}
                                         None of the initial total funding was spent on previously selected projects.
                                     {% endif %}
@@ -610,46 +498,10 @@
                                             </div>
                 
                                             <div class='bar bar-light'
-                                                onmouseover='highlight_project([
-                                                    {% for r in rejected.funding_lost_per_round %}
-                                                        {% if loop.index0 < 3 %}
-                                                            "project-{{ rounds[r].id }}",
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                ])'
-                                                onmouseout='unhighlight_project([
-                                                    {% for r in rejected.funding_lost_per_round %}
-                                                        {% if loop.index0 < 3 %}
-                                                            "project-{{ rounds[r].id }}",
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                ])'
+                                                onmouseover='highlight_project([{% for r in rejected.funding_lost_per_round %}{% if loop.index0 < 3 %}"project-{{ rounds[r].id }}",{% endif %}{% endfor %}])'
+                                                onmouseout='unhighlight_project([{% for r in rejected.funding_lost_per_round %}{% if loop.index0 < 3 %}"project-{{ rounds[r].id }}",{% endif %}{% endfor %}])'
                                                 style='width: {{ ((rejected.initial_voter_funding - rejected.final_voter_funding) / budget | float) * 100 }}&#37;;'
-                                                data-tippy-content='<html lang=\"en\"><body>From the initial total funding, <b> {{ "{:,.2f}".format(((rejected.initial_voter_funding - rejected.final_voter_funding) | float)) }} {{ currency }} </b> was spent on previously selected projects. </br> 
-                                                Most of the funding was spent on:<br><br>
-                                                <ul>
-                                                    {% for r in rejected.funding_lost_per_round %}
-                                                        {% if loop.index0 < 3 %}
-                                                            <li>
-                                                                <b>Project {{ rounds[r].id }} - {{ projects[rounds[r].id]["name"] }}:</b> {{ "{:,.2f}".format((rejected.funding_lost_per_round[r] | float)) }} {{ currency }}
-                                                                {% if (rejected.initial_voter_funding - rejected.final_voter_funding) != 0 %}
-                                                                    <hr style="width: {{ (rejected.funding_lost_per_round[r] / (rejected.initial_voter_funding - rejected.final_voter_funding))  * 100 }}&#37;;
-                                                                        height: 10px;
-                                                                        color: #f6c8c8;
-                                                                        background-color: #f6c8c8;
-                                                                        text-align: left;
-                                                                        margin-left: 0px;
-                                                                        margin-right: 5px;
-                                                                        margin-bottom: 7px;
-                                                                        margin-top: 3px">
-                                                                    </hr>
-                                                                {% endif %}
-                                                            </li>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </ul>
-                                                '
-                                                allowHTML: true>
+                                                data-tippy-content='<html lang=\"en\"><body>From the initial total funding, <b> {{ "{:,.2f}".format(((rejected.initial_voter_funding - rejected.final_voter_funding) | float)) }} {{ currency }} </b> was spent on previously selected projects. </br> Most of the funding was spent on:<br><br><ul>{% for r in rejected.funding_lost_per_round %}{% if loop.index0 < 3 %}<li><b>Project {{ rounds[r].id }} - {{ projects[rounds[r].id]["name"] }}:</b> {{ "{:,.2f}".format((rejected.funding_lost_per_round[r] | float)) }} {{ currency }}{% if (rejected.initial_voter_funding - rejected.final_voter_funding) != 0 %}<hr style="width: {{ (rejected.funding_lost_per_round[r] / (rejected.initial_voter_funding - rejected.final_voter_funding))  * 100 }}&#37;;height: 10px;color: #f6c8c8;background-color: #f6c8c8;text-align: left;margin: 3px 5px 7px 0"></hr>{% endif %}</li>{% endif %}{% endfor %}</ul>'allowHTML: true>
                                             </div>
                                         </div>
                 
@@ -681,10 +533,6 @@
                                             <div style="text-align: left">
                                                 <h4>Why was this project not selected?</h4>
                                                 {% if rejected.initial_voter_funding >= rejected.cost %}
-                                                    <!-- Project initially had funding to be accepted but lost too much funding in previous rounds.<br>
-                                                    (mention the important projects that made it lose funding to go below the required cost)<br>
-                                                    (mention that these important projects had a higher effective vote count, meaning they were selected earlier than this project)<br>
-                                                    (mention by current round that project cost is greater than combined funds of supporters, making it unaffordable) -->
                                                     This project was rejected because its supporters were not able to pay for the project's cost - <b>{{ "{:,}".format((rejected.cost | int)) }}</b> {{ currency }} -
                                                     using the total funding available to them at the start of round {{ loop.index}} (<b>{{ "{:,.2f}".format((rejected.final_voter_funding | float)) }}</b> {{ currency }}).<br><br>
                                                     Note that the supporters of this project initially had more funding available to them (<b>{{ "{:,.2f}".format((rejected.initial_voter_funding | float)) }}</b> {{ currency }}), enough to cover the cost of project.<br><br>
@@ -692,9 +540,6 @@
                                                     the combined funds of the supporters.<br> The top projects that can be seen in the list below were the main cause for the decrease in funding, these were
                                                     regarded as more important as they had a higher effective vote count, implying they were selected earlier than this project.
                                                 {% else %}
-                                                    <!-- This project was rejected because its cost (<b>{{ "{:,}".format((rejected.cost | int)) }}</b> {{ currency }}) was greater than the 
-                                                    combined funds of its supporters (<b>{{ "{:,.2f}".format((rejected.initial_voter_funding | float)) }}</b> {{ currency }}),
-                                                    even before any funding was lost. -->
                                                     This project was rejected because its supporters were not able to pay for the project's cost - <b>{{ "{:,}".format((rejected.cost | int)) }}</b> {{ currency }} -
                                                     using the total funding available to them at the start of round {{ loop.index}} (<b>{{ "{:,.2f}".format((rejected.final_voter_funding | float)) }}</b> {{ currency }}).<br><br>
                                                     Note that this project would have been rejected, even before taking any funding lost into account.
@@ -703,31 +548,7 @@
                                                 {% endif %}
                                             </div>
                                             <br>
-                                            <h4>Funding spent in previous rounds.</h4>
-                                            {% if rejected.initial_voter_funding != rejected.final_voter_funding %}
-                                                From the initial total funding, <b>{{ "{:,.2f}".format(((rejected.initial_voter_funding - rejected.final_voter_funding) | float)) }} {{ currency }} </b> was spent on previously selected projects. <br> 
-                                                The funding was spent on:
-                                                <ul>
-                                                    {% for r in rejected.funding_lost_per_round %}
-                                                        {% if rejected.funding_lost_per_round[r] != 0 %}
-                                                            <li>
-                                                            
-                                                                <b>Project {{ rounds[r].id }} - {{ projects[rounds[r].id]["name"] }}:</b> {{ "{:,.2f}".format((rejected.funding_lost_per_round[r] | float)) }} {{ currency }}
-                                                                {% if (rejected.initial_voter_funding - rejected.final_voter_funding) != 0 %}
-                                                                    <hr style="width: {{ (rejected.funding_lost_per_round[r] / (rejected.initial_voter_funding - rejected.final_voter_funding))  * 100 }}&#37;;
-                                                                                height: 10px;
-                                                                                color: #f6c8c8;
-                                                                                background-color: #f6c8c8;
-                                                                                text-align: left;
-                                                                                margin-left: 0px;
-                                                                                margin-right: 5px;
-                                                                                margin-bottom: 7px;
-                                                                                margin-top: 3px">
-                                                                {% endif %}
-                                                            </li>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </ul>
+                                            <h4>Funding spent in previous rounds.</h4>{% if rejected.initial_voter_funding != rejected.final_voter_funding %}From the initial total funding, <b>{{ "{:,.2f}".format(((rejected.initial_voter_funding - rejected.final_voter_funding) | float)) }} {{ currency }} </b> was spent on previously selected projects. <br> The funding was spent on:<ul>{% for r in rejected.funding_lost_per_round %}{% if rejected.funding_lost_per_round[r] != 0 %}<li><b>Project {{ rounds[r].id }} - {{ projects[rounds[r].id]["name"] }}:</b> {{ "{:,.2f}".format((rejected.funding_lost_per_round[r] | float)) }} {{ currency }}{% if (rejected.initial_voter_funding - rejected.final_voter_funding) != 0 %}<hr style="width: {{ (rejected.funding_lost_per_round[r] / (rejected.initial_voter_funding - rejected.final_voter_funding))  * 100 }}&#37;;height: 10px;color: #f6c8c8;background-color: #f6c8c8;text-align: left;margin: 3px 5px 7px 0">{% endif %}</li>{% endif %}{% endfor %}</ul>
                                             {% else %}
                                                 None of the initial total funding was spent on previously selected projects.
                                             {% endif %}
@@ -749,14 +570,7 @@
         <footer class="container">
             <p>© Pabutools. · <a href="https://getbootstrap.com/docs/4.0/examples/carousel/#">Privacy</a> · <a href="https://getbootstrap.com/docs/4.0/examples/carousel/#">Terms</a></p>
         </footer>
-    
     </main>
-
-    <!-- <h2>[GOOGLE TRANSLATE] Comparison of the method of equal shares with the greedy method</h2> -->
-
-    <!-- <p>[GOOGLE TRANSLATE] We conducted an analysis comparing the equal shares method to the greedy method, which is the most frequently used method in citizen budgets. </p> -->
-
-    <!-- !COMPARISON! -->
 
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
@@ -774,5 +588,4 @@
         }
     </script>
 </body>
-
 </html>

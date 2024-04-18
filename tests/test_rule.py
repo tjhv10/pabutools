@@ -707,6 +707,18 @@ class TestRule(TestCase):
                         frac(1, 2),
                         frac(1, 2),
                     ],
+                    [
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ]
                 ],
             ),
             (
@@ -739,6 +751,18 @@ class TestRule(TestCase):
                         frac(1, 2),
                         frac(1, 2),
                     ],
+                    [
+                        frac(1, 24),
+                        frac(1, 24),
+                        frac(3, 8),
+                        frac(1, 24),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(1, 2),
+                        frac(1, 2),
+                    ]
                 ],
             ),
             (
@@ -771,6 +795,18 @@ class TestRule(TestCase):
                         frac(1, 2),
                         frac(1, 2),
                     ],
+                    [
+                        frac(1, 8), 
+                        frac(1, 8), 
+                        frac(3, 8), 
+                        frac(1, 8), 
+                        frac(1, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(3, 8),
+                        frac(1, 2),
+                        frac(1, 2)
+                    ],
                 ],
             ),
             (
@@ -803,9 +839,32 @@ class TestRule(TestCase):
                         frac(1, 2),
                         frac(1, 2),
                     ],
+                    [
+                        frac(1, 4),
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 4),
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(0, 1),
+                        frac(0, 1),
+                        frac(1, 2),
+                        frac(1, 2)
+                    ]
                 ],
             ),
-            ([5, 5, 5, 5, 5], [0, 1, 2], [0, 1, 2], [], []),
+            ([5, 5, 5, 5, 5], [0, 1, 2], [0, 1, 2], [], [
+                [frac(1, 2),
+                frac(1, 2),
+                frac(1, 2),
+                frac(1, 2),
+                frac(1, 2),
+                frac(1, 2),
+                frac(1, 2),
+                frac(1, 2),
+                frac(1, 2),
+                frac(1, 2)]
+            ]),
             (
                 [5, 1, 2, 1, 2],
                 [0, 1, 2],
@@ -826,6 +885,14 @@ class TestRule(TestCase):
                         frac(1, 4),
                         frac(1, 2),
                         frac(1, 2),
+                        frac(1, 2),
+                    ],
+                    [
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(0, 1),
                         frac(1, 2),
                     ],
                 ],
@@ -854,6 +921,14 @@ class TestRule(TestCase):
                         frac(1, 2),
                         frac(1, 2),
                     ],
+                    [
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(0, 1),
+                        frac(1, 2),
+                    ],
                 ],
                 True,
                 [2, 1, 2, 1, 2, 2],
@@ -878,6 +953,14 @@ class TestRule(TestCase):
                         frac(1, 4),
                         frac(1, 2),
                         frac(1, 2),
+                        frac(1, 2),
+                    ],
+                    [
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(1, 4),
+                        frac(1, 2),
+                        frac(0, 1),
                         frac(1, 2),
                     ],
                 ],
@@ -991,6 +1074,7 @@ class TestRule(TestCase):
             [frac(1, 2)] * 6 + [frac(2, 3)] * 4,
             [frac(1, 6)] * 2 + [frac(1, 2)] * 4 + [frac(1, 3)] + [frac(2, 3)] * 3,
             [frac(1, 6)] * 4 + [frac(1, 2)] * 2 + [0] + [frac(2, 3)] * 3,
+            [frac(1, 6)] * 4 + [0] * 3 + [frac(2, 3)] * 3,
         ]
 
         assert sorted(
@@ -1005,7 +1089,7 @@ class TestRule(TestCase):
         ] == frac(2, 3)
         assert (
             budget_allocation_mes_iterated.details.get_all_selected_projects()
-            == list(budget_allocation_mes_iterated)
+            == list(budget_allocation_mes_iterated) + [None]
         )
         for idx, iteration in enumerate(
             budget_allocation_mes_iterated.details.iterations

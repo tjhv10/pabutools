@@ -70,7 +70,7 @@
             font-size: 20px;
             color: black;
             background-color: white;
-            border-radius: 15px; /* Circular */
+            border-radius: 15px; 
         }
         .border-black {
             border: 1px solid black;
@@ -131,14 +131,21 @@
         .spacer-2 {
             padding: 2rem;
         }
-  .bar-container {
-        position: relative;
-        width: 100%;
-    }
-    .budget {
-        color: black;
-    }
-
+        .bar-container {
+            position: relative;
+            width: 100%;
+        }
+        .budget {
+            color: black;
+        }
+        .text-outside-bar{
+            display: inline-flex; 
+            align-items: center;
+        }
+        .text-outside{
+            margin-left: 10px; 
+            display: inline-flex;
+        }
 
     </style>
 </head>
@@ -182,7 +189,7 @@
                             Some of the key features of the election are: The election has a total budget of {{ "{:,}".format((budget | int)) }} {{ currency }} of which {{ "{:,}".format((spent | int)) }} {{ currency }} was spent. The election had a 
                             total of {{total_votes}} voters. Note that each participant can vote for multiple projects. Therefore, the total votes for all projects may be 
                             higher than {{total_votes}}<br>
-                            This page shows and explains the outcome of the election. The first graph shows the number of votes for each project.
+                            This page shows and explains the outcome of the election. The first graph shows the satisfaction scores for the projects and allows you to filter and examine the data in greater detail.
                             The bars show the budget at each stage of the election and the projects selected or rejected in each round. Finally, the final bar chart shows an overview of the selected and rejected projects.
                         </p>
                         <p>
@@ -215,12 +222,12 @@
                         <div class="col-1"></div>
                         <div class="col-10" style="min-height: 600px;">
                             <div id="SortableBarChart" style="height: 100%; width: 100%;">
-                                <button class = "info-button" style = "position: absolute; z-index: 2000; right: 50px;" data-tippy-content= "<b>Project Vote Counts:</b><br> The following graphs shows the votes for each of the projects along with the corresponding budget.">i</button>
+                                <button class = "info-button" style = "position: absolute; z-index: 2000; right: 50px;" data-tippy-content= "<b>Project Satisfaction Measures:</b><br> The following graphs shows the votes for each of the projects along with the corresponding budget.">i</button>
                             </div>
                         </div>
                         <div class="col-1"></div>
                     </div>
-                    <!-- Vote Count -->
+                    <!-- Satisfaction Measures -->
                     <div class="row">
                         <div class="col-1"></div>
                         <div class="col-10">
@@ -231,8 +238,8 @@
                                         <option value="name-desc">Name Descending</option>
                                         <option value="cost-asc">Cost Ascending</option>
                                         <option value="cost-desc">Cost Descending</option>
-                                        <option value="votes-asc">Votes Ascending</option>
-                                        <option value="votes-desc">Votes Descending</option>
+                                        <option value="votes-asc">Satisfaction Score Ascending</option>
+                                        <option value="votes-desc">Satisfaction Score Descending</option>
                                       </select>
                                 </div>
                                 <div class="col-auto">
@@ -255,7 +262,7 @@
                             <div class="spacer-1"></div>
                             <div class="spacer-1"></div>
                             <p> 
-                                The chart above shows the number of votes for each project. To investigate further, you can filter the bar chart by selected or rejected projects, and sort by name, cost or votes. Use the dropdowns above to filter and sort the data.
+                                The chart above shows the satisfaction measures for each project. To investigate further, you can filter the bar chart by selected or rejected projects, and sort by name, cost or satisfaction score. Use the dropdowns above to filter and sort the data.
                             </p>
                         </div>
                         <div class="col-1"></div>
@@ -272,7 +279,7 @@
                             <h3>Round by Round Analysis</h3>
                             <hr>
                             <p>
-                                    The following section of the visualisations allows you to click through 'round by round' of this section of the election. It shows at each point the remaining budget, and the projects with the most votes up to the selected project. The selected project is shown in green, and any rejected projects are shown in red. A project will be shown in red if it is the next most popular project however there is not enough budget remaining to purchase the project. This means, the next most popular project will be considered - and so on until a project is found that can be purchased with the remaining budget. Use the previous and next round buttons to move through the different rounds of the election.
+                                    The following section of the visualisations allows you to click through 'round by round' of this section of the election. It shows at each point the remaining budget, and the projects with the highest satisfaction up to the selected project. The selected project is shown in green, and any rejected projects are shown in red. A project will be shown in red if it is the next most popular project however there is not enough budget remaining to purchase the project. This means, the next most popular project will be considered - and so on until a project is found that can be purchased with the remaining budget. Use the previous and next round buttons to move through the different rounds of the election.
                             </p>
                         </div>
                         <div class="col-2"></div>
@@ -310,10 +317,9 @@
                                                 </div>
                                             {% else %}
                                             <div>
-                                                <div class="bar budget" style="width: {{ (round.remaining_budget / round.max_cost) * 100 }}%; display: inline-flex; align-items: center;">
+                                                <div class="bar budget text-outside-bar" style="width: {{ (round.remaining_budget / round.max_cost) * 100 }}%;">
                                                 </div>
-                                                <div style="margin-left: 10px; display: inline-flex;"><p style="position:absolute; top: 12px;">&nbsp; Remaining Budget: {{ "{:,}".format( (round.remaining_budget | int) ) }} {{ currency }}</p></div>
-
+                                                <div><p style="position:absolute; top: 50px;">&nbsp; Remaining Budget: {{ "{:,}".format( (round.remaining_budget | int) ) }} {{ currency }}</p></div>
                                             </div>
                                             {% endif %}
                                         </div>
@@ -321,20 +327,12 @@
                                         <!-- Project Bars -->
                                         {% for proj in round.rejected_projects %}
                                         <div class="bar-container">
-                                            {% if (proj.cost / round.max_cost) * 90 > 30 %}
-                                                <div class="bar red" style="width: {{ (proj.cost / round.max_cost) * 90 }}%;">
-                                                    <div class="bar-inner">&nbsp; {{proj.name}} - {{ proj.cost }} {{ currency }}</div>
-                                                    <div class="rejected-mark">✘</div>
-                                                </div>
-                                            {% else %}
                                                 <div>
-                                                    <div class="bar red" style="width: {{ (proj.cost / round.max_cost) * 90 }}%; display: inline-flex; align-items: center;">
+                                                    <div class="bar red text-outside-bar" style="width: {{ (proj.cost / round.max_cost) * 90 }}%;">
                                                     </div>
                                                     <div class="rejected-mark">✘</div>
-                                                    <div style="margin-left: 10px; display: inline-flex;"><p style="position:absolute; top: 12px;">{{ round.selected_project.id }}: {{ projects[round.selected_project.id]["name"] }} - {{ "{:,}".format( (round.selected_project.cost | int) ) }} {{ currency }}</p></div>
-
+                                                    <div><p style="position:absolute; top: 12px;">&nbsp; {{ proj.id }}: {{ projects[proj.id]["name"][:45] }} - {{ "{:,}".format( (round.selected_project.cost | int) ) }} {{ currency }}</p></div>
                                                 </div>
-                                            {% endif %}
                                         </div>
                                         {% endfor %}
 
@@ -342,13 +340,13 @@
                                         <div class="bar-container">
                                             {% if (round.selected_project.cost / round.max_cost) * 90  > 30 %}
                                             <div class="bar green" style="width: {{ (round.selected_project.cost / round.max_cost) * 90 }}%;">
-                                                <div class="bar-inner"><nobr> {{ round.selected_project.id }}: {{ projects[round.selected_project.id]["name"] }} - {{ "{:,}".format( (round.selected_project.cost | int) ) }} {{ currency }}</nobr></div>
+                                                <div class="bar-inner"><nobr>&nbsp; {{ round.selected_project.id }}: {{ projects[round.selected_project.id]["name"][:45] }} - {{ "{:,}".format( (round.selected_project.cost | int) ) }} {{ currency }}</nobr></div>
                                             </div>
                                             {% else %}
                                             <div>
-                                                <div class="bar green" style="width: {{ (round.selected_project.cost / round.max_cost) * 90 }}%; display: inline-flex; align-items: center;">
+                                                <div class="bar green text-outside-bar" style="width: {{ (round.selected_project.cost / round.max_cost) * 90 }}%;">
                                                 </div>
-                                                <div style="margin-left: 10px; display: inline-flex;"><p style="position:absolute; top: 12px;">{{ round.selected_project.id }}: {{ projects[round.selected_project.id]["name"] }} - {{ "{:,}".format( (round.selected_project.cost | int) ) }} {{ currency }}</p></div>
+                                                <div><p style="position:absolute; top: 12px;">&nbsp; {{ round.selected_project.id }}: {{ projects[round.selected_project.id]["name"][:45] }} - {{ "{:,}".format( (round.selected_project.cost | int) ) }} {{ currency }}</p></div>
 
                                             </div>
                                             {% endif %}
@@ -357,12 +355,21 @@
                                 </div>
                                 <div class="row">
                                     {% if round.rejected_projects %}
+                                    <!-- Check if the length is larger than 1 -->
+                                    {% if round.rejected_projects|length > 1 %}
                                         <p>
-                                            The chart above shows the current budget of {{ "{:,}".format( (round.remaining_budget | int) ) }} {{ currency }}. Projects {% for proj in round.rejected_projects %} {{ projects[proj.id]["name"] }}, {% endfor %} were rejected in this round, even though they had more votes than the selected project which had {{projects[round.selected_project.id]["votes"]}} votes.  
+                                            The chart above shows the current budget of {{ "{:,}".format( (round.remaining_budget | int) ) }} {{ currency }}. Various other projects were rejected in this round, even though they had a higher or equal satisfaction score than the selected project which had a score of {{projects[round.selected_project.id]["votes"]}}.  
                                         </p>
                                     {% else %}
                                         <p>
-                                            The chart above shows the current budget of {{ "{:,}".format( (round.remaining_budget | int) ) }} {{ currency }}, and the selected project "{{ projects[round.selected_project.id]["name"] }}" with cost {{ "{:,}".format( (round.selected_project.cost | int) ) }} {{ currency }}. The selected project was chosen because it had the most votes ({{projects[round.selected_project.id]["votes"]}}) and was within budget.
+                                            The chart above shows the current budget of {{ "{:,}".format( (round.remaining_budget | int) ) }} {{ currency }}. {{ round.rejected_projects[0].id }}: {{ projects[round.rejected_projects[0].id]["name"] }} was rejected in this round, even though it had a higher or equal satisfaction score than the selected project which had a score of {{projects[round.selected_project.id]["votes"]}}.
+                                        </p>
+                                    {% endif %}
+
+
+                                    {% else %}
+                                        <p>
+                                            The chart above shows the current budget of {{ "{:,}".format( (round.remaining_budget | int) ) }} {{ currency }}, and the selected project "{{ projects[round.selected_project.id]["name"] }}" with cost {{ "{:,}".format( (round.selected_project.cost | int) ) }} {{ currency }}. The selected project was chosen because it had the highest satisfaction score ({{projects[round.selected_project.id]["votes"]}}) and was within budget.
                                         </p>
                                     {% endif %}
                                 </div>
@@ -381,7 +388,7 @@
                             <div class="col-1"></div>
                             <div class="col-10" style="min-height: 600px;">
                                 <div id="RGBarChart" style="height: 100%; width: 100%;">
-                                    <button class = "info-button" style = "position: absolute; z-index: 2000; right: 50px;" data-tippy-content= "<b>Project Vote Counts:</b><br> The following graphs shows the votes for each of the projects along with the corresponding budget.<br>The green bars correspond to selected projects, the red bars correspond to rejected projects.">i</button>
+                                    <button class = "info-button" style = "position: absolute; z-index: 2000; right: 50px;" data-tippy-content= "<b>Project Satisfaction Measures:</b><br> The following graphs shows the votes for each of the projects along with the corresponding budget.<br>The green bars correspond to selected projects, the red bars correspond to rejected projects.">i</button>
                                 </div>
                             </div>
                             <div class="col-1"></div>
@@ -502,7 +509,7 @@
                     var data ={
                         "type": "hbar",
                         "title": {
-                            "text": "Vote Count Bar Chart"
+                            "text": "Satisfaction Measure Bar Chart"
                         },
                         shapes: [
                             {
@@ -620,7 +627,7 @@
     var config = {
         "type": "hbar",
         "title": {
-            "text": "Vote Count Bar Chart"
+            "text": "Satisfaction Measure Bar Chart"
         },
         shapes: [{
             "type": "circle",
@@ -629,7 +636,7 @@
             "x": 35,
             "y": 25,
             "tooltip": {
-                "text": "<b>Project Vote Counts:</b><br> The following graphs shows the votes for each of the projects along with the corresponding budget.<br>The green bars correspond to selected projects, the red bars correspond to rejected projects.",
+                "text": "<b>Project Satisfaction Measures:</b><br> The following graphs shows the votes for each of the projects along with the corresponding budget.<br>The green bars correspond to selected projects, the red bars correspond to rejected projects.",
                 "background-color": "white",
                 "font-color": "gray",
                 "font-family": "Georgia",

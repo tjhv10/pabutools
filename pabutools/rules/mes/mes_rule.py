@@ -413,6 +413,8 @@ def mes_inner_algo(
             current_alloc.details.skipped_project_eff_support = max(
                 new_eff, current_alloc.details.skipped_project_eff_support
             )
+        if analytics:
+            current_alloc.details.iterations.append(current_iteration)
         if resoluteness:
             all_allocs.append(current_alloc)
         else:
