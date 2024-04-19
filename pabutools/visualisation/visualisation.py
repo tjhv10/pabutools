@@ -512,7 +512,7 @@ class GreedyWelfareVisualiser(Visualiser):
         for i, round in enumerate(self.rounds):
             round["id"] = i + 1
 
-    def render(self, output_folder_path, output_filename="greedy_explanation.html"):
+    def render(self, output_folder_path, name=""):
         """
         Render the visualisation.
 
@@ -520,8 +520,8 @@ class GreedyWelfareVisualiser(Visualiser):
         ----------
         output_folder_path : str
             The path to the folder where the visualisation will be saved.
-        output_filename : str, optional
-            The name of the file. The default is "greedy_explanation.html".
+        name : str, optional
+            The prefix of the output files. The default is "".
         Returns
         -------
             None
@@ -544,8 +544,9 @@ class GreedyWelfareVisualiser(Visualiser):
             spent=total_cost(p for p in self.instance if p.name in self.outcome),
             budget=self.instance.meta["budget"],
             total_votes=self.instance.meta["num_votes"],
+            name=name
         )
         if not os.path.exists(output_folder_path):
             os.makedirs(output_folder_path)
-        with open(f"{output_folder_path}/{output_filename}", "w", encoding="utf-8") as o:
+        with open(f"{output_folder_path}/{name}_round_analysis.html", "w", encoding="utf-8") as o:
             o.write(round_analysis_page_output)
