@@ -14,5 +14,6 @@ refer to the :ref:`quickstart` page.
     satisfaction
     rules
     outcomevisualisation
+    analysis
     tiebreaking
     fractions

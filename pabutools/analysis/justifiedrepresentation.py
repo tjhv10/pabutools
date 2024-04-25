@@ -26,6 +26,9 @@ def is_in_core(
     budget_allocation: Collection[Project],
     up_to_func: Callable[[Iterable[Numeric]], Numeric] | None = None,
 ) -> bool:
+    """
+    Test if a given budget allocation is in the core of the instance.
+    """
     for group in powerset(profile):
         if len(group) > 0:
             for project_set in powerset(instance):
@@ -59,6 +62,10 @@ def is_strong_EJR_approval(
     sat_class: type[SatisfactionMeasure],
     budget_allocation: Collection[Project],
 ) -> bool:
+    """
+    Test if a budget allocation satisfies strong EJR for the given instance and the given profile of
+    approval ballots.
+    """
     for group, project_set in cohesive_groups(instance, profile):
         all_agents_sat = True
         for ballot in group:
@@ -78,6 +85,10 @@ def is_EJR_approval(
     budget_allocation: Collection[Project],
     up_to_func: Callable[[Iterable[Numeric]], Numeric] | None = None,
 ) -> bool:
+    """
+    Test if a budget allocation satisfies EJR for the given instance and the given profile of
+    approval ballots.
+    """
     for group, project_set in cohesive_groups(instance, profile):
         one_agent_sat = False
         for ballot in group:
@@ -103,6 +114,10 @@ def is_EJR_any_approval(
     sat_class: type[SatisfactionMeasure],
     budget_allocation: Collection[Project],
 ) -> bool:
+    """
+    Test if a budget allocation satisfies EJR up to any project for the given instance and the
+    given profile of approval ballots.
+    """
     return is_EJR_approval(
         instance,
         profile,
@@ -118,6 +133,10 @@ def is_EJR_one_approval(
     sat_class: type[SatisfactionMeasure],
     budget_allocation: Collection[Project],
 ) -> bool:
+    """
+    Test if a budget allocation satisfies EJR up to one project for the given instance and the given
+    profile of approval ballots.
+    """
     return is_EJR_approval(
         instance,
         profile,
@@ -134,6 +153,10 @@ def is_PJR_approval(
     budget_allocation: Collection[Project],
     up_to_func: Callable[[Iterable[Numeric]], Numeric] | None = None,
 ) -> bool:
+    """
+    Test if a budget allocation satisfies PJR for the given instance and the given profile of
+    approval ballots.
+    """
     for group, project_set in cohesive_groups(instance, profile):
         sat = sat_class(instance, profile, ApprovalBallot(instance))
         threshold = sat.sat(project_set)
@@ -155,6 +178,10 @@ def is_PJR_any_approval(
     sat_class: type[SatisfactionMeasure],
     budget_allocation: Collection[Project],
 ) -> bool:
+    """
+    Test if a budget allocation satisfies PJR up to any project for the given instance and the given
+    profile of approval ballots.
+    """
     return is_PJR_approval(
         instance,
         profile,
@@ -170,6 +197,10 @@ def is_PJR_one_approval(
     sat_class: type[SatisfactionMeasure],
     budget_allocation: Collection[Project],
 ) -> bool:
+    """
+    Test if a budget allocation satisfies PJR up to one project for the given instance and the given
+    profile of approval ballots.
+    """
     return is_PJR_approval(
         instance,
         profile,
@@ -185,6 +216,10 @@ def is_strong_EJR_cardinal(
     budget_allocation: Collection[Project],
     sat_class: type[SatisfactionMeasure] = Additive_Cardinal_Sat,
 ) -> bool:
+    """
+    Test if a budget allocation satisfies strong EJR for the given instance and the given profile
+    of cardinal ballots.
+    """
     for group, project_set in cohesive_groups(instance, profile):
         all_agents_sat = True
         threshold = sum(min(b[p] for b in group) for p in project_set)
@@ -205,6 +240,10 @@ def is_EJR_cardinal(
     sat_class: type[SatisfactionMeasure] = Additive_Cardinal_Sat,
     up_to_func: Callable[[Iterable[Numeric]], Numeric] | None = None,
 ) -> bool:
+    """
+    Test if a budget allocation satisfies EJR for the given instance and the given profile of
+    cardinal ballots.
+    """
     for group, project_set in cohesive_groups(instance, profile):
         one_agent_sat = False
         threshold = sum(min(b[p] for b in group) for p in project_set)
@@ -230,6 +269,10 @@ def is_EJR_any_cardinal(
     profile: AbstractCardinalProfile,
     budget_allocation: Collection[Project],
 ) -> bool:
+    """
+    Test if a budget allocation satisfies EJR up to any project for the given instance and
+    the  given profile of cardinal ballots.
+    """
     return is_EJR_cardinal(
         instance, profile, budget_allocation, up_to_func=lambda x: min(x, default=0)
     )
@@ -240,6 +283,10 @@ def is_EJR_one_cardinal(
     profile: AbstractCardinalProfile,
     budget_allocation: Collection[Project],
 ) -> bool:
+    """
+    Test if a budget allocation satisfies EJR up to one project for the given instance and
+    the given profile of cardinal ballots.
+    """
     return is_EJR_cardinal(
         instance, profile, budget_allocation, up_to_func=lambda x: max(x, default=0)
     )
@@ -251,6 +298,10 @@ def is_PJR_cardinal(
     budget_allocation: Iterable[Project],
     up_to_func: Callable[[Iterable[Numeric]], Numeric] | None = None,
 ) -> bool:
+    """
+    Test if a budget allocation satisfies PJR for the given instance and the given profile of
+    cardinal ballots.
+    """
     for group, project_set in cohesive_groups(instance, profile):
         threshold = sum(min(b[p] for b in group) for p in project_set)
         group_sat = sum(max(b[p] for b in group) for p in budget_allocation)
@@ -271,6 +322,10 @@ def is_PJR_any_cardinal(
     profile: AbstractCardinalProfile,
     budget_allocation: Iterable[Project],
 ) -> bool:
+    """
+    Test if a budget allocation satisfies PJR up to any project for the given instance and
+    the given profile of cardinal ballots.
+    """
     return is_PJR_cardinal(
         instance, profile, budget_allocation, up_to_func=lambda x: min(x, default=0)
     )
@@ -281,6 +336,10 @@ def is_PJR_one_cardinal(
     profile: AbstractCardinalProfile,
     budget_allocation: Iterable[Project],
 ) -> bool:
+    """
+    Test if a budget allocation satisfies PJR up to one project for the given instance and
+    the given profile of cardinal ballots.
+    """
     return is_PJR_cardinal(
         instance, profile, budget_allocation, up_to_func=lambda x: max(x, default=0)
     )
