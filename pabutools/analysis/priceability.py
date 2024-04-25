@@ -8,7 +8,7 @@ import collections
 import time
 from collections.abc import Collection
 
-from mip import Model, xsum, BINARY, OptimizationStatus, INT_MAX
+from mip import Model, xsum, BINARY, OptimizationStatus
 
 from pabutools.election import (
     Instance,
@@ -276,9 +276,11 @@ def priceable(
     _start_time = time.time()
     C = instance
     N = profile
+    INF = instance.budget_limit * 10
 
     mip_model = Model("stable-priceability" if stable else "priceability")
     mip_model.verbose = verbose
+    mip_model.integer_tol = 1e-8
 
     # voter budget
     b = mip_model.add_var(name="voter_budget")
@@ -310,7 +312,7 @@ def priceable(
         # (C0b) the winning allocation is exhaustive
         for c in C:
             mip_model += (
-                cost_total + c.cost + x_vars[c] * INT_MAX >= instance.budget_limit + 1
+                cost_total + c.cost + x_vars[c] * INF >= instance.budget_limit + 1
             )
     elif budget_allocation is None:
         # prevent empty allocation as a result
@@ -331,13 +333,13 @@ def priceable(
         payments_total = xsum(p_vars[idx][c] for idx, _ in enumerate(N))
 
         mip_model += payments_total <= c.cost
-        mip_model += c.cost + (x_vars[c] - 1) * INT_MAX <= payments_total
+        mip_model += c.cost + (x_vars[c] - 1) * INF <= payments_total
 
     # (C4) voters do not pay for not selected projects
     for idx, _ in enumerate(N):
         for c in C:
             mip_model += 0 <= p_vars[idx][c]
-            mip_model += p_vars[idx][c] <= x_vars[c] * INT_MAX
+            mip_model += p_vars[idx][c] <= x_vars[c] * INF
 
     if not stable:
         r_vars = [mip_model.add_var(name=f"r_{i.name}") for i in N]
@@ -348,7 +350,7 @@ def priceable(
         for c in C:
             mip_model += (
                 xsum(r_vars[idx] for idx, i in enumerate(N) if c in i)
-                <= c.cost + x_vars[c] * INT_MAX
+                <= c.cost + x_vars[c] * INF
             )
     else:
         m_vars = [mip_model.add_var(name=f"m_{i.name}") for i in N]
@@ -361,7 +363,7 @@ def priceable(
         for c in C:
             mip_model += (
                 xsum(m_vars[idx] for idx, i in enumerate(N) if c in i)
-                <= c.cost + x_vars[c] * INT_MAX
+                <= c.cost + x_vars[c] * INF
             )
 
     status = mip_model.optimize(max_seconds=max_seconds)
@@ -388,7 +390,7 @@ def priceable(
     payment_functions = [collections.defaultdict(float) for _ in N]
     for idx, _ in enumerate(N):
         for c in C:
-            if p_vars[idx][c].x > 0:
+            if p_vars[idx][c].x > 1e-8:
                 payment_functions[idx][c] = p_vars[idx][c].x
 
     return PriceableResult(
