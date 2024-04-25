@@ -7,7 +7,6 @@ from __future__ import annotations
 import collections
 import time
 from collections.abc import Collection
-from typing import List, Dict
 
 from mip import Model, xsum, BINARY, OptimizationStatus, INT_MAX
 
@@ -28,7 +27,7 @@ def validate_price_system(
     profile: AbstractApprovalProfile,
     budget_allocation: Collection[Project],
     voter_budget: Numeric,
-    payment_functions: List[Dict[Project, Numeric]],
+    payment_functions: list[dict[Project, Numeric]],
     stable: bool = False,
     exhaustive: bool = True,
     *,
@@ -52,7 +51,7 @@ def validate_price_system(
             The selected collection of projects.
         voter_budget : Numeric
             Voter initial endowment.
-        payment_functions : List[Dict[:py:class:`~pabutools.election.instance.Project`, Numeric]]
+        payment_functions : list[dict[:py:class:`~pabutools.election.instance.Project`, Numeric]]
             Collection of payment functions for each voter.
             A payment function indicates the amounts paid for each project by a voter.
         stable : bool, optional
@@ -169,7 +168,7 @@ class PriceableResult:
         voter_budget : float, optional
             Voter initial endowment.
             Defaults to `None`.
-        payment_functions : List[Dict[:py:class:`~pabutools.election.instance.Project`, Numeric]], optional
+        payment_functions : list[dict[:py:class:`~pabutools.election.instance.Project`, Numeric]], optional
             List of payment functions for each voter.
             A payment function indicates the amounts paid for each project by a voter.
             Defaults to `None`.
@@ -186,7 +185,7 @@ class PriceableResult:
         voter_budget : bool or None
             Voter initial endowment.
             `None` if the optimization status is not `OPTIMAL` / `FEASIBLE`.
-        payment_functions : List[Dict[:py:class:`~pabutools.election.instance.Project`, Numeric]] or None
+        payment_functions : list[dict[:py:class:`~pabutools.election.instance.Project`, Numeric]] or None
             List of payment functions for each voter.
             A payment function indicates the amounts paid for each project by a voter.
             `None` if the optimization status is not `OPTIMAL` / `FEASIBLE`.
@@ -197,9 +196,9 @@ class PriceableResult:
         self,
         status: OptimizationStatus,
         time_elapsed: float,
-        allocation: List[Project] | None = None,
+        allocation: list[Project] | None = None,
         voter_budget: float | None = None,
-        payment_functions: List[Dict[Project, float]] | None = None,
+        payment_functions: list[dict[Project, float]] | None = None,
     ) -> None:
         self.status = status
         self.time_elapsed = time_elapsed
@@ -224,7 +223,7 @@ def priceable(
     profile: AbstractApprovalProfile,
     budget_allocation: Collection[Project] | None = None,
     voter_budget: Numeric | None = None,
-    payment_functions: List[Dict[Project, Numeric]] | None = None,
+    payment_functions: list[dict[Project, Numeric]] | None = None,
     stable: bool = False,
     exhaustive: bool = True,
     *,
@@ -251,7 +250,7 @@ def priceable(
             Voter initial endowment.
             If specified, the voter budget is hardcoded into the model.
             Defaults to `None`.
-        payment_functions : Collection[Dict[:py:class:`~pabutools.election.instance.Project`, Numeric]]
+        payment_functions : Collection[dict[:py:class:`~pabutools.election.instance.Project`, Numeric]]
             Collection of payment functions for each voter.
             If specified, the payment functions are hardcoded into the model.
             Defaults to `None`.
