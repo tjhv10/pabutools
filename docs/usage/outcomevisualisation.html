@@ -350,11 +350,11 @@ generate the visualisation.</p>
 <span class="c1"># The visualiser takes the profile, instance, and outcome as arguments</span>
 <span class="n">visualiser</span> <span class="o">=</span> <span class="n">GreedyWelfareVisualiser</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 
-<span class="c1"># output_filename is option and defaults to greedy_explanation.html</span>
-<span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">,</span> <span class="n">output_filename</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{output_filename}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># name is optional and defaults to the empty string</span>
+<span class="n">visualiser</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;./</span><span class="si">{path_to_output_file}</span><span class="s2">/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The visualisation will be saved in the specified path as a standalone HTML file called round_analysis.html.</p>
+<p>The visualisation will be saved in the specified path as a standalone HTML file called “{name}_round_analysis.html”.</p>
 <p>Note that the visualisation is only available for additive utility functions.</p>
 <p>An example of the generated visualisation can be found
 <a class="reference external" href="../outcome_vis_ex_greedy.html">here</a>.</p>

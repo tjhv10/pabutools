@@ -793,7 +793,7 @@ document.write(`
 
 <div class="viewcode-block" id="GreedyWelfareVisualiser.render">
 <a class="viewcode-back" href="../../../reference/visualisation/index.html#pabutools.visualisation.GreedyWelfareVisualiser.render">[docs]</a>
-    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_folder_path</span><span class="p">,</span> <span class="n">output_filename</span><span class="o">=</span><span class="s2">&quot;greedy_explanation.html&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_folder_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Render the visualisation.</span>
 
@@ -801,8 +801,8 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        output_folder_path : str</span>
 <span class="sd">            The path to the folder where the visualisation will be saved.</span>
-<span class="sd">        output_filename : str, optional</span>
-<span class="sd">            The name of the file. The default is &quot;greedy_explanation.html&quot;.</span>
+<span class="sd">        name : str, optional</span>
+<span class="sd">            The prefix of the output files. The default is &quot;&quot;.</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            None</span>
@@ -825,10 +825,11 @@ document.write(`
             <span class="n">spent</span><span class="o">=</span><span class="n">total_cost</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">),</span>
             <span class="n">budget</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;budget&quot;</span><span class="p">],</span>
             <span class="n">total_votes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;num_votes&quot;</span><span class="p">],</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_folder_path</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_folder_path</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_folder_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">output_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_folder_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_round_analysis.html&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o</span><span class="p">:</span>
             <span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">round_analysis_page_output</span><span class="p">)</span></div>
 </div>
 
