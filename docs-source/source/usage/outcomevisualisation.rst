@@ -32,10 +32,10 @@ generate the visualisation.
     # The visualiser takes the profile, instance, and outcome as arguments
     visualiser = GreedyWelfareVisualiser(profile, instance, outcome)
 
-    # output_filename is option and defaults to greedy_explanation.html
-    visualiser.render("./{path_to_output_file}/", output_filename="{output_filename}")
+    # name is optional and defaults to the empty string
+    visualiser.render("./{path_to_output_file}/", name="{name}")
 
-The visualisation will be saved in the specified path as a standalone HTML file called round_analysis.html. 
+The visualisation will be saved in the specified path as a standalone HTML file called "{name}_round_analysis.html". 
 
 Note that the visualisation is only available for additive utility functions.
 
