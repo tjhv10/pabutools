@@ -9,6 +9,7 @@ from collections.abc import Collection
 
 from mip import Model, xsum, BINARY, OptimizationStatus
 
+from pabutools.analysis.priceability_relaxation import Relaxation
 from pabutools.election import (
     Instance,
     AbstractApprovalProfile,
@@ -29,6 +30,7 @@ def validate_price_system(
     payment_functions: list[dict[Project, Numeric]],
     stable: bool = False,
     exhaustive: bool = True,
+    relaxation: Relaxation | None = None,
     *,
     verbose: bool = False,
 ) -> bool:
@@ -135,9 +137,11 @@ def validate_price_system(
                 for idx, i in enumerate(N)
                 if c in i
             )
-            if round_cmp(s, c.cost, CHECK_ROUND_PRECISION) > 0:
+
+            cost = c.cost if relaxation is None else relaxation.get_relaxed_cost(c)
+            if round_cmp(s, cost, CHECK_ROUND_PRECISION) > 0:
                 errors["S5"].append(
-                    f"voters' leftover money (or the most they've spent for a project) for not selected project {c} are equal {s} > {c.cost}"
+                    f"voters' leftover money (or the most they've spent for a project) for not selected project {c} are equal {s} > {cost}"
                 )
 
     if verbose:
@@ -191,15 +195,17 @@ class PriceableResult:
         self,
         status: OptimizationStatus,
         allocation: list[Project] | None = None,
+        relaxation_beta: float | dict = None,
         voter_budget: float | None = None,
         payment_functions: list[dict[Project, float]] | None = None,
     ) -> None:
         self.status = status
         self.allocation = allocation
+        self.relaxation_beta = relaxation_beta
         self.voter_budget = voter_budget
         self.payment_functions = payment_functions
 
-    def validate(self) -> bool:
+    def validate(self) -> bool | None:
         """
         Checks if the optimization status is `OPTIMAL` / `FEASIBLE`.
         Returns
@@ -208,6 +214,8 @@ class PriceableResult:
                 Validity of optimization status.
 
         """
+        if self.status == OptimizationStatus.NO_SOLUTION_FOUND:
+            return None
         return self.status in [OptimizationStatus.OPTIMAL, OptimizationStatus.FEASIBLE]
 
 
@@ -219,6 +227,7 @@ def priceable(
     payment_functions: list[dict[Project, Numeric]] | None = None,
     stable: bool = False,
     exhaustive: bool = True,
+    relaxation: Relaxation | None = None,
     *,
     max_seconds: int = 600,
     verbose: bool = False,
@@ -333,6 +342,9 @@ def priceable(
             mip_model += 0 <= p_vars[idx][c]
             mip_model += p_vars[idx][c] <= x_vars[c] * INF
 
+    if relaxation is not None:
+        relaxation.add_beta(mip_model)
+
     if not stable:
         r_vars = [mip_model.add_var(name=f"r_{idx}") for idx, i in enumerate(N)]
         for idx, _ in enumerate(N):
@@ -352,13 +364,22 @@ def priceable(
             mip_model += m_vars[idx] >= b - xsum(p_vars[idx][c] for c in C)
 
         # (S5) stability constraint
-        for c in C:
-            mip_model += (
-                xsum(m_vars[idx] for idx, i in enumerate(N) if c in i)
-                <= c.cost + x_vars[c] * INF
-            )
+        if relaxation is None:
+            for c in C:
+                mip_model += (
+                    xsum(m_vars[idx] for idx, i in enumerate(N) if c in i)
+                    <= c.cost + x_vars[c] * INF
+                )
+        else:
+            relaxation.add_stability_constraint(mip_model)
 
-    status = mip_model.optimize(max_seconds=max_seconds)
+    if relaxation is not None:
+        relaxation.add_objective(mip_model)
+
+    if relaxation is None:
+        status = mip_model.optimize(max_seconds=max_seconds, max_solutions=1)
+    else:
+        status = mip_model.optimize(max_seconds=max_seconds)
 
     if status == OptimizationStatus.INF_OR_UNBD:
         # https://support.gurobi.com/hc/en-us/articles/4402704428177-How-do-I-resolve-the-error-Model-is-infeasible-or-unbounded
@@ -367,14 +388,17 @@ def priceable(
         #
         mip_model.solver.set_int_param("DualReductions", 0)
         mip_model.reset()
-        mip_model.optimize(max_seconds=max_seconds)
+        if relaxation is None:
+            mip_model.optimize(max_seconds=max_seconds, max_solutions=1)
+        else:
+            mip_model.optimize(max_seconds=max_seconds)
         status = (
             OptimizationStatus.INFEASIBLE
             if mip_model.solver.get_int_attr("status") == 3
             else OptimizationStatus.UNBOUNDED
         )
 
-    if status in [OptimizationStatus.INFEASIBLE, OptimizationStatus.UNBOUNDED]:
+    if status not in [OptimizationStatus.OPTIMAL, OptimizationStatus.FEASIBLE]:
         return PriceableResult(status=status)
 
     payment_functions = [collections.defaultdict(float) for _ in N]
@@ -387,5 +411,6 @@ def priceable(
         status=status,
         allocation=list(sorted([c for c in C if x_vars[c].x >= 0.99])),
         voter_budget=b.x,
+        relaxation_beta=relaxation.get_beta(mip_model) if relaxation is not None else None,
         payment_functions=payment_functions,
     )
