@@ -5,7 +5,6 @@ Module with tools for analysis of the priceability / stable-priceability propert
 from __future__ import annotations
 
 import collections
-import time
 from collections.abc import Collection
 
 from mip import Model, xsum, BINARY, OptimizationStatus
@@ -160,8 +159,6 @@ class PriceableResult:
     ----------
         status : OptimizationStatus
             Optimization status of the ILP outcome.
-        time_elapsed : float
-            Time taken to prepare and run the model.
         allocation : Collection[:py:class:`~pabutools.election.instance.Project`], optional
             The selected collection of projects.
             Defaults to `None`.
@@ -177,8 +174,6 @@ class PriceableResult:
     ----------
         status : OptimizationStatus
             Optimization status of the ILP outcome.
-        time_elapsed : float
-            Time taken to prepare and run the model.
         allocation : Collection[:py:class:`~pabutools.election.instance.Project`] or None
             The selected collection of projects.
             `None` if the optimization status is not `OPTIMAL` / `FEASIBLE`.
@@ -195,13 +190,11 @@ class PriceableResult:
     def __init__(
         self,
         status: OptimizationStatus,
-        time_elapsed: float,
         allocation: list[Project] | None = None,
         voter_budget: float | None = None,
         payment_functions: list[dict[Project, float]] | None = None,
     ) -> None:
         self.status = status
-        self.time_elapsed = time_elapsed
         self.allocation = allocation
         self.voter_budget = voter_budget
         self.payment_functions = payment_functions
@@ -273,7 +266,6 @@ def priceable(
             Dataclass containing priceable result details.
 
     """
-    _start_time = time.time()
     C = instance
     N = profile
     INF = instance.budget_limit * 10
@@ -382,10 +374,8 @@ def priceable(
             else OptimizationStatus.UNBOUNDED
         )
 
-    _elapsed_time = time.time() - _start_time
-
     if status in [OptimizationStatus.INFEASIBLE, OptimizationStatus.UNBOUNDED]:
-        return PriceableResult(status=status, time_elapsed=_elapsed_time)
+        return PriceableResult(status=status)
 
     payment_functions = [collections.defaultdict(float) for _ in N]
     for idx, _ in enumerate(N):
@@ -395,7 +385,6 @@ def priceable(
 
     return PriceableResult(
         status=status,
-        time_elapsed=_elapsed_time,
         allocation=list(sorted([c for c in C if x_vars[c].x >= 0.99])),
         voter_budget=b.x,
         payment_functions=payment_functions,
