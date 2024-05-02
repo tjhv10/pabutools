@@ -280,7 +280,7 @@ def priceable(
         mip_model += b == voter_budget
 
     # payment functions
-    p_vars = [{c: mip_model.add_var(name=f"p_{i.name}_{c.name}") for c in C} for i in N]
+    p_vars = [{c: mip_model.add_var(name=f"p_{idx}_{c.name}") for c in C} for idx, i in enumerate(N)]
     if payment_functions is not None:
         for idx, _ in enumerate(N):
             for c in C:
@@ -334,7 +334,7 @@ def priceable(
             mip_model += p_vars[idx][c] <= x_vars[c] * INF
 
     if not stable:
-        r_vars = [mip_model.add_var(name=f"r_{i.name}") for i in N]
+        r_vars = [mip_model.add_var(name=f"r_{idx}") for idx, i in enumerate(N)]
         for idx, _ in enumerate(N):
             mip_model += r_vars[idx] == b - xsum(p_vars[idx][c] for c in C)
 
@@ -345,7 +345,7 @@ def priceable(
                 <= c.cost + x_vars[c] * INF
             )
     else:
-        m_vars = [mip_model.add_var(name=f"m_{i.name}") for i in N]
+        m_vars = [mip_model.add_var(name=f"m_{idx}") for idx, i in enumerate(N)]
         for idx, _ in enumerate(N):
             for c in C:
                 mip_model += m_vars[idx] >= p_vars[idx][c]
