@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import collections
 from abc import ABC, abstractmethod
+from numbers import Real
 
 from mip import Model, xsum, minimize
 
@@ -76,7 +77,7 @@ class Relaxation(ABC):
         """
 
     @abstractmethod
-    def get_beta(self, mip_model: Model):
+    def get_beta(self, mip_model: Model) -> Real | dict:
         """
         Get the value of beta from the model.
         This method implicitly saves internally the value of beta variable from `mip_model`.
@@ -85,6 +86,12 @@ class Relaxation(ABC):
         ----------
             mip_model : Model
                 The stable-priceability MIP model.
+
+        Returns
+        -------
+            Real | dict
+                The value of beta from the model.
+
         """
 
     @abstractmethod
@@ -96,6 +103,12 @@ class Relaxation(ABC):
         ----------
             project : :py:class:`~pabutools.election.instance.Project`
                 The project to get the relaxed cost for.
+
+        Returns
+        -------
+            float
+                Relaxed cost of the project.
+
         """
 
 
@@ -124,7 +137,7 @@ class MinMul(Relaxation):
                 <= c.cost * beta + x_vars[c] * self.INF
             )
 
-    def get_beta(self, mip_model: Model):
+    def get_beta(self, mip_model: Model) -> Real | dict:
         beta = mip_model.var_by_name(name="beta")
         self._saved_beta = beta.x
         return self._saved_beta
@@ -158,7 +171,7 @@ class MinAdd(Relaxation):
                 <= c.cost + beta + x_vars[c] * self.INF
             )
 
-    def get_beta(self, mip_model: Model):
+    def get_beta(self, mip_model: Model) -> Real | dict:
         beta = mip_model.var_by_name(name="beta")
         self._saved_beta = beta.x
         return self._saved_beta
@@ -199,7 +212,7 @@ class MinAddVector(Relaxation):
                 <= c.cost + beta[c] + x_vars[c] * self.INF
             )
 
-    def get_beta(self, mip_model: Model):
+    def get_beta(self, mip_model: Model) -> Real | dict:
         beta = {c: mip_model.var_by_name(name=f"beta_{c.name}") for c in self.C}
         return_beta = collections.defaultdict(int)
         for c in self.C:
@@ -258,7 +271,7 @@ class MinAddOffset(Relaxation):
                 <= c.cost + beta_global + beta[c] + x_vars[c] * self.INF
             )
 
-    def get_beta(self, mip_model: Model):
+    def get_beta(self, mip_model: Model) -> Real | dict:
         beta_global = mip_model.var_by_name(name="beta")
         beta = {c: mip_model.var_by_name(name=f"beta_{c.name}") for c in self.C}
         return_beta = collections.defaultdict(int)
