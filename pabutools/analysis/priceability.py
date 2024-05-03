@@ -61,6 +61,9 @@ def validate_price_system(
         exhaustive : bool, optional
             Verify for exhaustiveness of the allocation.
             Defaults to `True`.
+        relaxation : :py:class:`~pabutools.analysis.priceability_relaxation.Relaxation`, optional
+            Relaxation method to the stable-priceability condition.
+            Defaults to `None`.
         **verbose : bool, optional
             Display additional information.
             Defaults to `False`.
@@ -262,6 +265,9 @@ def priceable(
         exhaustive : bool, optional
             Search exhaustive allocation.
             Defaults to `True`.
+        relaxation : :py:class:`~pabutools.analysis.priceability_relaxation.Relaxation`, optional
+            Relaxation method to the stable-priceability condition.
+            Defaults to `None`.
         **max_seconds : int, optional
             Model's maximum runtime in seconds.
             Defaults to 600.

@@ -1,3 +1,7 @@
+"""
+Module for relaxation of the stable-priceability constraint.
+"""
+
 from __future__ import annotations
 
 import collections
@@ -13,6 +17,25 @@ from pabutools.election import (
 
 
 class Relaxation(ABC):
+    """
+    Base class for stable-priceability condition relaxation methods.
+
+    Parameters
+    ----------
+        instance : :py:class:`~pabutools.election.instance.Instance`
+            An instance the relaxation is operating on.
+        profile : :py:class:`~pabutools.election.profile.profile.Profile`
+            A profile the relaxation is operating on.
+
+    Attributes
+    ----------
+        instance : :py:class:`~pabutools.election.instance.Instance`
+            An instance the relaxation is operating on.
+        profile : :py:class:`~pabutools.election.profile.profile.Profile`
+            A profile the relaxation is operating on.
+
+    """
+
     def __init__(self, instance: Instance, profile: Profile):
         self.instance = self.C = instance
         self.profile = self.N = profile
@@ -21,26 +44,67 @@ class Relaxation(ABC):
 
     @abstractmethod
     def add_beta(self, mip_model: Model) -> None:
-        pass
+        """
+        Add beta variable to the model.
+
+        Parameters
+        ----------
+            mip_model : Model
+                The stable-priceability MIP model.
+        """
 
     @abstractmethod
     def add_objective(self, mip_model: Model) -> None:
-        pass
+        """
+        Add objective function to the model.
+
+        Parameters
+        ----------
+            mip_model : Model
+                The stable-priceability MIP model.
+        """
 
     @abstractmethod
     def add_stability_constraint(self, mip_model: Model) -> None:
-        pass
+        """
+        Add relaxed stability constraint to the model.
+
+        Parameters
+        ----------
+            mip_model : Model
+                The stable-priceability MIP model.
+        """
 
     @abstractmethod
     def get_beta(self, mip_model: Model):
-        pass
+        """
+        Get the value of beta from the model.
+        This method implicitly saves internally the value of beta variable from `mip_model`.
+
+        Parameters
+        ----------
+            mip_model : Model
+                The stable-priceability MIP model.
+        """
 
     @abstractmethod
     def get_relaxed_cost(self, project: Project) -> float:
-        pass
+        """
+        Get relaxed cost of a project.
+
+        Parameters
+        ----------
+            project : :py:class:`~pabutools.election.instance.Project`
+                The project to get the relaxed cost for.
+        """
 
 
 class MinMul(Relaxation):
+    """
+    The right-hand side of the condition is multiplied by a beta in [0, inf).
+    The objective function minimizes beta.
+    """
+
     def add_beta(self, mip_model: Model) -> None:
         mip_model.add_var(name="beta")
 
@@ -63,7 +127,13 @@ class MinMul(Relaxation):
     def get_relaxed_cost(self, project: Project) -> float:
         return project.cost * self._saved_beta
 
+
 class MinAdd(Relaxation):
+    """
+    A beta in (-inf, inf) is added to the right-hand side of the condition.
+    The objective function minimizes beta.
+    """
+
     def add_beta(self, mip_model: Model) -> None:
         mip_model.add_var(name="beta", lb=-self.INF)
 
@@ -86,7 +156,13 @@ class MinAdd(Relaxation):
     def get_relaxed_cost(self, project: Project) -> float:
         return project.cost + self._saved_beta
 
+
 class MinAddVector(Relaxation):
+    """
+    A separate beta[c] in (-inf, inf) for each project c is added to the right-hand side of the condition.
+    The objective function minimizes the sum of beta[c] for each project c.
+    """
+
     def add_beta(self, mip_model: Model) -> None:
         beta = {c: mip_model.add_var(name=f"beta_{c.name}", lb=-self.INF) for c in self.C}
         x_vars = {c: mip_model.var_by_name(name=f"x_{c.name}") for c in self.C}
@@ -120,11 +196,24 @@ class MinAddVector(Relaxation):
 
 
 class MinAddVectorPositive(MinAddVector):
+    """
+    A separate beta[c] in [0, inf) for each project c is added to the right-hand side of the condition.
+    The objective function minimizes the sum of beta[c] for each project c.
+    """
+
     def add_beta(self, mip_model: Model) -> None:
         _beta = {c: mip_model.add_var(name=f"beta_{c.name}") for c in self.C}
 
 
 class MinAddOffset(Relaxation):
+    """
+    A mixture of `MinAdd` and `MinAddVector` relaxation methods.
+    A separate beta[c] in [0, inf) for each project c is added to the right-hand side of the condition.
+    The sum of beta[c] for each project c is in [0, 0.025 * instance.budget_limit].
+    Additionally, a global beta in (-inf, inf) is added to the right-hand side of the condition.
+    The objective function minimizes the global beta.
+    """
+
     BUDGET_FRACTION = 0.025
 
     def add_beta(self, mip_model: Model) -> None:
