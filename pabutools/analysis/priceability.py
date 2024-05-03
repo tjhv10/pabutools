@@ -295,7 +295,10 @@ def priceable(
         mip_model += b == voter_budget
 
     # payment functions
-    p_vars = [{c: mip_model.add_var(name=f"p_{idx}_{c.name}") for c in C} for idx, i in enumerate(N)]
+    p_vars = [
+        {c: mip_model.add_var(name=f"p_{idx}_{c.name}") for c in C}
+        for idx, i in enumerate(N)
+    ]
     if payment_functions is not None:
         for idx, _ in enumerate(N):
             for c in C:
@@ -417,6 +420,8 @@ def priceable(
         status=status,
         allocation=list(sorted([c for c in C if x_vars[c].x >= 0.99])),
         voter_budget=b.x,
-        relaxation_beta=relaxation.get_beta(mip_model) if relaxation is not None else None,
+        relaxation_beta=relaxation.get_beta(mip_model)
+        if relaxation is not None
+        else None,
         payment_functions=payment_functions,
     )

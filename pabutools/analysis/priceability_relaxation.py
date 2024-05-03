@@ -114,10 +114,15 @@ class MinMul(Relaxation):
 
     def add_stability_constraint(self, mip_model: Model) -> None:
         x_vars = {c: mip_model.var_by_name(name=f"x_{c.name}") for c in self.C}
-        m_vars = [mip_model.var_by_name(name=f"m_{idx}") for idx, _ in enumerate(self.N)]
+        m_vars = [
+            mip_model.var_by_name(name=f"m_{idx}") for idx, _ in enumerate(self.N)
+        ]
         beta = mip_model.var_by_name(name="beta")
         for c in self.C:
-            mip_model += xsum(m_vars[idx] for idx, i in enumerate(self.N) if c in i) <= c.cost * beta + x_vars[c] * self.INF
+            mip_model += (
+                xsum(m_vars[idx] for idx, i in enumerate(self.N) if c in i)
+                <= c.cost * beta + x_vars[c] * self.INF
+            )
 
     def get_beta(self, mip_model: Model):
         beta = mip_model.var_by_name(name="beta")
@@ -143,10 +148,15 @@ class MinAdd(Relaxation):
 
     def add_stability_constraint(self, mip_model: Model) -> None:
         x_vars = {c: mip_model.var_by_name(name=f"x_{c.name}") for c in self.C}
-        m_vars = [mip_model.var_by_name(name=f"m_{idx}") for idx, _ in enumerate(self.N)]
+        m_vars = [
+            mip_model.var_by_name(name=f"m_{idx}") for idx, _ in enumerate(self.N)
+        ]
         beta = mip_model.var_by_name(name="beta")
         for c in self.C:
-            mip_model += xsum(m_vars[idx] for idx, i in enumerate(self.N) if c in i) <= c.cost + beta + x_vars[c] * self.INF
+            mip_model += (
+                xsum(m_vars[idx] for idx, i in enumerate(self.N) if c in i)
+                <= c.cost + beta + x_vars[c] * self.INF
+            )
 
     def get_beta(self, mip_model: Model):
         beta = mip_model.var_by_name(name="beta")
@@ -164,7 +174,9 @@ class MinAddVector(Relaxation):
     """
 
     def add_beta(self, mip_model: Model) -> None:
-        beta = {c: mip_model.add_var(name=f"beta_{c.name}", lb=-self.INF) for c in self.C}
+        beta = {
+            c: mip_model.add_var(name=f"beta_{c.name}", lb=-self.INF) for c in self.C
+        }
         x_vars = {c: mip_model.var_by_name(name=f"x_{c.name}") for c in self.C}
         # beta[c] is zero for selected
         for c in self.C:
@@ -177,10 +189,15 @@ class MinAddVector(Relaxation):
 
     def add_stability_constraint(self, mip_model: Model) -> None:
         x_vars = {c: mip_model.var_by_name(name=f"x_{c.name}") for c in self.C}
-        m_vars = [mip_model.var_by_name(name=f"m_{idx}") for idx, _ in enumerate(self.N)]
+        m_vars = [
+            mip_model.var_by_name(name=f"m_{idx}") for idx, _ in enumerate(self.N)
+        ]
         beta = {c: mip_model.var_by_name(name=f"beta_{c.name}") for c in self.C}
         for c in self.C:
-            mip_model += xsum(m_vars[idx] for idx, i in enumerate(self.N) if c in i) <= c.cost + beta[c] + x_vars[c] * self.INF
+            mip_model += (
+                xsum(m_vars[idx] for idx, i in enumerate(self.N) if c in i)
+                <= c.cost + beta[c] + x_vars[c] * self.INF
+            )
 
     def get_beta(self, mip_model: Model):
         beta = {c: mip_model.var_by_name(name=f"beta_{c.name}") for c in self.C}
@@ -219,7 +236,10 @@ class MinAddOffset(Relaxation):
     def add_beta(self, mip_model: Model) -> None:
         _beta_global = mip_model.add_var(name="beta", lb=-self.INF)
         beta = {c: mip_model.add_var(name=f"beta_{c.name}") for c in self.C}
-        mip_model += xsum(beta[c] for c in self.C) <= self.BUDGET_FRACTION * self.instance.budget_limit
+        mip_model += (
+            xsum(beta[c] for c in self.C)
+            <= self.BUDGET_FRACTION * self.instance.budget_limit
+        )
 
     def add_objective(self, mip_model: Model) -> None:
         beta_global = mip_model.var_by_name(name="beta")
@@ -227,11 +247,16 @@ class MinAddOffset(Relaxation):
 
     def add_stability_constraint(self, mip_model: Model) -> None:
         x_vars = {c: mip_model.var_by_name(name=f"x_{c.name}") for c in self.C}
-        m_vars = [mip_model.var_by_name(name=f"m_{idx}") for idx, _ in enumerate(self.N)]
+        m_vars = [
+            mip_model.var_by_name(name=f"m_{idx}") for idx, _ in enumerate(self.N)
+        ]
         beta_global = mip_model.var_by_name(name="beta")
         beta = {c: mip_model.var_by_name(name=f"beta_{c.name}") for c in self.C}
         for c in self.C:
-            mip_model += xsum(m_vars[idx] for idx, i in enumerate(self.N) if c in i) <= c.cost + beta_global + beta[c] + x_vars[c] * self.INF
+            mip_model += (
+                xsum(m_vars[idx] for idx, i in enumerate(self.N) if c in i)
+                <= c.cost + beta_global + beta[c] + x_vars[c] * self.INF
+            )
 
     def get_beta(self, mip_model: Model):
         beta_global = mip_model.var_by_name(name="beta")
@@ -240,8 +265,16 @@ class MinAddOffset(Relaxation):
         for c in self.C:
             if beta[c].x:
                 return_beta[c] = beta[c].x
-        self._saved_beta = {"beta": return_beta, "beta_global": beta_global.x, "sum": sum(return_beta.values())}
+        self._saved_beta = {
+            "beta": return_beta,
+            "beta_global": beta_global.x,
+            "sum": sum(return_beta.values()),
+        }
         return self._saved_beta
 
     def get_relaxed_cost(self, project: Project) -> float:
-        return project.cost + self._saved_beta["beta_global"] + self._saved_beta["beta"][project]
+        return (
+            project.cost
+            + self._saved_beta["beta_global"]
+            + self._saved_beta["beta"][project]
+        )
