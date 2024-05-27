@@ -85,12 +85,19 @@ def distribute_excess_support(projects, max_excess_project, doners, gama,listNam
     return projects
 
 def update_projects_support(projects, doners):
-    
-    for i, project in enumerate(projects):
+    indexes_to_go_over = []
+    for i,doner in enumerate(doners):
+        if(sum(doner.get_donations())>0):
+            indexes_to_go_over.append(i)
+    if len(indexes_to_go_over) ==0:
+        return projects
+    index =0
+    for i,project in enumerate(projects):
         don = []
         for doner in doners:
-            don.append(doner.get_donations()[i])
+            don.append(doner.get_donations()[indexes_to_go_over[index]])
         project.update_support(don)
+        index+=1
     return projects
 
 
@@ -146,14 +153,10 @@ def distribute_project_support(projects, eliminated_project, doners,listNames):
             if i!= max_index:
                 part = donetion/total
                 doner.get_donations()[i] = donetion + toDistribute * part
-    print(max_index)
     doners = reset_donations(doners,max_index)
     return update_projects_support(projects,doners)
     
 
-
-
-23.333333 + 11.666666
 
 def find_project_index(listNames, project_name):
     return next((i for i, project in enumerate(listNames) if project == project_name), -1)
