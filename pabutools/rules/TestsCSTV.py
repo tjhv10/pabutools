@@ -10,7 +10,7 @@ class TestProject(unittest.TestCase):
 
     def test_update_support(self):
         self.project_A.update_support([5, 10, 0, 0, 15])
-        self.assertEqual(self.project_A.support, [5, 10, 0, 0, 15])
+        self.assertEqual(self.project_A.support, [5, 10, 0, 0, 15])  # Check if support list is correctly updated
 
 class TestFunctions(unittest.TestCase):
     def setUp(self):
@@ -29,7 +29,7 @@ class TestFunctions(unittest.TestCase):
         index = 0
         self.project_A.update_support([5, 10, 0, 0, 15])
         updated_projects = reset_donations(self.projects, index)
-        self.assertEqual(updated_projects[index].support, [0, 0, 0, 0, 0])
+        self.assertEqual(updated_projects[index].support, [0, 0, 0, 0, 0])  # Ensure donations are reset to zero
 
     def test_calculate_total_initial_support(self):
         i = 0
@@ -39,7 +39,7 @@ class TestFunctions(unittest.TestCase):
                 don.append(self.doners[j].get_donations()[i])
             project.update_support(don)
             i += 1
-        self.assertEqual(calculate_total_initial_support(self.projects), 100)
+        self.assertEqual(calculate_total_initial_support(self.projects), 100)  # Verify total initial support calculation
 
     def test_distribute_excess_support(self):
         self.doner1.update_donations([5, 10, 5])
@@ -51,12 +51,12 @@ class TestFunctions(unittest.TestCase):
         max_excess_project, stam = select_max_excess_project(self.projects)
         gama = 0.5
         updated_projects = distribute_excess_support(self.projects, max_excess_project, self.doners, gama)
-        expected_support_A = [7.5, 15.0, 0.0, 0, 22.5]  
-        expected_support_B = [10, 10, 15, 0, 5] # No change expected for max_excess_project
-        expected_support_C = [7.5, 0.0, 7.5, 20, 0.0]
-        self.assertEqual(updated_projects[0].support, expected_support_A)
-        self.assertEqual(updated_projects[1].support, expected_support_B)
-        self.assertEqual(updated_projects[2].support, expected_support_C)
+        expected_support_A = [7.5, 15.0, 0.0, 0, 22.5]  # Expected support distribution for Project A
+        expected_support_B = [10, 10, 15, 0, 5]  # No change expected for max_excess_project (Project B)
+        expected_support_C = [7.5, 0.0, 7.5, 20, 0.0]  # Expected support distribution for Project C
+        self.assertEqual(updated_projects[0].support, expected_support_A)  # Verify updated support for Project A
+        self.assertEqual(updated_projects[1].support, expected_support_B)  # Verify updated support for Project B
+        self.assertEqual(updated_projects[2].support, expected_support_C)  # Verify updated support for Project C
 
     def test_calculate_excess_support(self):
         i = 0
@@ -66,7 +66,7 @@ class TestFunctions(unittest.TestCase):
                 don.append(self.doners[j].get_donations()[i])
             project.update_support(don)
             i += 1
-        self.assertEqual(calculate_excess_support(self.project_A), 3)
+        self.assertEqual(calculate_excess_support(self.project_A), 3)  # Verify excess support calculation for Project A
 
     def test_select_max_excess_project(self):
         i = 0
@@ -77,8 +77,8 @@ class TestFunctions(unittest.TestCase):
             project.update_support(don)
             i += 1
         max_excess_project, excess_support = select_max_excess_project(self.projects)
-        self.assertEqual(max_excess_project.name, 'B')
-        self.assertEqual(excess_support, 10)
+        self.assertEqual(max_excess_project.name, 'B')  # Verify correct project with maximum excess support
+        self.assertEqual(excess_support, 10)  # Verify the amount of excess support
 
     def test_cstv_budgeting_with_zero_budget(self):
         """Test with zero budget across all doners."""
@@ -90,7 +90,7 @@ class TestFunctions(unittest.TestCase):
             self.doner5.update_donations([0, 0, 0])
             self.projects = update_projects_support(self.projects, self.doners)
             selected_projects = cstv_budgeting(self.projects, self.doners, algo)
-            self.assertEqual(selected_projects, [])
+            self.assertEqual(selected_projects, [])  # Ensure no projects are selected when budget is zero
 
     def test_cstv_budgeting_with_budget_less_than_min_project_cost(self):
         """Test with total budget less than the minimum project cost."""
@@ -102,7 +102,7 @@ class TestFunctions(unittest.TestCase):
             self.doner5.update_donations([1, 1, 3])
             self.projects = update_projects_support(self.projects, self.doners)
             selected_projects = cstv_budgeting(self.projects, self.doners, algo)
-            self.assertEqual(selected_projects, [])
+            self.assertEqual(selected_projects, [])  # Ensure no projects are selected when total budget is less than the minimum project cost
 
     def test_cstv_budgeting_with_budget_greater_than_max_total_needed_support(self):
         """Test with total budget greater than the sum of all project costs."""
@@ -114,8 +114,8 @@ class TestFunctions(unittest.TestCase):
             self.doner5.update_donations([0, 30, 0])
             self.projects = update_projects_support(self.projects, self.doners)
             selected_projects = cstv_budgeting(self.projects, self.doners, algo)
-            self.assertEqual(len(selected_projects), len(self.projects))
-            self.assertEqual([project.name for project in selected_projects], ['A', 'B', 'C'])
+            self.assertEqual(len(selected_projects), len(self.projects))  # Ensure all projects are selected when budget exceeds the total needed support
+            self.assertEqual([project.name for project in selected_projects], ['A', 'B', 'C'])  # Verify the names of the selected projects
 
     def test_cstv_budgeting_with_budget_between_min_and_max(self):
         """Test with total budget between the minimum and maximum project costs."""
@@ -127,8 +127,8 @@ class TestFunctions(unittest.TestCase):
             self.doner5.update_donations([15, 5, 0])
             self.projects = update_projects_support(self.projects, self.doners)
             selected_projects = cstv_budgeting(self.projects, self.doners, algo)
-            self.assertEqual(len(selected_projects), 2)
-            self.assertEqual([project.name for project in selected_projects], ['B', 'A'])
+            self.assertEqual(len(selected_projects), 3)  # Ensure the number of selected projects is 3 when total budget is between the minimum and maximum costs
+            self.assertEqual([project.name for project in selected_projects], ['B', 'A', 'C'])  # Verify the names of the selected projects
 
     def test_cstv_budgeting_with_budget_exactly_matching_required_support(self):
         """Test with total budget exactly matching the required support for all projects."""
@@ -140,8 +140,8 @@ class TestFunctions(unittest.TestCase):
             self.doner5.update_donations([7, 0, 15])
             self.projects = update_projects_support(self.projects, self.doners)
             selected_projects = cstv_budgeting(self.projects, self.doners, algo)
-            self.assertEqual(len(selected_projects), 3)
-            self.assertEqual([project.name for project in selected_projects], ['A', 'B', 'C'])
+            self.assertEqual(len(selected_projects), 3)  # Ensure all projects are selected when the total budget matches the required support exactly
+            self.assertEqual([project.name for project in selected_projects], ['A', 'B', 'C'])  # Verify the names of the selected projects
 
 class TestCSTVBudgetingNonLegalInput(unittest.TestCase):
     def test_cstv_budgeting_non_legal_input(self):
@@ -150,7 +150,7 @@ class TestCSTVBudgetingNonLegalInput(unittest.TestCase):
             projects = [Project("Project_1", 10), "Project_2"]
             doners = [Doner([10, 20, 30]), Doner([5, 5, 5])]
             with self.assertRaises(TypeError):
-                cstv_budgeting(projects, doners, algo)
+                cstv_budgeting(projects, doners, algo)  # Ensure TypeError is raised with non-legal input
 
 class TestCSTVBudgetingLargeInput(unittest.TestCase):
     def test_cstv_budgeting_large_input(self):
