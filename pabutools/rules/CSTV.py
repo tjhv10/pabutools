@@ -4,17 +4,13 @@ An implementation of the algorithms in:
 Programmer: Achia Ben Natan
 Date: 2024/05/16.
 """
+
 import logging
+# from pabutools.election import Project, Instance
 from typing import List
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
-import logging
-from typing import List, Callable, Collection, Iterable
-
-# Set up logging
-logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
-
 class Project:
     def __init__(self, name: str, cost: int):
         self.name = name
@@ -33,7 +29,6 @@ class Project:
     def __str__(self) -> str:
         supporter_strings = ", ".join(str(s) for s in self.support)
         return f"Project: {self.name}, Cost: {self.cost}, Initial support: [{supporter_strings} sum:{sum(self.support)}]"
-
 class Doner:
     def __init__(self, donations: List[int]):
         self.donations = donations
@@ -70,6 +65,101 @@ def reset_donations(doners: List[Doner], index: int) -> List[Doner]:
         doner.donations[index] = 0
     return doners
 
+
+
+def distribute_project_support(projects: List[Project], eliminated_project: Project, doners: List[Doner], listNames: List[str]) -> List[Project]:
+    """
+    Distribute the support of an eliminated project among the remaining projects.
+
+    Parameters:
+    - projects: list of Project instances
+    - eliminated_project: Project
+        The project that has been eliminated.
+    - doners: list of Doner instances
+    - listNames: list of project names
+
+    Returns:
+    - updated_projects: list of Project instances with updated support
+
+    >>> project_A = Project("Project A", 35)
+    >>> project_B = Project("Project B", 30)
+    >>> project_A.update_support([5, 10, 25])
+    >>> project_B.update_support([10, 10, 10])
+    >>> doner1 = Doner([5, 10])
+    >>> doner2 = Doner([10, 10])
+    >>> doners = [doner1, doner2]
+    >>> projects = [project_A, project_B]
+    >>> updated_projects = distribute_project_support(projects, project_A, doners, get_project_names(projects))
+    >>> for project in updated_projects: print(project)
+    Project: Project A, Cost: 35, Initial support: [0, 0 sum:0]
+    Project: Project B, Cost: 30, Initial support: [13.333333333333332, 15.0 sum:28.333333333333332]
+    """
+    max_index = find_project_index(listNames, eliminated_project.get_name())
+    for doner in doners:
+        toDistribute = doner.get_donations()[max_index]
+        total = sum(doner.get_donations())
+        if total == 0:
+            continue
+        for i, donetion in enumerate(doner.get_donations()):
+            if i != max_index:
+                part = donetion / total
+                doner.get_donations()[i] = donetion + toDistribute * part
+    doners = reset_donations(doners, max_index)
+    return update_projects_support(projects, doners)
+
+
+def elimination_with_transfers(projects: List[Project], doners: List[Doner], listNames: List[str], eliminated_projects: List[Project]) -> List[Project]:
+    """
+    Perform the Elimination-with-Transfers (EwT) algorithm on a list of projects with donor support.
+
+    Parameters:
+    - projects: list of Project instances
+    - doners: list of Doner instances
+    - listNames: list of project names
+    - eliminated_projects: list of Project instances that have been eliminated
+    - alg_str: str
+        The algorithm selection string ("EwT" or other).
+
+    Returns:
+    - remaining_projects: list of Project instances that are selected for funding
+
+    >>> project_A = Project("Project A", 35)
+    >>> project_B = Project("Project B", 30)
+    >>> project_C = Project("Project C", 35)
+    >>> project_D = Project("Project D", 35)
+    >>> doner1 = Doner([5, 10, 5, 5])
+    >>> doner2 = Doner([10, 10, 0, 5])
+    >>> doner3 = Doner([0, 15, 5, 5])
+    >>> doner4 = Doner([0, 0, 20, 5])
+    >>> doner5 = Doner([15, 5, 0, 5])
+    >>> projects = [project_A, project_B, project_C, project_D]
+    >>> doners = [doner1, doner2, doner3, doner4, doner5]
+    >>> projects = update_projects_support(projects, doners)
+    >>> listNames = get_project_names(projects)
+    >>> eliminated_projects = []
+    >>> remaining_projects = elimination_with_transfers(projects, doners, listNames, eliminated_projects)
+    >>> for project in remaining_projects: print(project)
+    Project: Project A, Cost: 35, Initial support: [6.0, 12.0, 0.0, 0.0, 18.0 sum:36.0]
+    Project: Project B, Cost: 30, Initial support: [12.0, 12.0, 18.0, 0.0, 6.0 sum:48.0]
+    Project: Project C, Cost: 35, Initial support: [6.0, 0.0, 6.0, 24.0, 0.0 sum:36.0]
+    """
+    if len(projects) < 2:
+        return projects
+    
+    while projects:
+        # TODO put here also GSC system
+        min_project = min(projects, key=lambda p: calculate_excess_support(p))
+    
+        excess = calculate_excess_support(min_project)
+
+        if excess < 0:
+            projects = distribute_project_support(projects, min_project, doners, listNames)
+            projects = update_projects_support(projects, doners)
+            projects.remove(min_project)
+            eliminated_projects.append(min_project)
+            break
+
+    return projects
 def calculate_total_initial_support(projects: List[Project]) -> int:
     """
     Calculate the total initial support for all projects.
@@ -253,125 +343,23 @@ def gsc_score(project: Project) -> float:
     """
     return (sum(project.support) / project.cost)
 
-def find_project_index(names: List[str], name: str) -> int:
+def find_project_index(listNames: List[str], name: str) -> int:
     """
-    Find the index of a project by its name in a list of names.
+    Find the index of a project by name in a list of project names.
 
     Parameters:
-    - names: list of str
-        List of project names.
+    - listNames: list of project names
     - name: str
-        The project name to find.
+        The name of the project to find
 
     Returns:
     - index: int
-        Index of the project name in the list.
+        The index of the project in the list
 
-    >>> find_project_index(["Project A", "Project B", "Project C"], "Project B")
+    >>> find_project_index(["Project A", "Project B"], "Project B")
     1
     """
-    for i, nam in enumerate(names):
-        if nam == name:
-            return i
-    return -1
-def distribute_project_support(projects: List[Project], eliminated_project: Project, doners: List[Doner], listNames: List[str]) -> List[Project]:
-    """
-    Distribute the support of an eliminated project among the remaining projects.
-
-    Parameters:
-    - projects: list of Project instances
-    - eliminated_project: Project
-        The project that has been eliminated.
-    - doners: list of Doner instances
-    - listNames: list of project names
-
-    Returns:
-    - updated_projects: list of Project instances with updated support
-
-    >>> project_A = Project("Project A", 35)
-    >>> project_B = Project("Project B", 30)
-    >>> project_A.update_support([5, 10, 25])
-    >>> project_B.update_support([10, 10, 10])
-    >>> doner1 = Doner([5, 10])
-    >>> doner2 = Doner([10, 10])
-    >>> doners = [doner1, doner2]
-    >>> projects = [project_A, project_B]
-    >>> updated_projects = distribute_project_support(projects, project_A, doners, get_project_names(projects))
-    >>> for project in updated_projects: print(project)
-    Project: Project A, Cost: 35, Initial support: [0, 0 sum:0]
-    Project: Project B, Cost: 30, Initial support: [13.333333333333332, 15.0 sum:28.333333333333332]
-    """
-    max_index = find_project_index(listNames, eliminated_project.get_name())
-    for doner in doners:
-        toDistribute = doner.get_donations()[max_index]
-        total = sum(doner.get_donations())
-        if total == 0:
-            continue
-        for i, donetion in enumerate(doner.get_donations()):
-            if i != max_index:
-                part = donetion / total
-                doner.get_donations()[i] = donetion + toDistribute * part
-    doners = reset_donations(doners, max_index)
-    return update_projects_support(projects, doners)
-
-
-
-
-def elimination_with_transfers(projects: List[Project], doners: List[Doner], listNames: List[str], eliminated_projects: List[Project], alg_str: str) -> List[Project]:
-    """
-    Perform the Elimination-with-Transfers (EwT) algorithm on a list of projects with donor support.
-
-    Parameters:
-    - projects: list of Project instances
-    - doners: list of Doner instances
-    - listNames: list of project names
-    - eliminated_projects: list of Project instances that have been eliminated
-    - alg_str: str
-        The algorithm selection string ("EwT" or other).
-
-    Returns:
-    - remaining_projects: list of Project instances that are selected for funding
-
-    >>> project_A = Project("Project A", 35)
-    >>> project_B = Project("Project B", 30)
-    >>> project_C = Project("Project C", 35)
-    >>> project_D = Project("Project D", 35)
-    >>> doner1 = Doner([5, 10, 5, 5])
-    >>> doner2 = Doner([10, 10, 0, 5])
-    >>> doner3 = Doner([0, 15, 5, 5])
-    >>> doner4 = Doner([0, 0, 20, 5])
-    >>> doner5 = Doner([15, 5, 0, 5])
-    >>> projects = [project_A, project_B, project_C, project_D]
-    >>> doners = [doner1, doner2, doner3, doner4, doner5]
-    >>> projects = update_projects_support(projects, doners)
-    >>> listNames = get_project_names(projects)
-    >>> eliminated_projects = []
-    >>> remaining_projects = elimination_with_transfers(projects, doners, listNames, eliminated_projects, "EwT")
-    >>> for project in remaining_projects: print(project)
-    Project: Project A, Cost: 35, Initial support: [6.0, 12.0, 0.0, 0.0, 18.0 sum:36.0]
-    Project: Project B, Cost: 30, Initial support: [12.0, 12.0, 18.0, 0.0, 6.0 sum:48.0]
-    Project: Project C, Cost: 35, Initial support: [6.0, 0.0, 6.0, 24.0, 0.0 sum:36.0]
-    """
-    if len(projects) < 2:
-        return projects
-    
-    while projects:
-        if alg_str == "EwT":
-            min_project = min(projects, key=lambda p: calculate_excess_support(p))
-        else:
-            min_project = min(projects, key=lambda p: calculate_excess_support(p) / p.cost)
-        
-        excess = calculate_excess_support(min_project)
-
-        if excess < 0:
-            projects = distribute_project_support(projects, min_project, doners, listNames)
-            projects = update_projects_support(projects, doners)
-            projects.remove(min_project)
-            eliminated_projects.append(min_project)
-            break
-
-    return projects
-
+    return listNames.index(name)
 
 def reverse_eliminations(selected_projects: List[Project], eliminated_projects: List[Project], budget) -> List[Project]:
     """
@@ -412,14 +400,25 @@ def reverse_eliminations(selected_projects: List[Project], eliminated_projects: 
             budget -= project.get_cost()
     return selected_projects
 
-def cstv_budgeting(projects, doners, algorithm_selection_string):
+
+def is_eligible_GE(projects):
+    return [project for project in projects if (sum(project.support) - project.cost) >= 0]
+
+def is_eligible_GSC(projects): 
+    return [project for project in projects if (sum(project.support) / project.cost) >= 1]
+
+
+
+def cstv_budgeting(projects, doners, project_to_fund_selection_procedure,eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure):
     """
-    Perform participatory budgeting using the specified algorithm.
+    Perform participatory budgeting using the specified functions for selection criteria.
 
     Parameters:
     - projects: list of Project instances
     - doners: list of Doner instances
-    - algorithm_selection_string: string indicating which algorithm to use ("EwT" or "EwTC")
+    - eligible_fn: function to determine eligible projects
+    - select_fn: function to select the project to fund
+    - distribute_fn: function to distribute excess support
 
     Returns:
     - selected_projects: list of Project instances that are selected for funding
@@ -440,73 +439,54 @@ def cstv_budgeting(projects, doners, algorithm_selection_string):
     >>> projects = [project_A, project_B, project_C, project_D]
     >>> doners = [doner1, doner2, doner3, doner4, doner5]
     >>> projects = update_projects_support(projects, doners)
-    >>> selected_projects = cstv_budgeting(projects, doners, "EwT")
+    >>> selected_projects = cstv_budgeting(projects, doners, select_max_excess_project ,is_eligible_GE, elimination_with_transfers,reverse_eliminations)
     >>> for project in selected_projects:
     ...     print(f"Selected Project: {project.get_name()}, Cost: {project.get_cost()}")
     Selected Project: Project B, Cost: 30
     Selected Project: Project A, Cost: 35
     Selected Project: Project C, Cost: 35
     """
-    if not all(isinstance(project, Project) for project in projects):
-        raise TypeError("All elements in the 'projects' list must be instances of the 'Project' class.")
-    if not all(isinstance(doner, Doner) for doner in doners):
-        raise TypeError("All elements in the 'doners' list must be instances of the 'Doner' class.")
 
     selected_projects = []
     eliminated_projects = []
     budget = calculate_total_initial_support_doners(doners)
     listNames = get_project_names(projects)
 
-    if algorithm_selection_string == "EwT" or algorithm_selection_string == "EwTC":
-        while True:
-            if algorithm_selection_string == "EwT":
-                eligible_projects = [project for project in projects if (sum(project.support) - project.cost) >= 0]
-            else:
-                eligible_projects = [project for project in projects if (sum(project.support) / project.cost) >= 1]
+    while True:
+        eligible_projects = eligible_fn(projects)
+        while not eligible_projects:
+            pLength = len(projects)
+            if pLength == 1:
+                # TODO check this row and find the right number for inside the projects[num]
+                eliminated_projects.append(projects[-1])
+            no_eligible_project_procedure(projects, doners, listNames, eliminated_projects)
+            if len(projects) == pLength:
+                selected_projects = inclusive_maximality_postprocedure(selected_projects, eliminated_projects, budget)
+                return selected_projects
+                
 
-            while not eligible_projects:
-                pLength = len(projects)
-                if pLength == 1:
-                    eliminated_projects.append(projects[0])
-                elimination_with_transfers(projects, doners, listNames, eliminated_projects, algorithm_selection_string)
-                if len(projects) == pLength:
-                    selected_projects = reverse_eliminations(selected_projects, eliminated_projects, budget)
-                    return selected_projects
+            eligible_projects = eligible_fn(projects)
 
-                if algorithm_selection_string == "EwT":
-                    eligible_projects = [project for project in projects if (sum(project.support) - project.cost) >= 0]
-                else:
-                    eligible_projects = [project for project in projects if (sum(project.support) / project.cost) >= 1]
+        selected_project = project_to_fund_selection_procedure(eligible_projects)
+        excess_support = calculate_excess_support(selected_project)
 
-            if algorithm_selection_string == "EwT":
-                selected_project = select_max_excess_project(projects)
-            else:
-                selected_project = max(eligible_projects, key=lambda x: sum(x.support) / x.cost)
 
-            excess_support = calculate_excess_support(selected_project)
-            if excess_support == 0:
-                selected_projects.append(selected_project)
-                projects.remove(selected_project)
-                budget -= selected_project.cost
-                projects = update_projects_support(projects, doners)
-                continue
-
+        if excess_support >= 0:
+            selected_projects.append(selected_project)
             if excess_support > 0:
-                selected_projects.append(selected_project)
                 gama = selected_project.get_cost() / (excess_support + selected_project.get_cost())
                 projects = distribute_excess_support(projects, selected_project, doners, gama, listNames)
-                projects = update_projects_support(projects, doners)
-                projects.remove(selected_project)
-                budget -= selected_project.cost
-                continue
+            projects = update_projects_support(projects, doners)
+            projects.remove(selected_project)
+            budget -= selected_project.cost
+            continue
 
-    return selected_projects
+
 def main():
-    # Example projects and doners for testing
     project_A = Project("Project A", 35)
     project_B = Project("Project B", 30)
     project_C = Project("Project C", 35)
-    project_D = Project("Project D", 25)
+    project_D = Project("Project D", 30)
     
     doner1 = Doner([5, 10, 5, 5])
     doner2 = Doner([10, 10, 0, 5])
@@ -517,12 +497,10 @@ def main():
     projects = [project_A, project_B, project_C, project_D]
     doners = [doner1, doner2, doner3, doner4, doner5]
     projects = update_projects_support(projects, doners)
-    selected_projects = cstv_budgeting(projects, doners, "EwT")
+    selected_projects = cstv_budgeting(projects, doners, select_max_excess_project ,is_eligible_GE, elimination_with_transfers,reverse_eliminations)
     for project in selected_projects:
         print(f"Selected Project: {project.get_name()}, Cost: {project.get_cost()}")
-
-
-        
+    
 if __name__ == "__main__":
     main()
     import doctest

@@ -1,6 +1,6 @@
 import unittest
-from CSTV import Project, Doner, update_projects_support, reset_donations, calculate_total_initial_support, calculate_total_initial_support_doners, calculate_excess_support, select_max_excess_project, distribute_excess_support, cstv_budgeting
-# from pabutools.rules.CSTV import Project, Doner, update_projects_support, reset_donations, calculate_total_initial_support, calculate_total_initial_support_doners, calculate_excess_support, select_max_excess_project, distribute_excess_support, cstv_budgeting
+# from CSTV import Project, Doner, update_projects_support, reset_donations, calculate_total_initial_support, calculate_total_initial_support_doners, calculate_excess_support, select_max_excess_project, distribute_excess_support, cstv_budgeting
+from pabutools.rules.CSTV import Project, Doner, update_projects_support, reset_donations, calculate_total_initial_support, calculate_total_initial_support_doners, calculate_excess_support, select_max_excess_project, distribute_excess_support, cstv_budgeting
 import random
 
 class TestProject(unittest.TestCase):
