@@ -952,6 +952,31 @@ def cstv_budgeting(projects, doners, algorithm_selection_string):
                 continue
 
     return selected_projects
+def main():
+    # Example projects and doners for testing
+    project_A = Project("Project A", 35)
+    project_B = Project("Project B", 30)
+    project_C = Project("Project C", 35)
+    project_D = Project("Project D", 25)
+    
+    doner1 = Doner([5, 10, 5, 5])
+    doner2 = Doner([10, 10, 0, 5])
+    doner3 = Doner([0, 15, 5, 5])
+    doner4 = Doner([0, 0, 20, 5])
+    doner5 = Doner([15, 5, 0, 5])
+    
+    projects = [project_A, project_B, project_C, project_D]
+    doners = [doner1, doner2, doner3, doner4, doner5]
+    projects = update_projects_support(projects, doners)
+    # Run the participatory budgeting process
+    selected_projects = cstv_budgeting(projects, doners, "EwTC")
+    # Print the selected projects
+    for project in selected_projects:
+        print(f"Selected Project: {project.get_name()}, Cost: {project.get_cost()}")
+
+
+        
 if __name__ == "__main__":
+    main()
     import doctest
-    doctest.testmod()
+    # doctest.testmod()
