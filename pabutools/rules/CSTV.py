@@ -5,7 +5,7 @@ from typing import List
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 
-def reset_donations(doners: List[CumulativeBallot], index: int) -> List[CumulativeBallot]:
+def reset_donations(doners: List[CumulativeBallot], index: str) -> List[CumulativeBallot]:
     for doner in doners:
         doner[index] = 0
     return doners
