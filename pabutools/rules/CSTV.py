@@ -624,9 +624,19 @@ def cstv_budgeting_combination(doners: List[CumulativeBallot], projects: List[Pr
 
     Examples
     --------
-    >>> combination = "GE-GE-GE"
-    >>> run_cstv_test_combination(combination)
-    ['Project B', 'Project C']
+    >>> project_A = Project("Project A", 35)
+    >>> project_B = Project("Project B", 30)
+    >>> project_C = Project("Project C", 20)
+    >>> doner1 = CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5})
+    >>> doner2 = CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0})
+    >>> doner3 = CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5})
+    >>> doner4 = CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20})
+    >>> doner5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0})
+    >>> projects = [project_A, project_B, project_C]
+    >>> doners = [doner1, doner2, doner3, doner4, doner5]
+    >>> combination = "ewt"
+    >>> cstv_budgeting_combination(doners, projects, combination)
+    [Project B, Project C, Project A]
     """
     if combination =="EwT" or combination =="ewt" or combination =="EWT":
         return cstv_budgeting(doners, projects, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
@@ -683,7 +693,7 @@ def cstv_budgeting(doners: List[CumulativeBallot], projects: List[Project], proj
     >>> no_eligible_project_procedure = elimination_with_transfers
     >>> inclusive_maximality_postprocedure = reverse_eliminations
     >>> cstv_budgeting(doners, projects, project_to_fund_selection_procedure, eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure)
-    [Project B, Project C]
+    [Project B, Project C, Project A]
     """
     selected_projects = []
     eliminated_projects = []
@@ -752,3 +762,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    import doctest
+    # doctest.testmod()

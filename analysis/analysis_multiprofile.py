@@ -13,7 +13,7 @@ from pabutools.election import (
     Cost_Sat,
     SatisfactionProfile,
 )
-from pabutools.rules import greedy_utilitarian_welfare
+from tests import greedy_utilitarian_welfare
 from pabutools.rules.maxwelfare import max_additive_utilitarian_welfare
 
 

@@ -1,6 +1,6 @@
 import unittest
 from pabutools.election import Project, CumulativeBallot
-from CSTV import *
+from pabutools.rules.CSTV import *
 import random
 
 class TestFunctions(unittest.TestCase):
