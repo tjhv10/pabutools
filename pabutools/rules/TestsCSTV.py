@@ -1,6 +1,6 @@
 import unittest
 # from CSTV import Project, Doner, update_projects_support, reset_donations, calculate_total_initial_support, calculate_total_initial_support_doners, calculate_excess_support, select_max_excess_project, distribute_excess_support, cstv_budgeting
-from pabutools.rules.CSTV import Project, Doner, update_projects_support, reset_donations, calculate_total_initial_support, calculate_total_initial_support_doners, calculate_excess_support, select_max_excess_project, distribute_excess_support, cstv_budgeting
+from pabutools.rules.CSTV import Project, Doner, update_projects_support, reset_donations, calculate_total_initial_support, calculate_total_initial_support_doners, calculate_excess_support, select_project_GE, distribute_excess_support, cstv_budgeting
 import random
 
 class TestProject(unittest.TestCase):
@@ -49,7 +49,7 @@ class TestFunctions(unittest.TestCase):
         self.doner4.update_donations([0, 0, 20])
         self.doner5.update_donations([15, 5, 0])
         self.projects = update_projects_support(self.projects, self.doners)
-        max_excess_project, stam = select_max_excess_project(self.projects)
+        max_excess_project, stam = select_project_GE(self.projects)
         gama = 0.5
         updated_projects = distribute_excess_support(self.projects, max_excess_project, self.doners, gama)
         expected_support_A = [7.5, 15.0, 0.0, 0, 22.5]  # Expected support distribution for Project A
@@ -77,7 +77,7 @@ class TestFunctions(unittest.TestCase):
                 don.append(self.doners[j].get_donations()[i])
             project.update_support(don)
             i += 1
-        max_excess_project, excess_support = select_max_excess_project(self.projects)
+        max_excess_project, excess_support = select_project_GE(self.projects)
         self.assertEqual(max_excess_project.name, 'B')  # Verify correct project with maximum excess support
         self.assertEqual(excess_support, 10)  # Verify the amount of excess support
 

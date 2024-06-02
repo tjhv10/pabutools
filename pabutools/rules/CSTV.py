@@ -41,6 +41,24 @@ def elimination_with_transfers(projects: List[Project], doners: List[CumulativeB
             break
 
     return projects
+
+
+def minimal_transfer(doners: List[CumulativeBallot], projects: List[Project], listNames, eliminated_projects, project_to_fund_selection_procedure: callable) -> List[Project]:
+    chosen_project = project_to_fund_selection_procedure(doners,projects)
+    r = calculate_total_support_for_project(doners, chosen_project)/chosen_project.cost
+    doners_of_selected_project = [doner for doner in doners if (doner.get(chosen_project.name,0)) > 0]
+    while r<1:
+        for doner in doners_of_selected_project:
+            total = sum(doner.values()) - doner.get(chosen_project.name,0)
+            to_distibute = min(sum(doner.values()),doner.get(chosen_project.name)/r)
+            for project_name, donation in doner.items():
+                if project_name !=chosen_project.name:
+                    part = donation / total
+                    change = to_distibute * part
+                    doner[project_name]-=change
+                    doner[chosen_project.name]+=change
+        r = calculate_total_support_for_project(doners, chosen_project)/chosen_project.cost
+
 def calculate_total_support_for_project(doners: List[CumulativeBallot], project: Project) -> float:
     total_support = sum(doner.get(project, 0) for doner in doners)
     return total_support
@@ -55,7 +73,7 @@ def calculate_total_initial_support_doners(doners: List[CumulativeBallot]) -> in
 def calculate_excess_support(doners, project: Project) -> int:
     return calculate_total_support_for_project(doners,project) - project.cost
 
-def select_max_excess_project(doners: List[CumulativeBallot],projects: List[Project]) -> Project:
+def select_project_GE(doners: List[CumulativeBallot],projects: List[Project]) -> Project:
     excess_support = {project: calculate_excess_support(doners,project) for project in projects}
     max_excess_project = max(excess_support, key=excess_support.get)
     return max_excess_project
@@ -70,30 +88,40 @@ def distribute_excess_support(projects: List[Project], max_excess_project: Proje
         for i, donation in enumerate(doner_copy.values()):
             if listNames[i] != max_project_name:
                 if total != 0:
-                    part = donation / total
+                    part = donation/total
                     doner[listNames[i]] = donation + toDistribute * part
     return projects
 
-def gsc_score(doners: List[CumulativeBallot] ,project: Project) -> float:
+def select_project_GSC(doners: List[CumulativeBallot] ,project: Project) -> float:
     return (calculate_total_support_for_project(doners,project) / project.cost)
 
 def find_project_index(listNames: List[str], name: str) -> int:
     return listNames.index(name)
 
-def reverse_eliminations(selected_projects: List[Project], eliminated_projects: List[Project], budget) -> List[Project]:
+def reverse_eliminations(selected_projects: List[Project], eliminated_projects: List[Project],project_to_fund_selection_procedure, budget: int) -> List[Project]:
     for project in reversed(eliminated_projects):
         if project.cost <= budget:
             selected_projects.append(project)
             budget -= project.get_cost()
     return selected_projects
 
-def is_eligible_GE(projects: List[Project], doners: List[CumulativeBallot])-> List[Project]:
+
+def acceptance_of_undersupported_projects(selected_projects: List[Project], eliminated_projects: List[Project],project_to_fund_selection_procedure: callable, budget: int) -> List[Project]:
+    while len(eliminated_projects)!=0:
+        selected_project = project_to_fund_selection_procedure(eliminated_projects)
+        if selected_project.cost<budget:
+            selected_projects.append(selected_project)
+            selected_projects.remove(selected_project)
+            budget -= selected_project.get_cost()
+
+
+def is_eligible_GE(doners: List[CumulativeBallot], projects: List[Project])-> List[Project]:
     return [project for project in projects if (calculate_total_support_for_project(doners,project) - project.cost) >= 0]
 
-def is_eligible_GSC(projects: List[Project], doners: List[CumulativeBallot]): 
+def is_eligible_GSC(doners: List[CumulativeBallot], projects: List[Project])-> List[Project]: 
     return [project for project in projects if (calculate_total_support_for_project(doners,project) / project.cost) >= 1]
 
-def cstv_budgeting(projects: List[Project], doners: List[CumulativeBallot], project_to_fund_selection_procedure: callable, eligible_fn: callable,
+def cstv_budgeting(doners: List[CumulativeBallot],projects: List[Project], project_to_fund_selection_procedure: callable, eligible_fn: callable,
                     no_eligible_project_procedure: callable, inclusive_maximality_postprocedure: callable) -> List[Project]:
     selected_projects = []
     eliminated_projects = []
@@ -106,9 +134,9 @@ def cstv_budgeting(projects: List[Project], doners: List[CumulativeBallot], proj
             pLength = len(projects)
             if pLength == 1:
                 eliminated_projects.append(projects[-1])
-            no_eligible_project_procedure(projects, doners, listNames, eliminated_projects)
+            no_eligible_project_procedure(doners, projects, listNames, eliminated_projects,project_to_fund_selection_procedure)
             if len(projects) == pLength:
-                selected_projects = inclusive_maximality_postprocedure(selected_projects, eliminated_projects, budget)
+                selected_projects = inclusive_maximality_postprocedure(selected_projects, eliminated_projects,project_to_fund_selection_procedure, budget)
                 return selected_projects
             eligible_projects = eligible_fn(doners,projects)
 
@@ -135,14 +163,13 @@ def main():
     doner3 = CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5})
     doner4 = CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5})
     doner5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})
-    
+
     projects = [project_A, project_B, project_C, project_D]
     doners = [doner1, doner2, doner3, doner4, doner5]
-    project_to_fund_selection_procedure = select_max_excess_project
+    project_to_fund_selection_procedure = select_project_GE
     eligible_fn = is_eligible_GE
-    no_eligible_project_procedure = elimination_with_transfers
-    inclusive_maximality_postprocedure = reverse_eliminations
-    
+    no_eligible_project_procedure = minimal_transfer
+    inclusive_maximality_postprocedure = acceptance_of_undersupported_projects
     selected_projects = cstv_budgeting(
         doners,
         projects,
