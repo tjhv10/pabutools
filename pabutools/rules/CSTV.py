@@ -744,7 +744,7 @@ def main():
     doners = [doner1, doner2, doner3, doner4, doner5]
 
     
-    selected_projects = cstv_budgeting_combination(doners, projects,"mtc")
+    selected_projects = cstv_budgeting_combination(doners, projects,"ewtc")
     logging.debug(f"Selected projects: {[project.name for project in selected_projects]}")
     for project in selected_projects:
         print(project.name)
