@@ -2,10 +2,9 @@ import logging
 from pabutools.election import Project, CumulativeBallot
 from typing import List
 
-# Set up logging
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 
-def reset_donations(doners: List[CumulativeBallot], index: int) -> List[CumulativeBallot]:
+def reset_donations(doners: List[CumulativeBallot], index: str) -> List[CumulativeBallot]:
     for doner in doners:
         doner[index] = 0
     return doners
@@ -37,7 +36,6 @@ def elimination_with_transfers(projects: List[Project], doners: List[CumulativeB
 
         if excess < 0:
             projects = distribute_project_support(projects, min_project, doners, listNames)
-            # projects = update_projects_support(projects, doners)
             projects.remove(min_project)
             eliminated_projects.append(min_project)
             break
@@ -48,7 +46,7 @@ def calculate_total_support_for_project(doners: List[CumulativeBallot], project:
     return total_support
 
 
-def calculate_total_initial_support(doners, projects: List[Project]) -> int:
+def calculate_total_initial_support(doners: List[CumulativeBallot], projects: List[Project]) -> int:
     return sum(calculate_total_support_for_project(doners,project) for project in projects)
 
 def calculate_total_initial_support_doners(doners: List[CumulativeBallot]) -> int:
@@ -57,7 +55,7 @@ def calculate_total_initial_support_doners(doners: List[CumulativeBallot]) -> in
 def calculate_excess_support(doners, project: Project) -> int:
     return calculate_total_support_for_project(doners,project) - project.cost
 
-def select_max_excess_project(doners,projects: List[Project]) -> Project:
+def select_max_excess_project(doners: List[CumulativeBallot],projects: List[Project]) -> Project:
     excess_support = {project: calculate_excess_support(doners,project) for project in projects}
     max_excess_project = max(excess_support, key=excess_support.get)
     return max_excess_project
@@ -76,23 +74,7 @@ def distribute_excess_support(projects: List[Project], max_excess_project: Proje
                     doner[listNames[i]] = donation + toDistribute * part
     return projects
 
-# def update_projects_support(projects: List[Project], doners: List[CumulativeBallot]) -> List[Project]:
-#     indexes_to_go_over = []
-#     for i, doner in enumerate(doners):
-#         if sum(doner.values()) > 0:
-#             indexes_to_go_over.append(i)
-#     if len(indexes_to_go_over) == 0:
-#         return projects
-#     index = 0
-#     for i, project in enumerate(projects):
-#         don = []
-#         for doner in doners:
-#             don.append(doner.values()[indexes_to_go_over[index]])
-#         project.update_support(don)
-#         index += 1
-#     return projects
-
-def gsc_score(doners ,project: Project) -> float:
+def gsc_score(doners: List[CumulativeBallot] ,project: Project) -> float:
     return (calculate_total_support_for_project(doners,project) / project.cost)
 
 def find_project_index(listNames: List[str], name: str) -> int:
@@ -105,13 +87,14 @@ def reverse_eliminations(selected_projects: List[Project], eliminated_projects: 
             budget -= project.get_cost()
     return selected_projects
 
-def is_eligible_GE(doners,projects):
+def is_eligible_GE(projects: List[Project], doners: List[CumulativeBallot])-> List[Project]:
     return [project for project in projects if (calculate_total_support_for_project(doners,project) - project.cost) >= 0]
 
-def is_eligible_GSC(doners,projects): 
+def is_eligible_GSC(projects: List[Project], doners: List[CumulativeBallot]): 
     return [project for project in projects if (calculate_total_support_for_project(doners,project) / project.cost) >= 1]
 
-def cstv_budgeting(projects, doners, project_to_fund_selection_procedure, eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure):
+def cstv_budgeting(projects: List[Project], doners: List[CumulativeBallot], project_to_fund_selection_procedure: callable, eligible_fn: callable,
+                    no_eligible_project_procedure: callable, inclusive_maximality_postprocedure: callable) -> List[Project]:
     selected_projects = []
     eliminated_projects = []
     budget = calculate_total_initial_support_doners(doners)
@@ -127,7 +110,6 @@ def cstv_budgeting(projects, doners, project_to_fund_selection_procedure, eligib
             if len(projects) == pLength:
                 selected_projects = inclusive_maximality_postprocedure(selected_projects, eliminated_projects, budget)
                 return selected_projects
-
             eligible_projects = eligible_fn(doners,projects)
 
         selected_project = project_to_fund_selection_procedure(doners,eligible_projects)
@@ -138,7 +120,6 @@ def cstv_budgeting(projects, doners, project_to_fund_selection_procedure, eligib
             if excess_support > 0:
                 gama = selected_project.cost / (excess_support + selected_project.cost)
                 projects = distribute_excess_support(projects, selected_project, doners, gama, listNames)
-            # projects = update_projects_support(projects, doners)
             projects.remove(selected_project)
             budget -= selected_project.cost
             continue
@@ -163,8 +144,8 @@ def main():
     inclusive_maximality_postprocedure = reverse_eliminations
     
     selected_projects = cstv_budgeting(
-        projects,
         doners,
+        projects,
         project_to_fund_selection_procedure,
         eligible_fn,
         no_eligible_project_procedure,
