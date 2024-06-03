@@ -29,7 +29,7 @@ class TestFunctions(unittest.TestCase):
     def test_distribute_excess_support(self):
         max_excess_project = self.project_B
         gama = 0.5
-        distribute_excess_support(self.projects, max_excess_project, self.doners, gama, ["A", "B", "C"])
+        excess_redistribution_procedure(self.projects, max_excess_project, self.doners, gama, ["A", "B", "C"])
         self.assertAlmostEqual(sum(doner["B"] for doner in self.doners), 0)  # Ensure B donations are reset
 
     def test_calculate_excess_support(self):
@@ -79,12 +79,6 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(len(selected_projects), 3)  # Ensure all projects are selected when the total budget matches the required support exactly
         self.assertEqual([project.name for project in selected_projects], ['A', 'B', 'C'])  # Verify the names of the selected projects
 
-    def test_cstv_budgeting_non_legal_input(self):
-        projects = [Project("Project_1", 10), "Project_2"]
-        doners = [CumulativeBallot({"Project_1": 10}), CumulativeBallot({"Project_2": 5})]
-        with self.assertRaises(AttributeError):
-            cstv_budgeting(doners, projects, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)  # Ensure AttributeError is raised with non-legal input
-
     def test_cstv_budgeting_large_input(self):
         num_projects = 100
         num_doners = 100
@@ -97,11 +91,25 @@ class TestFunctions(unittest.TestCase):
 
     def test_cstv_budgeting_large_random_input(self):
         self.projects = [Project(f"Project_{i}", random.randint(100, 1000)) for i in range(100)]
-        self.doners = [CumulativeBallot({f"Project_{i}": random.randint(0, 5) for i in range(len(self.projects))}) for _ in range(100)]
+        total_donation = 20
+
+        # Function to generate a list of donations that sum to total_donation
+        def generate_donations(total, num_projects):
+            donations = [0] * num_projects
+            for _ in range(total):
+                donations[random.randint(0, num_projects - 1)] += 1
+            return donations
+
+        # Generate the donations for each donor
+        self.doners = [
+            CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(total_donation, len(self.projects)))})
+            for _ in range(100)
+        ]
         num_projects = len(self.projects)
         positive_excess = sum(1 for p in self.projects if calculate_excess_support(self.doners, p) >= 0)
         support = calculate_total_initial_support_doners(self.doners)
         selected_projects = cstv_budgeting(self.doners, self.projects, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)
+        
         total_cost = sum(project.cost for project in selected_projects)
         self.assertLessEqual(len(selected_projects), num_projects)  # Ensure the number of selected projects does not exceed the total number of projects
         self.assertGreaterEqual(len(selected_projects), positive_excess)  # Ensure the number of selected projects is at least the number of projects with non-negative excess support

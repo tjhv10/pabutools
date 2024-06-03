@@ -24,7 +24,7 @@ from pabutools.rules.CSTV import(
     reset_donations,
     get_project_names,
     distribute_project_support,
-    distribute_excess_support,
+    excess_redistribution_procedure,
     calculate_total_support_for_project,
     calculate_total_initial_support,
     calculate_total_initial_support_doners,

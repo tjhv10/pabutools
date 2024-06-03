@@ -122,7 +122,7 @@ def distribute_project_support(projects: List[Project], eliminated_project: Proj
     doners = reset_donations(doners, eliminated_name)
     return projects
 
-def distribute_excess_support(projects: List[Project], max_excess_project: Project, doners: List[CumulativeBallot], gama: float, listNames: List[str]) -> List[Project]:
+def excess_redistribution_procedure(projects: List[Project], max_excess_project: Project, doners: List[CumulativeBallot], gama: float, listNames: List[str]) -> List[Project]:
     """
     Distributes the excess support of a selected project to the remaining projects.
 
@@ -151,7 +151,7 @@ def distribute_excess_support(projects: List[Project], max_excess_project: Proje
     >>> project_C = Project("Project C", 30)
     >>> doner1 = CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5})
     >>> doner2 = CumulativeBallot({"Project A": 10, "Project B": 0, "Project C": 5})
-    >>> distribute_excess_support([project_A, project_B, project_C], project_A, [doner1, doner2], 0.5, ["Project A", "Project B", "Project C"])
+    >>> excess_redistribution_procedure([project_A, project_B, project_C], project_A, [doner1, doner2], 0.5, ["Project A", "Project B", "Project C"])
     [Project A, Project B, Project C]
     """
     max_project_name = max_excess_project.name
@@ -167,7 +167,7 @@ def distribute_excess_support(projects: List[Project], max_excess_project: Proje
                 if total != 0:
                     part = donation / total
                     doner[listNames[i]] = donation + toDistribute * part
-                    
+
     return projects
 
 def calculate_total_support_for_project(doners: List[CumulativeBallot], project: Project) -> float:
@@ -459,6 +459,8 @@ def elimination_with_transfers(doners: List[CumulativeBallot], projects: List[Pr
     """
     if len(projects) < 2:
         logging.debug("Not enough projects to eliminate.")
+        if len(projects) == 1:
+            eliminated_projects.append(projects.pop())
         return False
 
     min_project = min(projects, key=lambda p: calculate_excess_support(doners, p))
@@ -608,6 +610,28 @@ def acceptance_of_undersupported_projects(doners: List[CumulativeBallot], select
         else:
             eliminated_projects.remove(selected_project)
     return selected_projects
+
+
+def check_equal_donations(donors: List[CumulativeBallot]) -> bool:
+    """
+    Checks if all donors donated the same amount.
+
+    Parameters
+    ----------
+    donors : List[CumulativeBallot]
+        The list of CumulativeBallot objects representing the donors.
+
+    Returns
+    -------
+    bool
+        True if all donations are the same, False otherwise.
+    """
+    if not donors:
+        return True  # Consider an empty list as all donations being the same
+    donation_amounts = [sum(donor.values()) for donor in donors]
+    return len(set(donation_amounts)) == 1
+
+
 def cstv_budgeting_combination(doners: List[CumulativeBallot], projects: List[Project], combination: str) -> List[Project]:
     """
     Runs the CSTV test based on the combination of functions provided.
@@ -695,20 +719,22 @@ def cstv_budgeting(doners: List[CumulativeBallot], projects: List[Project], proj
     >>> cstv_budgeting(doners, projects, project_to_fund_selection_procedure, eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure)
     [Project B, Project C, Project A]
     """
-    selected_projects = []
-    eliminated_projects = []
-    budget = calculate_total_initial_support_doners(doners)
-    listNames = get_project_names(projects)
-    
-    logging.debug("Initial budget: %s" % budget)
 
+    
+    eliminated_projects = []
+    if not check_equal_donations(doners):
+        logging.warning("Not all doners donate the same amount. Change the donations and try again.")
+        return
+    listNames = get_project_names(projects)
+    S = []
     while True:
+        budget = calculate_total_initial_support_doners(doners)
+        logging.debug("Budget is: %s" % budget)
         if not projects:
-            return selected_projects
-        eligible_projects = eligible_fn(doners, projects)
+            return S
+        eligible_projects = eligible_fn(doners, projects) # "If there are projects that are eligible for funding..."
         logging.debug("Eligible projects: %s" % [project.name for project in eligible_projects])
         
-        # Log donors and total donations for each project
         for project in projects:
             donations = sum(doner[project.name] for doner in doners)
             logging.debug("Donors and total donations for %s: %s" % (project.name, donations))
@@ -716,26 +742,26 @@ def cstv_budgeting(doners: List[CumulativeBallot], projects: List[Project], proj
         while not eligible_projects:
             flag = no_eligible_project_procedure(doners, projects, listNames, eliminated_projects, project_to_fund_selection_procedure)
             if not flag:
-                selected_projects = inclusive_maximality_postprocedure(doners, selected_projects, eliminated_projects, project_to_fund_selection_procedure, budget)
-                logging.debug("Final selected projects: %s" % [project.name for project in selected_projects])
-                return selected_projects
+                S = inclusive_maximality_postprocedure(doners, S, eliminated_projects, project_to_fund_selection_procedure, budget)
+                logging.debug("Final selected projects: %s" % [project.name for project in S])
+                return S
             eligible_projects = eligible_fn(doners, projects)
-        selected_project = project_to_fund_selection_procedure(doners, eligible_projects)
-        excess_support = calculate_excess_support(doners, selected_project)
-        logging.debug("Excess support for %s: %s" % (selected_project.name, excess_support))
+
+        p = project_to_fund_selection_procedure(doners, eligible_projects) # ...choose one such project p according to the “project-to-fund selection procedure”
+        excess_support = calculate_excess_support(doners, p)
+        logging.debug("Excess support for %s: %s" % (p.name, excess_support))
 
         if excess_support >= 0:
-            selected_projects.append(selected_project)
-            logging.debug("Updated selected projects: %s" % [project.name for project in selected_projects])
+            
+            logging.debug("Updated selected projects: %s" % [project.name for project in S])
             if excess_support > 0:
-                gama = selected_project.cost / (excess_support + selected_project.cost)
-                projects = distribute_excess_support(projects, selected_project, doners, gama, listNames)
+                gama = p.cost / (excess_support + p.cost)
+                projects = excess_redistribution_procedure(projects, p, doners, gama, listNames)
             else:
-                reset_donations(doners,selected_project.name)
-
-            projects.remove(selected_project)
-            budget -= selected_project.cost
-            logging.debug(f"Remaining budget: {budget}")
+                reset_donations(doners,p.name)
+            S.append(p)
+            projects.remove(p)
+            budget -= p.cost
             continue
 
 def main():
@@ -755,12 +781,13 @@ def main():
 
     
     selected_projects = cstv_budgeting_combination(doners, projects,"ewtc")
-    logging.debug(f"Selected projects: {[project.name for project in selected_projects]}")
-    for project in selected_projects:
-        print(project.name)
+    if selected_projects:
+        logging.debug(f"Selected projects: {[project.name for project in selected_projects]}")
+        for project in selected_projects:
+            print(project.name)
 
 
 if __name__ == "__main__":
     main()
     import doctest
-    # doctest.testmod()
+    doctest.testmod()
