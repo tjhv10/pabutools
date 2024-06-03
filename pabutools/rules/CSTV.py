@@ -190,7 +190,7 @@ def excess_redistribution_procedure(projects: List[Project], max_excess_project:
     for doner in doners:
         doner_copy = doner.copy()
         toDistribute = doner_copy[max_project_name] * (1 - gama)
-        doner[max_project_name] = 0
+        doner[max_project_name] = toDistribute
         doner_copy[max_project_name] = 0
         total = sum(doner_copy.values())
         for i, donation in enumerate(doner_copy.values()):
@@ -198,6 +198,7 @@ def excess_redistribution_procedure(projects: List[Project], max_excess_project:
                 if total != 0:
                     part = donation / total
                     doner[listNames[i]] = donation + toDistribute * part
+                    doner[max_project_name] = 0
 
     return projects
 
@@ -529,6 +530,7 @@ def minimal_transfer(doners: List[CumulativeBallot], projects: List[Project], li
                 flag = False
                 break
         if flag:
+            eliminated_projects.append(chosen_project)
             return False
         for doner in doners_of_selected_project:
             total = sum(doner.values()) - doner.get(chosen_project.name, 0)
@@ -613,7 +615,7 @@ def acceptance_of_undersupported_projects(doners: List[CumulativeBallot], select
     """
     while len(eliminated_projects) != 0:
         selected_project = project_to_fund_selection_procedure(doners, eliminated_projects)
-        if selected_project.cost < budget:
+        if selected_project.cost <= budget:
             selected_projects.append(selected_project)
             eliminated_projects.remove(selected_project)
             budget -= selected_project.cost
@@ -773,12 +775,11 @@ def main():
     
     selected_projects = cstv_budgeting_combination(doners, projects,"ewtc")
     if selected_projects:
-        logger.debug(f"Selected projects: {[project.name for project in selected_projects]}")
-        for project in selected_projects:
-            print(project.name)
+        logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
+    logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
 
 
 if __name__ == "__main__":
     main()
     import doctest
-    doctest.testmod()
+    # doctest.testmod()
