@@ -22,9 +22,6 @@ class TestFunctions(unittest.TestCase):
         for doner in updated_doners:
             self.assertEqual(doner.get(index), 0)  # Ensure donations are reset to zero
 
-    def test_calculate_total_initial_support(self):
-        total_initial_support = calculate_total_initial_support(self.doners, self.projects)
-        self.assertEqual(total_initial_support, 100)  # Verify total initial support calculation
 
     def test_distribute_excess_support(self):
         max_excess_project = self.project_B
@@ -107,7 +104,7 @@ class TestFunctions(unittest.TestCase):
         ]
         num_projects = len(self.projects)
         positive_excess = sum(1 for p in self.projects if calculate_excess_support(self.doners, p) >= 0)
-        support = calculate_total_initial_support_doners(self.doners)
+        support = calculate_total_support_doners(self.doners)
         selected_projects = cstv_budgeting(self.doners, self.projects, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)
         
         total_cost = sum(project.cost for project in selected_projects)

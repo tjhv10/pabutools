@@ -27,7 +27,7 @@ from pabutools.rules.CSTV import(
     excess_redistribution_procedure,
     calculate_total_support_for_project,
     calculate_total_initial_support,
-    calculate_total_initial_support_doners,
+    calculate_total_support_doners,
     is_eligible_GE,
     is_eligible_GSC,
     calculate_excess_support,
