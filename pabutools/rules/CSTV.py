@@ -9,9 +9,8 @@ from decimal import ROUND_UP, Decimal
 import logging
 from pabutools.election import Project, CumulativeBallot ,Instance
 from typing import List
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
+logger = logging.getLogger(__name__)
 
 ###################################################################
 #                                                                 #
@@ -589,6 +588,7 @@ def main():
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
     
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     import doctest
     doctest.testmod()
     main()
