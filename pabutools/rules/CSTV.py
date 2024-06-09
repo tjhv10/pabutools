@@ -65,7 +65,7 @@ def cstv_budgeting(doners: List[CumulativeBallot], projects: Instance, project_t
     >>> len(cstv_budgeting(doners, projects, project_to_fund_selection_procedure, eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure))
     3
     """
-    eliminated_projects = []
+    eliminated_projects = Instance([])
     if not check_equal_donations(doners):
         logger.warning("Not all doners donate the same amount. Change the donations and try again.")
         return
@@ -74,6 +74,8 @@ def cstv_budgeting(doners: List[CumulativeBallot], projects: Instance, project_t
         budget = sum(sum(doner.values()) for doner in doners)
         logger.debug("Budget is: %s" , budget)
         if not projects:
+            S = inclusive_maximality_postprocedure(doners, S, eliminated_projects, project_to_fund_selection_procedure, budget)
+            logger.debug("Final selected projects: %s" , [project.name for project in S])
             return S
         eligible_projects = eligible_fn(doners, projects) # "If there are projects that are eligible for funding..."
         logger.debug("Eligible projects: %s" , [project.name for project in eligible_projects])
@@ -85,11 +87,10 @@ def cstv_budgeting(doners: List[CumulativeBallot], projects: Instance, project_t
         while not eligible_projects:
             flag = no_eligible_project_procedure(doners, projects, eliminated_projects, project_to_fund_selection_procedure)
             if not flag:
-                S = inclusive_maximality_postprocedure(doners, S, projects, project_to_fund_selection_procedure, budget)
+                S = inclusive_maximality_postprocedure(doners, S, eliminated_projects, project_to_fund_selection_procedure, budget)
                 logger.debug("Final selected projects: %s" , [project.name for project in S])
                 return S
             eligible_projects = eligible_fn(doners, projects)
-
         p = project_to_fund_selection_procedure(doners, eligible_projects) # ...choose one such project p according to the “project-to-fund selection procedure”
         excess_support = sum(doner.get(p.name, 0) for doner in doners) - p.cost
         logger.debug("Excess support for %s: %s" , p.name, excess_support)
@@ -106,6 +107,7 @@ def cstv_budgeting(doners: List[CumulativeBallot], projects: Instance, project_t
             logger.debug("Updated selected projects: %s" , [project.name for project in S])
             budget -= p.cost
             continue
+    
 
 
 
@@ -218,14 +220,16 @@ def distribute_project_support(projects: Instance, eliminated_project: Project, 
     logger.debug(f"Distributing support of eliminated project: {eliminated_name}")
     for doner in doners:
         toDistribute = doner[eliminated_name]
-        total = sum(doner.values())-toDistribute
+        total = sum(doner.values()) - toDistribute
         if total == 0:
             continue
+        
         for key, donation in doner.items():
             if key != eliminated_name:
                 part = donation / total
                 doner[key] = donation + toDistribute * part
-    doners = reset_donations(doners,eliminated_name)
+                doner[eliminated_name] = 0 
+    
     return projects
 
 def excess_redistribution_procedure(projects: Instance, max_excess_project: Project, doners: List[CumulativeBallot], gama: float) -> Instance:
@@ -441,20 +445,18 @@ def elimination_with_transfers(doners: List[CumulativeBallot], projects: Instanc
     10.0
     >>> print(doner2["Project C"])
     5.0
-
     """
     
     if len(projects) < 2:
         logger.debug("Not enough projects to eliminate.")
         if len(projects) == 1:
-            eliminated_projects.append(projects.pop())
+            eliminated_projects.add(projects.pop())
         return False
     min_project = min(projects, key=lambda p: sum(doner.get(p.name, 0) for doner in doners) - p.cost)
-
     logger.debug(f"Eliminating project with least excess support: {min_project.name}")
     projects = distribute_project_support(projects, min_project, doners)
     projects.remove(min_project)
-    eliminated_projects.append(min_project)
+    eliminated_projects.add(min_project)
     return True
 
 def round_up_change(change,round):
@@ -514,12 +516,12 @@ def minimal_transfer(doners: List[CumulativeBallot], projects: Instance, elimina
     while r < 1:
         flag = True
         for doner in doners_of_selected_project:
-            print(round_up_change(sum(doner.values()),5),round_up_change(doner.get(chosen_project.name),5))
+            # print(round_up_change(sum(doner.values()),5),round_up_change(doner.get(chosen_project.name),5))
             if round_up_change(sum(doner.values()),5) != round_up_change(doner.get(chosen_project.name),5):
                 flag = False
                 break
         if flag:
-            eliminated_projects.append(chosen_project)
+            eliminated_projects.add(chosen_project)
             return False
         for doner in doners_of_selected_project:
             total = sum(doner.values()) - doner.get(chosen_project.name)
@@ -533,7 +535,6 @@ def minimal_transfer(doners: List[CumulativeBallot], projects: Instance, elimina
                     doner[project_name] -= change
                     doner[chosen_project.name] += change_ru
         r = sum(doner.get(chosen_project.name, 0) for doner in doners) / chosen_project.cost
-        print(r)
     return True
 
 def reverse_eliminations(doners:List[CumulativeBallot], S: Instance, eliminated_projects: Instance, _:callable, budget: int) -> Instance:
@@ -574,7 +575,7 @@ def reverse_eliminations(doners:List[CumulativeBallot], S: Instance, eliminated_
             budget -= project.cost
     return S
 
-def acceptance_of_undersupported_projects(doners: List[CumulativeBallot], selected_projects: Instance, eliminated_projects:Instance, project_to_fund_selection_procedure: callable, budget: int) ->Instance:
+def acceptance_of_undersupported_projects(doners: List[CumulativeBallot], S: Instance, eliminated_projects:Instance, project_to_fund_selection_procedure: callable, budget: int) ->Instance:
     """
     Accepts undersupported projects if the budget allows.
 
@@ -606,15 +607,17 @@ def acceptance_of_undersupported_projects(doners: List[CumulativeBallot], select
     >>> print(len(acceptance_of_undersupported_projects([], selected_projects, eliminated_projects, select_project_GE, 25)))
     2
     """
+    
     while len(eliminated_projects) != 0:
+        
         selected_project = project_to_fund_selection_procedure(doners, eliminated_projects)
         if selected_project.cost <= budget:
-            selected_projects.add(selected_project)
+            S.add(selected_project)
             eliminated_projects.remove(selected_project)
             budget -= selected_project.cost
         else:
             eliminated_projects.remove(selected_project)
-    return selected_projects
+    return S
 
 
 
@@ -662,38 +665,25 @@ def cstv_budgeting_combination(doners: List[CumulativeBallot], projects: Instanc
 
 
 def main():
-    # project_A = Project("Project A", 35)
-    # project_B = Project("Project B", 30)
-    # project_C = Project("Project C", 30)
-    # project_D = Project("Project D", 30)
+    project_A = Project("Project A", 35)
+    project_B = Project("Project B", 30)
+    project_C = Project("Project C", 30)
+    project_D = Project("Project D", 30)
     
-    # doner1 = CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5})
-    # doner2 = CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5})
-    # doner3 = CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5})
-    # doner4 = CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5})
-    # doner5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})
+    doner1 = CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5})
+    doner2 = CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5})
+    doner3 = CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5})
+    doner4 = CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5})
+    doner5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})
 
-    # instance = Instance(init=[project_A, project_B, project_C, project_D])
-    # doners = [doner1, doner2, doner3, doner4, doner5]
+    instance = Instance(init=[project_A, project_B, project_C, project_D])
+    doners = [doner1, doner2, doner3, doner4, doner5]
 
     
-    # selected_projects = cstv_budgeting_combination(doners, instance,"ewt")
-    # if selected_projects:
-    #     logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
-    projects = [Project(f"Project_{i}", random.randint(100, 1000)) for i in range(100)]
-    # Function to generate a list of donations that sum to total_donation
-    def generate_donations(total, num_projects):
-        donations = [0] * num_projects
-        for _ in range(total):
-            donations[random.randint(0, num_projects - 1)] += 1
-        return donations
-
-    # Generate the donations for each donor
-    doners = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(20, len(projects)))})for _ in range(100)]
-    selected_projects = cstv_budgeting_combination(doners, projects, "mt")
-    print(selected_projects)
-    print(sum(project.cost for project in selected_projects))
-
+    selected_projects = cstv_budgeting_combination(doners, instance,"ewt")
+    if selected_projects:
+        logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
+    
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logging.basicConfig(level=logging.DEBUG)

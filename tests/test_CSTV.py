@@ -90,7 +90,7 @@ class TestFunctions(unittest.TestCase):
 
 
     def test_cstv_budgeting_large_random_input(self):
-        for alg_str in ["ewt", "ewtc","mt"]:
+        for alg_str in ["ewt", "ewtc","mt","mtc"]:
             self.projects = [Project(f"Project_{i}", random.randint(100, 1000)) for i in range(100)]
             # Function to generate a list of donations that sum to total_donation
             def generate_donations(total, num_projects):
