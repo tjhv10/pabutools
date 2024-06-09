@@ -459,17 +459,7 @@ def elimination_with_transfers(doners: List[CumulativeBallot], projects: Instanc
     eliminated_projects.add(min_project)
     return True
 
-def round_up_change(change,round):
-    # Convert the change to a Decimal
-    change_decimal = Decimal(str(change))
-    
-    # Define the quantize value for rounding up at the 10th digit
-    quantize_value = Decimal('1e-'+str(round))
-    
-    # Round up the change at the 10th digit
-    rounded_change = change_decimal.quantize(quantize_value, rounding=ROUND_UP)
-    
-    return float(rounded_change)
+
 
 def minimal_transfer(doners: List[CumulativeBallot], projects: Instance, eliminated_projects: Instance, project_to_fund_selection_procedure:callable) -> Instance:
     """
@@ -516,8 +506,7 @@ def minimal_transfer(doners: List[CumulativeBallot], projects: Instance, elimina
     while r < 1:
         flag = True
         for doner in doners_of_selected_project:
-            # print(round_up_change(sum(doner.values()),5),round_up_change(doner.get(chosen_project.name),5))
-            if round_up_change(sum(doner.values()),5) != round_up_change(doner.get(chosen_project.name),5):
+            if float(Decimal(str(sum(doner.values()))).quantize(Decimal('1e-'+str(5)))) != float(Decimal(str(doner.get(chosen_project))).quantize(Decimal('1e-'+str(5)))):
                 flag = False
                 break
         if flag:
@@ -531,7 +520,7 @@ def minimal_transfer(doners: List[CumulativeBallot], projects: Instance, elimina
                 if project_name != chosen_project.name and total > 0:
                     part = donation / total
                     change = to_distribute * part
-                    change_ru = round_up_change(change,14)
+                    change_ru = float(Decimal(str(change)).quantize(Decimal('1e-'+str(14)), rounding=ROUND_UP))
                     doner[project_name] -= change
                     doner[chosen_project.name] += change_ru
         r = sum(doner.get(chosen_project.name, 0) for doner in doners) / chosen_project.cost
