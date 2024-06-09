@@ -518,8 +518,7 @@ def minimal_transfer(doners: List[CumulativeBallot], projects: Instance, elimina
             to_distribute = min(total, donation / r - donation)
             for project_name, donation in doner.items():
                 if project_name != chosen_project.name and total > 0:
-                    part = donation / total
-                    change = to_distribute * part
+                    change = to_distribute * donation / total
                     change_ru = float(Decimal(str(change)).quantize(Decimal('1e-'+str(14)), rounding=ROUND_UP))
                     doner[project_name] -= change
                     doner[chosen_project.name] += change_ru
