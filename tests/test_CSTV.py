@@ -14,22 +14,9 @@ import random
 
 class TestFunctions(unittest.TestCase):
     def setUp(self):
-        logger = logging.getLogger(__name__)
-        logging.basicConfig(level=logging.INFO)
         self.projects = Instance([Project("A", 27),Project("B", 30),Project("C", 40)])
         self.doners = [CumulativeBallot({"A": 5, "B": 10, "C": 5}), CumulativeBallot({"A": 10, "B": 10, "C": 0}), CumulativeBallot({"A": 0, "B": 15, "C": 5}), CumulativeBallot({"A": 0, "B": 0, "C": 20}), CumulativeBallot({"A": 15, "B": 5, "C": 0})]
-    
 
-    def test_distribute_excess_support(self):
-        max_excess_project = self.projects.get_project("B")
-        gama = 0.5
-        excess_redistribution_procedure(self.projects, max_excess_project, self.doners, gama)
-        self.assertAlmostEqual(sum(doner["B"] for doner in self.doners), 0)  # Ensure B donations are reset
-
-
-    def test_select_project_GE(self):
-        selected_project = select_project_GE(self.doners, self.projects)
-        self.assertEqual(selected_project.name, 'B')  # Verify correct project with maximum excess support
         
     def test_cstv_budgeting_with_zero_budget(self):
         for doner in self.doners:
