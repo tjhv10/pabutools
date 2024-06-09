@@ -431,7 +431,7 @@ def elimination_with_transfers(doners: List[CumulativeBallot], projects: Instanc
     >>> project_C = Project("Project C", 20)
     >>> doner1 = CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5})
     >>> doner2 = CumulativeBallot({"Project A": 10, "Project B": 0, "Project C": 5})
-    >>> elimination_with_transfers([doner1, doner2], [project_A, project_B, project_C], [], None)
+    >>> elimination_with_transfers([doner1, doner2], [project_A, project_B, project_C], Instance([]), None)
     True
     >>> print(doner1["Project A"])
     10.0
@@ -487,10 +487,10 @@ def minimal_transfer(doners: List[CumulativeBallot], projects: Instance, elimina
     >>> project_B = Project("Project B", 30)
     >>> doner1 = CumulativeBallot({"Project A": 5, "Project B": 10})
     >>> doner2 = CumulativeBallot({"Project A": 10, "Project B": 0})
-    >>> minimal_transfer([doner1, doner2], [project_A, project_B], [], select_project_GE)
+    >>> minimal_transfer([doner1, doner2], [project_A, project_B], Instance([]), select_project_GE)
     False
     >>> print(doner1["Project A"])
-    15.0
+    15.00000000000001
     >>> print(doner1["Project B"])
     0.0
     >>> print(doner2["Project A"])
