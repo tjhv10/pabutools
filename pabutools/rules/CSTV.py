@@ -507,7 +507,7 @@ def minimal_transfer(doners: List[CumulativeBallot], projects: Instance, elimina
             return False
         for doner in doners_of_selected_project:
             total = sum(doner.values()) - doner.get(chosen_project.name, 0)
-            to_distribute = min(total, doner.get(chosen_project.name) / r - doner.get(chosen_project.name, 0))
+            to_distribute = min(total, doner.get(chosen_project.name) / r*1.0000001 - doner.get(chosen_project.name, 0))
             for project_name, donation in doner.items():
                 if project_name != chosen_project.name and total > 0:
                     part = donation / total
@@ -661,12 +661,17 @@ def main():
     selected_projects = cstv_budgeting_combination(doners, instance,"ewt")
     if selected_projects:
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
-
+    # c = 10
+    # projects = [Project(f"Project_{i}", 50) for i in range(c)]
+    # projects += [Project(f"Project_{i+c}", 151) for i in range(c)]
+    # projects = Instance(init = projects)
+    # doners = [CumulativeBallot({f"Project_{i}": 1 for i in range(c*2)}) for _ in range(c*2)]
+    # cstv_budgeting_combination(doners,projects,"mt")
 
 
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     main()
     import doctest
     doctest.testmod()
