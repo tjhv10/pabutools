@@ -17,27 +17,6 @@ sequential Phragmén rule), we also implement methods to make the outcome exhaus
 All rules return one or several lists of projects called budget allocations, represented by the class
 :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`.
 """
-from pabutools.rules.CSTV import(
-    cstv_budgeting,
-    cstv_budgeting_combination,
-    find_project_index,
-    reset_donations,
-    get_project_names,
-    distribute_project_support,
-    excess_redistribution_procedure,
-    calculate_total_support_for_project,
-    calculate_total_initial_support,
-    calculate_total_support_doners,
-    is_eligible_GE,
-    is_eligible_GSC,
-    calculate_excess_support,
-    calculate_ratio_support,
-    select_project_GE,
-    select_project_GSC,
-    elimination_with_transfers,
-    minimal_transfer,
-    reverse_eliminations,
-)
 from pabutools.rules.exhaustion import (
     completion_by_rule_combination,
     exhaustion_by_budget_increase,

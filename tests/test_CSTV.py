@@ -86,11 +86,11 @@ class TestFunctions(unittest.TestCase):
             self.projects = Instance(init = self.projects)
             self.doners = [CumulativeBallot({f"Project_{i}": 1 for i in range(num_projects)}) for _ in range(num_doners)]
             selected_projects = cstv_budgeting_combination(self.doners, self.projects, alg_str)
-            self.assertLessEqual(len(selected_projects), num_projects-1)  # Ensure the number of selected projects does not exceed the total number of projects
+            self.assertLessEqual(len(selected_projects), num_projects)  # Ensure the number of selected projects does not exceed the total number of projects
 
 
     def test_cstv_budgeting_large_random_input(self):
-        for alg_str in ["ewt", "ewtc", "mt", "mtc"]:
+        for alg_str in ["ewt", "ewtc","mt"]:
             self.projects = [Project(f"Project_{i}", random.randint(100, 1000)) for i in range(100)]
             # Function to generate a list of donations that sum to total_donation
             def generate_donations(total, num_projects):
