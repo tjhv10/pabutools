@@ -14,6 +14,8 @@ import random
 
 class TestFunctions(unittest.TestCase):
     def setUp(self):
+        logger = logging.getLogger(__name__)
+        logging.basicConfig(level=logging.INFO)
         self.projects = Instance([Project("A", 27),Project("B", 30),Project("C", 40)])
         self.doners = [CumulativeBallot({"A": 5, "B": 10, "C": 5}), CumulativeBallot({"A": 10, "B": 10, "C": 0}), CumulativeBallot({"A": 0, "B": 15, "C": 5}), CumulativeBallot({"A": 0, "B": 0, "C": 20}), CumulativeBallot({"A": 15, "B": 5, "C": 0})]
     
@@ -67,13 +69,12 @@ class TestFunctions(unittest.TestCase):
             self.assertEqual(len(selected_projects), 3)  # Ensure the number of selected projects is 3 when total budget is between the minimum and maximum costs
 
     def test_cstv_budgeting_with_budget_exactly_matching_required_support(self):
-        for doner in self.doners:
-            doner["A"] = 27
-            doner["B"] = 30
-            doner["C"] = 40
         for alg_str in ["ewt", "ewtc", "mt", "mtc"]:
+            for doner in self.doners:
+                doner["A"] = 27/len(self.doners)
+                doner["B"] = 30/len(self.doners)
+                doner["C"] = 40/len(self.doners)
             self.projects = Instance([Project("A", 27),Project("B", 30),Project("C", 40)])
-            self.doners = [CumulativeBallot({"A": 5, "B": 10, "C": 5}), CumulativeBallot({"A": 10, "B": 10, "C": 0}), CumulativeBallot({"A": 0, "B": 15, "C": 5}), CumulativeBallot({"A": 0, "B": 0, "C": 20}), CumulativeBallot({"A": 15, "B": 5, "C": 0})]
             selected_projects = cstv_budgeting_combination(self.doners, self.projects, alg_str)
             self.assertEqual(len(selected_projects), 3)  # Ensure all projects are selected when the total budget matches the required support exactly
 

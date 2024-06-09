@@ -7,7 +7,6 @@ Date: 2024/05/16.
 
 from decimal import ROUND_UP, Decimal
 import logging
-import random
 from pabutools.election import Project, CumulativeBallot ,Instance
 from typing import List
 logger = logging.getLogger(__name__)
@@ -66,7 +65,7 @@ def cstv_budgeting(doners: List[CumulativeBallot], projects: Instance, project_t
     3
     """
     eliminated_projects = Instance([])
-    if not check_equal_donations(doners):
+    if not len(set([sum(donor.values()) for donor in doners])) == 1:
         logger.warning("Not all doners donate the same amount. Change the donations and try again.")
         return
     S = Instance([])
@@ -101,7 +100,8 @@ def cstv_budgeting(doners: List[CumulativeBallot], projects: Instance, project_t
                 projects = excess_redistribution_procedure(projects, p, doners, gama)
             else:
                 logger.debug(f"Resetting donations for eliminated project: {p.name}")
-                reset_donations(doners,p.name)
+                for doner in doners:
+                    doner[p.name] = 0
             S.add(p)
             projects.remove(p)
             logger.debug("Updated selected projects: %s" , [project.name for project in S])
@@ -116,71 +116,6 @@ def cstv_budgeting(doners: List[CumulativeBallot], projects: Instance, project_t
 #                     Help functions                              #
 #                                                                 #
 ###################################################################
-
-def reset_donations(doners: List[CumulativeBallot], index: str) -> List[CumulativeBallot]:
-    """
-    Resets the donations for the eliminated project.
-
-    Parameters
-    ----------
-    doners : List[CumulativeBallot]
-        The list of doner ballots.
-    index : str
-        The name of the project to reset donations for.
-
-    Returns
-    -------
-    List[CumulativeBallot]
-        The updated list of doner ballots with reset donations.
-
-    Examples
-    --------
-    >>> doner1 = CumulativeBallot({"Project A": 5, "Project B": 10})
-    >>> doner2 = CumulativeBallot({"Project A": 10, "Project B": 0})
-    >>> reset_donations([doner1, doner2], "Project A")
-    [{'Project A': 0, 'Project B': 10}, {'Project A': 0, 'Project B': 0}]
-    """
-    logger.debug(f"Resetting donations for eliminated project: {index}")
-    for doner in doners:
-        doner[index] = 0
-    return doners
-
-def check_equal_donations(donors: List[CumulativeBallot]) -> bool:
-    """
-    Checks if all donors donated the same amount.
-
-    Parameters
-    ----------
-    donors : List[CumulativeBallot]
-        The list of CumulativeBallot objects representing the donors.
-
-    Returns
-    -------
-    bool
-        True if all donations are the same, False otherwise.
-
-    Examples
-    --------
-    >>> from pabutools.election import CumulativeBallot
-    >>> donor1 = CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0})
-    >>> donor2 = CumulativeBallot({"Project A": 5, "Project B": 5, "Project C": 10})
-    >>> donor3 = CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20})
-    >>> check_equal_donations([donor1, donor2, donor3])
-    True
-    >>> donor4 = CumulativeBallot({"Project A": 10, "Project B": 0, "Project C": 5})
-    >>> check_equal_donations([donor1, donor2, donor4])
-    False
-    """
-    if not donors:
-        return True  # Consider an empty list as all donations being the same
-    donation_amounts = [sum(donor.values()) for donor in donors]
-    flag = len(set(donation_amounts)) == 1
-    if flag:
-        logger.debug("All the donations are equal")
-    else:
-        logger.debug("Some donations are not equal")
-    return flag
-
 
 
 def distribute_project_support(projects: Instance, eliminated_project: Project, doners: List[CumulativeBallot]) -> Instance:
@@ -498,7 +433,6 @@ def minimal_transfer(doners: List[CumulativeBallot], projects: Instance, elimina
     >>> print(doner2["Project B"])
     0
     """
-    
     chosen_project = project_to_fund_selection_procedure(doners, projects)
     logger.debug(f"Selected project for minimal transfer: {chosen_project.name}")
     r = sum(doner.get(chosen_project.name, 0) for doner in doners) / chosen_project.cost
@@ -519,19 +453,18 @@ def minimal_transfer(doners: List[CumulativeBallot], projects: Instance, elimina
             for project_name, donation in doner.items():
                 if project_name != chosen_project.name and total > 0:
                     change = to_distribute * donation / total
-                    change_ru = float(Decimal(str(change)).quantize(Decimal('1e-'+str(14)), rounding=ROUND_UP))
                     doner[project_name] -= change
-                    doner[chosen_project.name] += change_ru
+                    doner[chosen_project.name] += float(Decimal(str(change)).quantize(Decimal('1e-'+str(14)), rounding=ROUND_UP))
         r = sum(doner.get(chosen_project.name, 0) for doner in doners) / chosen_project.cost
     return True
 
-def reverse_eliminations(doners:List[CumulativeBallot], S: Instance, eliminated_projects: Instance, _:callable, budget: int) -> Instance:
+def reverse_eliminations(__:List[CumulativeBallot], S: Instance, eliminated_projects: Instance, _:callable, budget: int) -> Instance:
     """
     Reverses eliminations of projects if the budget allows.
 
     Parameters
     ----------
-    doners : List[CumulativeBallot]
+    _ : List[CumulativeBallot]
         The list of doner ballots.
     selected_projects : Instance
         The list of selected projects.
@@ -556,7 +489,6 @@ def reverse_eliminations(doners:List[CumulativeBallot], S: Instance, eliminated_
     >>> len(reverse_eliminations([], selected_projects, eliminated_projects, None, 30))
     2
     """
-    
     for project in eliminated_projects:
         if project.cost <= budget:
             S.add(project)
@@ -595,9 +527,7 @@ def acceptance_of_undersupported_projects(doners: List[CumulativeBallot], S: Ins
     >>> print(len(acceptance_of_undersupported_projects([], selected_projects, eliminated_projects, select_project_GE, 25)))
     2
     """
-    
     while len(eliminated_projects) != 0:
-        
         selected_project = project_to_fund_selection_procedure(doners, eliminated_projects)
         if selected_project.cost <= budget:
             S.add(selected_project)
@@ -651,30 +581,15 @@ def cstv_budgeting_combination(doners: List[CumulativeBallot], projects: Instanc
     else:
         raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
 
-
 def main():
-    project_A = Project("Project A", 35)
-    project_B = Project("Project B", 30)
-    project_C = Project("Project C", 30)
-    project_D = Project("Project D", 30)
-    
-    doner1 = CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5})
-    doner2 = CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5})
-    doner3 = CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5})
-    doner4 = CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5})
-    doner5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})
-
-    instance = Instance(init=[project_A, project_B, project_C, project_D])
-    doners = [doner1, doner2, doner3, doner4, doner5]
-
-    
+    instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
+    doners = [CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})]
     selected_projects = cstv_budgeting_combination(doners, instance,"ewt")
     if selected_projects:
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
     
 if __name__ == "__main__":
-    logger = logging.getLogger(__name__)
-    logging.basicConfig(level=logging.DEBUG)
+    import doctest
+    doctest.testmod()
     main()
-    # import doctest
-    # doctest.testmod()
+    
