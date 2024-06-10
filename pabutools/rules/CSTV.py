@@ -63,51 +63,70 @@ def cstv_budgeting(donors: List[CumulativeBallot], projects: Instance, project_t
     >>> len(cstv_budgeting(donors, projects, project_to_fund_selection_procedure, eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure))
     3
     """
-    eliminated_projects = Instance([])
+    # Check if all donors donate the same amount
     if not len(set([sum(donor.values()) for donor in donors])) == 1:
         logger.warning("Not all donors donate the same amount. Change the donations and try again.")
         return
-    S = Instance([])
+
+    # Initialize the set of selected projects and eliminated projects
+    S = Instance([])  
+    eliminated_projects = Instance([])  
+
+    # Loop until a halting condition is met
     while True:
+        # Calculate the total budget
         budget = sum(sum(donor.values()) for donor in donors)
-        logger.debug("Budget is: %s" , budget)
-        if not projects:
-            S = inclusive_maximality_postprocedure(donors, S, eliminated_projects, project_to_fund_selection_procedure, budget)
-            logger.debug("Final selected projects: %s" , [project.name for project in S])
-            return S
-        eligible_projects = eligible_fn(donors, projects) # "If there are projects that are eligible for funding..."
-        logger.debug("Eligible projects: %s" , [project.name for project in eligible_projects])
+        logger.debug("Budget is: %s", budget)
         
+        # Halting condition: if there are no more projects to consider
+        if not projects:
+            # Perform the inclusive maximality postprocedure
+            S = inclusive_maximality_postprocedure(donors, S, eliminated_projects, project_to_fund_selection_procedure, budget)
+            logger.debug("Final selected projects: %s", [project.name for project in S])
+            return S
+        
+        # Determine eligible projects for funding
+        eligible_projects = eligible_fn(donors, projects)
+        logger.debug("Eligible projects: %s", [project.name for project in eligible_projects])
+        
+        # Log donations for each project
         for project in projects:
             donations = sum(donor[project.name] for donor in donors)
-            logger.debug("Donors and total donations for %s: %s" , project.name, donations)
+            logger.debug("Donors and total donations for %s: %s", project.name, donations)
         
+        # If no eligible projects, execute the no-eligible-project procedure
         while not eligible_projects:
             flag = no_eligible_project_procedure(donors, projects, eliminated_projects, project_to_fund_selection_procedure)
             if not flag:
+                # Perform the inclusive maximality postprocedure
                 S = inclusive_maximality_postprocedure(donors, S, eliminated_projects, project_to_fund_selection_procedure, budget)
-                logger.debug("Final selected projects: %s" , [project.name for project in S])
+                logger.debug("Final selected projects: %s", [project.name for project in S])
                 return S
             eligible_projects = eligible_fn(donors, projects)
-        p = project_to_fund_selection_procedure(donors, eligible_projects) # ...choose one such project p according to the “project-to-fund selection procedure”
+        
+        # Choose one project to fund according to the project-to-fund selection procedure
+        p = project_to_fund_selection_procedure(donors, eligible_projects)
         excess_support = sum(donor.get(p.name, 0) for donor in donors) - p.cost
-        logger.debug("Excess support for %s: %s" , p.name, excess_support)
-
+        logger.debug("Excess support for %s: %s", p.name, excess_support)
+        
+        # If the project has enough or excess support
         if excess_support >= 0:
             if excess_support > 0.01:
+                # Perform the excess redistribution procedure
                 gama = p.cost / (excess_support + p.cost)
                 projects = excess_redistribution_procedure(projects, p, donors, gama)
             else:
+                # Reset donations for the eliminated project
                 logger.debug(f"Resetting donations for eliminated project: {p.name}")
                 for donor in donors:
                     donor[p.name] = 0
+            
+            # Add the project to the selected set and remove it from further consideration
             S.add(p)
             projects.remove(p)
-            logger.debug("Updated selected projects: %s" , [project.name for project in S])
+            logger.debug("Updated selected projects: %s", [project.name for project in S])
             budget -= p.cost
             continue
-    
-
 
 
 ###################################################################
@@ -117,54 +136,7 @@ def cstv_budgeting(donors: List[CumulativeBallot], projects: Instance, project_t
 ###################################################################
 
 
-def distribute_project_support(projects: Instance, eliminated_project: Project, donors: List[CumulativeBallot]) -> Instance:
-    """
-    Distributes the support of an eliminated project to the remaining projects.
 
-    Parameters
-    ----------
-    projects : Instance
-        The list of projects.
-    eliminated_project : Project
-        The project that has been eliminated.
-    donors : List[CumulativeBallot]
-        The list of donor ballots.
-
-    Returns
-    -------
-    Instance
-        The updated list of projects.
-
-    Examples
-    --------
-    >>> project_A = Project("Project A", 35)
-    
-    >>> donor1 = CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5})
-    >>> donor2 = CumulativeBallot({"Project A": 10, "Project B": 0, "Project C": 5})
-    >>> updated_projects = distribute_project_support(Instance[project_A, Project("Project B", 30), Project("Project C", 30)], project_A, [donor1, donor2])
-    >>> updated_projects
-    pabutools.election.instance.Instance[Project A, Project B, Project C]
-    >>> for donor in [donor1, donor2]:
-    ...     print({key: round(value, 2) for key, value in donor.items()})
-    {'Project A': 0, 'Project B': 13.33, 'Project C': 6.67}
-    {'Project A': 0, 'Project B': 0.0, 'Project C': 15.0}
-    """
-    
-    eliminated_name = eliminated_project.name
-    logger.debug(f"Distributing support of eliminated project: {eliminated_name}")
-    for donor in donors:
-        toDistribute = donor[eliminated_name]
-        total = sum(donor.values()) - toDistribute
-        if total == 0:
-            continue
-        
-        for key, donation in donor.items():
-            if key != eliminated_name:
-                part = donation / total
-                donor[key] = donation + toDistribute * part
-                donor[eliminated_name] = 0 
-    
-    return projects
 
 def excess_redistribution_procedure(projects: Instance, max_excess_project: Project, donors: List[CumulativeBallot], gama: float) -> Instance:
     """
@@ -380,6 +352,55 @@ def elimination_with_transfers(donors: List[CumulativeBallot], projects: Instanc
     >>> print(donor2["Project C"])
     5.0
     """
+    def distribute_project_support(projects: Instance, eliminated_project: Project, donors: List[CumulativeBallot]) -> Instance:
+        """
+        Distributes the support of an eliminated project to the remaining projects.
+
+        Parameters
+        ----------
+        projects : Instance
+            The list of projects.
+        eliminated_project : Project
+            The project that has been eliminated.
+        donors : List[CumulativeBallot]
+            The list of donor ballots.
+
+        Returns
+        -------
+        Instance
+            The updated list of projects.
+
+        Examples
+        --------
+        >>> project_A = Project("Project A", 35)
+        
+        >>> donor1 = CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5})
+        >>> donor2 = CumulativeBallot({"Project A": 10, "Project B": 0, "Project C": 5})
+        >>> updated_projects = distribute_project_support(Instance[project_A, Project("Project B", 30), Project("Project C", 30)], project_A, [donor1, donor2])
+        >>> updated_projects
+        pabutools.election.instance.Instance[Project A, Project B, Project C]
+        >>> for donor in [donor1, donor2]:
+        ...     print({key: round(value, 2) for key, value in donor.items()})
+        {'Project A': 0, 'Project B': 13.33, 'Project C': 6.67}
+        {'Project A': 0, 'Project B': 0.0, 'Project C': 15.0}
+        """
+        
+        eliminated_name = eliminated_project.name
+        logger.debug(f"Distributing support of eliminated project: {eliminated_name}")
+        for donor in donors:
+            toDistribute = donor[eliminated_name]
+            total = sum(donor.values()) - toDistribute
+            if total == 0:
+                continue
+            
+            for key, donation in donor.items():
+                if key != eliminated_name:
+                    part = donation / total
+                    donor[key] = donation + toDistribute * part
+                    donor[eliminated_name] = 0 
+        
+        return projects
+    
     
     if len(projects) < 2:
         logger.debug("Not enough projects to eliminate.")
