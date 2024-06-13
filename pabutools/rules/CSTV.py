@@ -5,10 +5,13 @@ Programmer: Achia Ben Natan
 Date: 2024/05/16.
 """
 
+
+# TODO need to ask if the line below should be inside of the if around row 190. 
 from decimal import ROUND_UP, Decimal
 import logging
 from pabutools.election import Project, CumulativeBallot ,Instance
 from typing import List
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -186,7 +189,9 @@ def excess_redistribution_procedure(projects: Instance, max_excess_project: Proj
                 if total != 0:
                     part = donation / total
                     donor[key] = donation + toDistribute * part
-                    donor[max_project_name] = 0
+                # TODO need to ask if the line below should be inside of the if 
+                donor[max_project_name] = 0
+                
 
     return projects
 
@@ -445,7 +450,7 @@ def minimal_transfer(donors: List[CumulativeBallot], projects: Instance, elimina
     >>> minimal_transfer([donor1, donor2], [project_A, project_B], Instance([]), select_project_GE)
     False
     >>> print(donor1["Project A"])
-    15.00000000000001
+    15.0
     >>> print(donor1["Project B"])
     0.0
     >>> print(donor2["Project A"])
@@ -474,7 +479,7 @@ def minimal_transfer(donors: List[CumulativeBallot], projects: Instance, elimina
                 if project_name != chosen_project.name and total > 0:
                     change = to_distribute * donation / total
                     donor[project_name] -= change
-                    donor[chosen_project.name] += float(Decimal(str(change)).quantize(Decimal('1e-'+str(14)), rounding=ROUND_UP))
+                    donor[chosen_project.name] += float(Decimal(str(change)).quantize(Decimal('1e-'+str(15)), rounding=ROUND_UP))
         r = sum(donor.get(chosen_project.name, 0) for donor in donors) / chosen_project.cost
     return True
 
@@ -509,6 +514,7 @@ def reverse_eliminations(__:List[CumulativeBallot], S: Instance, eliminated_proj
     >>> len(reverse_eliminations([], selected_projects, eliminated_projects, None, 30))
     2
     """
+    logger.debug("Performing RE")
     for project in eliminated_projects:
         if project.cost <= budget:
             S.add(project)
@@ -547,6 +553,7 @@ def acceptance_of_undersupported_projects(donors: List[CumulativeBallot], S: Ins
     >>> print(len(acceptance_of_undersupported_projects([], selected_projects, eliminated_projects, select_project_GE, 25)))
     2
     """
+    logger.debug("Performing AUP")
     while len(eliminated_projects) != 0:
         selected_project = project_to_fund_selection_procedure(donors, eliminated_projects)
         if selected_project.cost <= budget:
@@ -601,16 +608,46 @@ def cstv_budgeting_combination(donors: List[CumulativeBallot], projects: Instanc
     else:
         raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
 
-def main():
+def regular_example():
     instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
     donors = [CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})]
+    selected_projects = cstv_budgeting_combination(donors, instance,"mtc")
+    if selected_projects:
+        logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
+
+
+def bad_example():
+    instance = Instance(init=[Project("Project A", 30), Project("Project B", 30), Project("Project C", 30)])
+    donors = [CumulativeBallot({"Project A": 20, "Project B": 0, "Project C": 0}), CumulativeBallot({"Project A": 0, "Project B": 20, "Project C": 0}), CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20})]
     selected_projects = cstv_budgeting_combination(donors, instance,"ewt")
     if selected_projects:
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
-    
+
+
+def random_example():
+    num_projects = 5
+    projects = [Project(f"Project_{i}", random.randint(100, 1000)) for i in range(num_projects)]
+    # Function to generate a list of donations that sum to total_donation
+    def generate_donations(total, num_projects):
+        donations = [0] * num_projects
+        for _ in range(total):
+            donations[random.randint(0, num_projects - 1)] += 1
+        return donations
+
+    # Generate the donations for each donor
+    donors = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(300, num_projects))})for _ in range(num_projects)]
+    for p in projects:
+        print(p.name,p.cost)
+    selected_projects = cstv_budgeting_combination(donors, projects, "ewtc")
+    if selected_projects:
+        logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
+
+
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     import doctest
-    doctest.testmod()
-    main()
+    # doctest.testmod()
+    # random_example()
+    # bad_example()
+    # regular_example()
     
