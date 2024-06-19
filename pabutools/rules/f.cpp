@@ -71,9 +71,6 @@ void print_donations(const std::vector<CumulativeBallot>& donors, const std::str
 std::vector<CumulativeBallot>& distribute_project_support(Instance projects, Project eliminated_project, std::vector<CumulativeBallot>& donors, Logger& logger) {
     std::string eliminated_name = eliminated_project.name;
     logger.debug("Distributing support of eliminated project: " + eliminated_name);
-
-    print_donations(donors, "at the start");
-
     for (auto& donor : donors) {
         auto it = donor.donations.find(eliminated_name);
         if (it == donor.donations.end()) {
@@ -99,21 +96,19 @@ std::vector<CumulativeBallot>& distribute_project_support(Instance projects, Pro
             }
         }
     }
-    print_donations(donors, "at the end");
     return donors;
 }
 
 // Main function for elimination with transfers
-bool elimination_with_transfers(std::vector<CumulativeBallot>& donors, Instance& projects, Instance& eliminated_projects, Logger& logger) {
+std::vector<CumulativeBallot> elimination_with_transfers(std::vector<CumulativeBallot>& donors, Instance& projects, Instance& eliminated_projects, Logger& logger) {
     if (projects.empty() || projects.projects.size() < 2) {
         logger.debug("Not enough projects to eliminate.");
         if (!projects.empty()) {
             eliminated_projects.add(projects.projects.back());
             projects.pop();
         }
-        return false;
-    }
     
+    }
     auto min_project = std::min_element(projects.projects.begin(), projects.projects.end(),
                                         [&](const Project& p1, const Project& p2) {
                                             double sum_p1 = 0.0, sum_p2 = 0.0;
@@ -126,9 +121,10 @@ bool elimination_with_transfers(std::vector<CumulativeBallot>& donors, Instance&
     
     logger.debug("Eliminating project with least excess support: " + min_project->name);
     donors = distribute_project_support(projects, *min_project, donors, logger);
+    
     projects.remove(*min_project);
     eliminated_projects.add(*min_project);
-    return true;
+    return donors;
 }
 
 // Example usage
@@ -151,17 +147,16 @@ int main() {
     projects.add(project_B);
     projects.add(project_C);
     Instance eliminated_projects;
-    
-    elimination_with_transfers(donors, projects, eliminated_projects, logger);
+    donors =  elimination_with_transfers(donors, projects, eliminated_projects, logger);
     
     // Output updated donations for donors
     std::cout << "Donor 1:" << std::endl;
-    for (const auto& pair : donor1.donations) {
+    for (const auto& pair : donors[0].donations) {
         std::cout << pair.first << ": " << pair.second << std::endl;
     }
     
     std::cout << "Donor 2:" << std::endl;
-    for (const auto& pair : donor2.donations) {
+    for (const auto& pair : donors[1].donations) {
         std::cout << pair.first << ": " << pair.second << std::endl;
     }
     return 0;
