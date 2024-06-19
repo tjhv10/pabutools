@@ -56,12 +56,24 @@ public:
     }
 };
 
+// Function to print the donations of all donors
+void print_donations(const std::vector<CumulativeBallot>& donors, const std::string& stage) {
+    std::cout << "Donations " << stage << ":" << std::endl;
+    for (size_t i = 0; i < donors.size(); ++i) {
+        std::cout << "Donor " << i + 1 << ":" << std::endl;
+        for (const auto& pair : donors[i].donations) {
+            std::cout << pair.first << ": " << pair.second << std::endl;
+        }
+    }
+}
+
 // Function to distribute support of an eliminated project to remaining projects
-// Function to distribute support of an eliminated project to remaining projects
-Instance distribute_project_support(Instance projects, Project eliminated_project, std::vector<CumulativeBallot>& donors, Logger& logger) {
+std::vector<CumulativeBallot>& distribute_project_support(Instance projects, Project eliminated_project, std::vector<CumulativeBallot>& donors, Logger& logger) {
     std::string eliminated_name = eliminated_project.name;
     logger.debug("Distributing support of eliminated project: " + eliminated_name);
-    
+
+    print_donations(donors, "at the start");
+
     for (auto& donor : donors) {
         auto it = donor.donations.find(eliminated_name);
         if (it == donor.donations.end()) {
@@ -69,6 +81,7 @@ Instance distribute_project_support(Instance projects, Project eliminated_projec
         }
         
         double toDistribute = it->second;
+
         double total = 0.0;
         for (const auto& pair : donor.donations) {
             total += pair.second;
@@ -77,7 +90,7 @@ Instance distribute_project_support(Instance projects, Project eliminated_projec
         if (total == 0.0) {
             continue;
         }
-        
+        total -= toDistribute;
         for (auto& pair : donor.donations) {
             if (pair.first != eliminated_name) {
                 double part = pair.second / total;
@@ -86,10 +99,9 @@ Instance distribute_project_support(Instance projects, Project eliminated_projec
             }
         }
     }
-    
-    return projects;
+    print_donations(donors, "at the end");
+    return donors;
 }
-
 
 // Main function for elimination with transfers
 bool elimination_with_transfers(std::vector<CumulativeBallot>& donors, Instance& projects, Instance& eliminated_projects, Logger& logger) {
@@ -113,10 +125,9 @@ bool elimination_with_transfers(std::vector<CumulativeBallot>& donors, Instance&
                                         });
     
     logger.debug("Eliminating project with least excess support: " + min_project->name);
-    projects = distribute_project_support(projects, *min_project, donors, logger);
-    // projects.remove(*min_project);
-    // eliminated_projects.add(*min_project);
-    
+    donors = distribute_project_support(projects, *min_project, donors, logger);
+    projects.remove(*min_project);
+    eliminated_projects.add(*min_project);
     return true;
 }
 
@@ -130,9 +141,9 @@ int main() {
     Project project_C("Project C", 20);
     
     CumulativeBallot donor1 = CumulativeBallot();
-    donor1.donations = {{"Project A", 10.0}, {"Project B", 0.0}, {"Project C", 5.0}};
+    donor1.donations = {{"Project A", 10.0}, {"Project B", 15.0}, {"Project C", 5.0}};
     CumulativeBallot donor2 = CumulativeBallot();
-    donor2.donations = {{"Project A", 10.0}, {"Project B", 0.0}, {"Project C", 5.0}};
+    donor2.donations = {{"Project A", 11.0}, {"Project B", 10.0}, {"Project C", 5.0}};
     
     std::vector<CumulativeBallot> donors{donor1, donor2};
     Instance projects;
@@ -145,7 +156,6 @@ int main() {
     
     // Output updated donations for donors
     std::cout << "Donor 1:" << std::endl;
-    std:: cout<<"hi"<<std::endl;
     for (const auto& pair : donor1.donations) {
         std::cout << pair.first << ": " << pair.second << std::endl;
     }
