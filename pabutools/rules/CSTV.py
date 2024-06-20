@@ -621,63 +621,15 @@ def cstv_budgeting_combination(donors: List[CumulativeBallot], projects: Instanc
     
     combination = combination.lower()
     if combination == "ewt":
-        result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
+        return cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
     elif combination == "ewtc":
-        result = cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)
+        return cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)
     elif combination == "mt":
-        result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects)
+        return cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects)
     elif combination == "mtc":
-        result = cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects)
+        return cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects)
     else:
         raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
-    
-    return result
-
-def cstv_budgeting_combination_exp(donors: List[CumulativeBallot], projects: Instance, combination: str) -> dict[str, Instance]:
-    """
-    Runs the CSTV test based on the combination of functions provided.
-
-    Parameters
-    ----------
-    combination : str
-        The combination of CSTV functions to run.
-
-    Returns
-    -------
-    dict[str, Instance]
-        The selected projects as a dictionary with the combination name as the key.
-
-    Examples
-    --------
-    >>> project_A = Project("Project A", 35)
-    >>> project_B = Project("Project B", 30)
-    >>> project_C = Project("Project C", 25)
-    >>> instance = Instance([project_A, project_B, project_C])
-    >>> donor1 = CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5})
-    >>> donor2 = CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0})
-    >>> donor3 = CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5})
-    >>> donor4 = CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20})
-    >>> donor5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0})
-    >>> donors = [donor1, donor2, donor3, donor4, donor5]
-    >>> combination = "ewt"
-    >>> print(len(cstv_budgeting_combination_exp(donors, instance, combination)))
-    1
-    """
-    projects = copy.deepcopy(projects) # for expirement
-    donors = copy.deepcopy(donors) # for expirement
-    combination = combination.lower()
-    if combination == "ewt":
-        result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
-    elif combination == "ewtc":
-        result = cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)
-    elif combination == "mt":
-        result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects)
-    elif combination == "mtc":
-        result = cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects)
-    else:
-        raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
-    
-    return {combination: result}
 
 
 def regular_example():
@@ -722,5 +674,5 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod()
     random_example()
-    # bad_example()
-    # regular_example()    
+    bad_example()
+    regular_example()    

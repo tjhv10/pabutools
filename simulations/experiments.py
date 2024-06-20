@@ -5,11 +5,56 @@ import matplotlib.pyplot as plt
 from pabutools.rules.CSTV import *
 from experiments_csv import Experiment
 
+def cstv_budgeting_combination_exp(donors: List[CumulativeBallot], projects: Instance, combination: str) -> dict[str, Instance]:
+    """
+    Runs the CSTV test based on the combination of functions provided.
+
+    Parameters
+    ----------
+    combination : str
+        The combination of CSTV functions to run.
+
+    Returns
+    -------
+    dict[str, Instance]
+        The selected projects as a dictionary with the combination name as the key.
+
+    Examples
+    --------
+    >>> project_A = Project("Project A", 35)
+    >>> project_B = Project("Project B", 30)
+    >>> project_C = Project("Project C", 25)
+    >>> instance = Instance([project_A, project_B, project_C])
+    >>> donor1 = CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5})
+    >>> donor2 = CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0})
+    >>> donor3 = CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5})
+    >>> donor4 = CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20})
+    >>> donor5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0})
+    >>> donors = [donor1, donor2, donor3, donor4, donor5]
+    >>> combination = "ewt"
+    >>> print(len(cstv_budgeting_combination_exp(donors, instance, combination)))
+    1
+    """
+    projects = copy.deepcopy(projects)
+    donors = copy.deepcopy(donors)
+    combination = combination.lower()
+    if combination == "ewt":
+        result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
+    elif combination == "ewtc":
+        result = cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)
+    elif combination == "mt":
+        result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects)
+    elif combination == "mtc":
+        result = cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects)
+    else:
+        raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
+    
+    return {combination: result}
 
 def exp():
-    initial_num_projects = 10
-    max_num_projects = 40
-    step = 10
+    initial_num_projects = 100
+    max_num_projects = 400
+    step = 100
     
     ex = Experiment("simulations/results","results.csv","simulations/backup_results")
     ex.logger.setLevel(logging.CRITICAL)
@@ -38,12 +83,10 @@ def exp():
 
         for combination in input_ranges['combination']:
             start_time = time.time()
-            ex.run(cstv_budgeting_combination, {"donors": donorsl, "projects": projectsl, "combination": [combination]})
+            ex.run(cstv_budgeting_combination_exp, {"donors": donorsl, "projects": projectsl, "combination": [combination]})
             end_time = time.time()
             duration = end_time - start_time
             timings[combination].append(duration)
-            # eligible_projects_count = extract_selected_projects_count(result.__str__())
-            logging.info(f"Combination {combination} with {num_projects} projects took {duration:.4f} seconds and found {eligible_projects_count} projects that are eligible for funding.")
             
 
     # Plotting the results
