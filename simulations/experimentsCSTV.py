@@ -1,3 +1,10 @@
+"""
+An implementation of the algorithms in:
+"Participatory Budgeting with Cumulative Votes", by Piotr Skowron, Arkadii Slinko, Stanisaw Szufa, Nimrod Talmon (2020), https://arxiv.org/pdf/2009.02690
+Programmer: Achia Ben Natan
+Date: 2024/05/16.
+"""
+
 import random
 import time
 import logging
