@@ -1,9 +1,39 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <string>
+#include <cmath>
+#include <iomanip>
 #include <algorithm>
 
-// Define Project class
+
+class CumulativeBallot {
+public:
+    std::unordered_map<std::string, double> donations;
+
+    CumulativeBallot(const std::unordered_map<std::string, double>& donations) : donations(donations) {}
+    CumulativeBallot() {}
+
+    double get(const std::string& project_name) const {
+        auto it = donations.find(project_name);
+        if (it != donations.end()) {
+            return it->second;
+        }
+        return 0;
+    }
+
+    void addDonation(const std::string& project_name, double amount) {
+        donations[project_name] += amount;
+    }
+
+    double sum() const {
+        double total = 0;
+        for (const auto& donation : donations) {
+            total += donation.second;
+        }
+        return total;
+    }
+};
 class Project {
 public:
     std::string name;
@@ -11,15 +41,6 @@ public:
     
     Project(std::string n, double c) : name(n), cost(c) {}
 };
-
-// Define CumulativeBallot class (assuming it as a struct)
-class CumulativeBallot {
-public:
-    std::unordered_map<std::string, double> donations;
-    
-};
-
-// Define Instance class (assuming it as a struct)
 struct Instance {
     std::vector<Project> projects;
     
@@ -56,7 +77,61 @@ public:
     }
 };
 
-// Function to print the donations of all donors
+// Function to select a project (for example, select_project_GE equivalent)
+Project select_project(const std::vector<CumulativeBallot>& donors, const Instance& projects) {
+    // Example: Select the first project for simplicity
+    if (!projects.projects.empty()) {
+        return projects.projects[0];
+    }
+    throw std::runtime_error("No projects available");
+}
+
+// Minimal transfer function
+bool minimal_transfer(std::vector<CumulativeBallot>& donors, Instance& projects, Instance& eliminated_projects, Project(*project_to_fund_selection_procedure)(const std::vector<CumulativeBallot>&, const Instance&)) {
+    Project chosen_project = project_to_fund_selection_procedure(donors, projects);
+    double r = 0;
+    for (const auto& donor : donors) {
+        r += donor.get(chosen_project.name);
+    }
+    r /= chosen_project.cost;
+
+    while (r < 1) {
+        bool flag = true;
+        for (const auto& donor : donors) {
+            if (std::abs(donor.sum() - donor.get(chosen_project.name)) > 1e-5) {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) {
+            eliminated_projects.add(chosen_project);
+            return false;
+        }
+
+        for (auto& donor : donors) {
+            double total = donor.sum() - donor.get(chosen_project.name);
+            double donation = donor.get(chosen_project.name);
+            double to_distribute = std::min(total, donation / r - donation);
+
+            for (auto& entry : donor.donations) {
+                if (entry.first != chosen_project.name && total > 0) {
+                    double change = to_distribute * entry.second / total;
+                    entry.second -= change;
+                    donor.addDonation(chosen_project.name, change);
+                }
+            }
+        }
+        r = 0;
+        for (const auto& donor : donors) {
+            r += donor.get(chosen_project.name);
+        }
+        r /= chosen_project.cost;
+        
+    }
+    
+    return true;
+}
+
 void print_donations(const std::vector<CumulativeBallot>& donors, const std::string& stage) {
     std::cout << "Donations " << stage << ":" << std::endl;
     for (size_t i = 0; i < donors.size(); ++i) {
@@ -127,8 +202,7 @@ std::vector<CumulativeBallot> elimination_with_transfers(std::vector<CumulativeB
     return donors;
 }
 
-// Example usage
-int main() {
+int mainEWT() {
     Logger logger;
     
     // Example projects and donors
@@ -160,4 +234,34 @@ int main() {
         std::cout << pair.first << ": " << pair.second << std::endl;
     }
     return 0;
+}
+int mainMT() {
+    // Example usage
+    Project project_A("Project A", 65);
+    Project project_B("Project B", 30);
+    
+    CumulativeBallot donor1({ {"Project A", 50}, {"Project B", 10} });
+    CumulativeBallot donor2({ {"Project A", 10}, {"Project B", 7} });
+
+    Instance projects;
+    projects.add(project_A);
+    projects.add(project_B);
+
+    Instance eliminated_projects;
+
+    std::vector<CumulativeBallot> donors = { donor1, donor2 };
+
+    bool result = minimal_transfer(donors, projects, eliminated_projects, select_project);
+
+    std::cout << "Result: " << result << std::endl;
+    std::cout << "Donor 1, Project A: " << donors[0].get("Project A") << std::endl;
+    std::cout << "Donor 1, Project B: " << donors[0].get("Project B") << std::endl;
+    std::cout << "Donor 2, Project A: " << donors[1].get("Project A") << std::endl;
+    std::cout << "Donor 2, Project B: " << donors[1].get("Project B") << std::endl;
+    return 0;
+}
+int main()
+{
+    mainEWT();
+    mainMT();
 }
