@@ -636,6 +636,7 @@ def regular_example():
     instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
     donors = [CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})]
     selected_projects = cstv_budgeting_combination(donors, instance,"mtc")
+    print("Regular example:")
     if selected_projects:
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
 
@@ -644,6 +645,7 @@ def bad_example():
     instance = Instance(init=[Project("Project A", 30), Project("Project B", 30), Project("Project C", 30)])
     donors = [CumulativeBallot({"Project A": 20, "Project B": 0, "Project C": 0}), CumulativeBallot({"Project A": 0, "Project B": 20, "Project C": 0}), CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20})]
     selected_projects = cstv_budgeting_combination(donors, instance,"ewt")
+    print("Bad example:")
     if selected_projects:
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
 
@@ -661,6 +663,7 @@ def random_example():
     # Generate the donations for each donor
     donors = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(300, num_projects))})for _ in range(num_projects)]
     selected_projects = cstv_budgeting_combination(donors, projects, "ewtc")
+    print("Random example:")
     if selected_projects:
         logger.info(f"Selected projects: {[project for project in selected_projects]}")
 
