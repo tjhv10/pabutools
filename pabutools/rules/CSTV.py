@@ -14,8 +14,7 @@ import time
 from pabutools.election import Project, CumulativeBallot ,Instance
 from typing import List
 import random
-import experiments_csv
-import copy
+
 
 logger = logging.getLogger(__name__)
 
@@ -92,15 +91,17 @@ def cstv_budgeting(donors: List[CumulativeBallot], projects: Instance, project_t
             logger.debug("Final selected projects: %s", [project.name for project in S])
             return S
         
-        # Determine eligible projects for funding
-        eligible_projects = eligible_fn(donors, projects)
-        logger.debug("Eligible projects: %s", [project.name for project in eligible_projects])
+        
         
         # Log donations for each project
         for project in projects:
             donations = sum(donor[project.name] for donor in donors)
-            logger.debug("Donors and total donations for %s: %s", project.name, donations)
-        
+            logger.debug("Donors and total donations for %s: %s. Price: %s", project.name, donations, project.cost)
+
+        # Determine eligible projects for funding
+        eligible_projects = eligible_fn(donors, projects)
+        logger.debug("Eligible projects: %s", [project.name for project in eligible_projects])
+
         # If no eligible projects, execute the no-eligible-project procedure
         while not eligible_projects:
             flag = no_eligible_project_procedure(donors, projects, eliminated_projects, project_to_fund_selection_procedure)
@@ -257,7 +258,7 @@ def is_eligible_GSC(donors: List[CumulativeBallot], projects: Instance) -> Insta
 
 
 
-def select_project_GE(donors: List[CumulativeBallot], projects: Instance) -> Project:
+def select_project_GE(donors: List[CumulativeBallot], projects: Instance, impFlag:bool = False) -> Project:
     """
     Selects the project with the maximum excess support using the General Election (GE) rule.
 
@@ -285,10 +286,13 @@ def select_project_GE(donors: List[CumulativeBallot], projects: Instance) -> Pro
     
     excess_support = {project: sum(donor.get(project.name, 0) for donor in donors) - project.cost for project in projects}
     max_excess_project = max(excess_support, key=excess_support.get)
-    logger.debug(f"Selected project by GE method: {max_excess_project.name}")
+    if impFlag:
+        logger.debug(f"Selected project by GE method in inclusive maximality postprocedure: {max_excess_project.name}")
+    else:
+        logger.debug(f"Selected project by GE method: {max_excess_project.name}")
     return max_excess_project
 
-def select_project_GSC(donors: List[CumulativeBallot], projects: Instance) -> Project:
+def select_project_GSC(donors: List[CumulativeBallot], projects: Instance, impFlag:bool = False) -> Project:
     """
     Selects the project with the maximum ratio of support to cost using the Greatest Support to Cost (GSC) rule.
 
@@ -316,7 +320,10 @@ def select_project_GSC(donors: List[CumulativeBallot], projects: Instance) -> Pr
     
     ratio_support = {project: sum(donor.get(project.name, 0) for donor in donors) / project.cost for project in projects}
     max_ratio_project = max(ratio_support, key=ratio_support.get)
-    logger.debug(f"Selected project by GSC method: {max_ratio_project.name}")
+    if impFlag:
+        logger.debug(f"Selected project by GSC method in inclusive maximality postprocedure: {max_ratio_project.name}")
+    else:
+        logger.debug(f"Selected project by GSC method: {max_ratio_project.name}")
     return max_ratio_project
 
 def elimination_with_transfers(donors: List[CumulativeBallot], projects: Instance, eliminated_projects: Instance, _:callable) -> Instance:
@@ -518,7 +525,7 @@ def reverse_eliminations(__:List[CumulativeBallot], S: Instance, eliminated_proj
     >>> len(reverse_eliminations([], selected_projects, eliminated_projects, None, 30))
     2
     """
-    logger.debug("Performing RE")
+    logger.debug("Performing inclusive maximality postprocedure RE")
     for project in eliminated_projects:
         if project.cost <= budget:
             S.add(project)
@@ -557,9 +564,9 @@ def acceptance_of_undersupported_projects(donors: List[CumulativeBallot], S: Ins
     >>> print(len(acceptance_of_undersupported_projects([], selected_projects, eliminated_projects, select_project_GE, 25)))
     2
     """
-    logger.debug("Performing AUP")
+    logger.debug("Performing inclusive maximality postprocedure: AUP")
     while len(eliminated_projects) != 0:
-        selected_project = project_to_fund_selection_procedure(donors, eliminated_projects)
+        selected_project = project_to_fund_selection_procedure(donors, eliminated_projects,True)
         if selected_project.cost <= budget:
             S.add(selected_project)
             eliminated_projects.remove(selected_project)
@@ -635,7 +642,7 @@ def cstv_budgeting_combination(donors: List[CumulativeBallot], projects: Instanc
 def regular_example():
     instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
     donors = [CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})]
-    selected_projects = cstv_budgeting_combination(donors, instance,"mtc")
+    selected_projects = cstv_budgeting_combination(donors, instance,"mt")
     print("Regular example:")
     if selected_projects:
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
@@ -673,9 +680,9 @@ def random_example():
 
     
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     import doctest
-    doctest.testmod()
-    random_example()
-    bad_example()
+    # doctest.testmod()
+    # random_example()
+    # bad_example()
     regular_example()    
