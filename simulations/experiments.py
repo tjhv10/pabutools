@@ -7,11 +7,11 @@ from experiments_csv import Experiment
 
 
 def exp():
-    initial_num_projects = 100
-    max_num_projects = 400
-    step = 100
+    initial_num_projects = 10
+    max_num_projects = 40
+    step = 10
     
-    ex = Experiment()
+    ex = Experiment("simulations/results","results.csv","simulations/backup_results")
     ex.logger.setLevel(logging.CRITICAL)
     ex.clear_previous_results()
 
@@ -38,13 +38,13 @@ def exp():
 
         for combination in input_ranges['combination']:
             start_time = time.time()
-            result = cstv_budgeting_combination(donors, projects, combination)
+            ex.run(cstv_budgeting_combination, {"donors": donorsl, "projects": projectsl, "combination": [combination]})
             end_time = time.time()
             duration = end_time - start_time
             timings[combination].append(duration)
-            eligible_projects_count = extract_selected_projects_count(result.__str__())
+            # eligible_projects_count = extract_selected_projects_count(result.__str__())
             logging.info(f"Combination {combination} with {num_projects} projects took {duration:.4f} seconds and found {eligible_projects_count} projects that are eligible for funding.")
-            ex.run(cstv_budgeting_combination, {"donors": donorsl, "projects": projectsl, "combination": [combination]})
+            
 
     # Plotting the results
     for combination, times in timings.items():
