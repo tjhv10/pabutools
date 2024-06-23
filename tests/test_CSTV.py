@@ -1,14 +1,14 @@
 """
 An implementation of the algorithms in:
 "Participatory Budgeting with Cumulative Votes", by Piotr Skowron, Arkadii Slinko, Stanisaw Szufa, Nimrod Talmon (2020), https://arxiv.org/pdf/2009.02690
-Programmer: Achia Ben Natan
+Programmer: Achiya Ben Natan
 Date: 2024/05/16.
 """
 
 import logging
 import unittest
 from pabutools.election import Project, CumulativeBallot, Instance
-from pabutools.rules.CSTV import *
+from pabutools.rules.cstv import *
 import random
 
 
