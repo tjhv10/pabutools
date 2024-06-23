@@ -701,9 +701,9 @@ def random_example():
 
     
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     import doctest
-    # doctest.testmod()
-    random_example()
+    doctest.testmod()
+    # random_example()
     # bad_example()
     # regular_example()    

@@ -103,7 +103,7 @@ def cstv_budgeting_combination_exp(donors: List[CumulativeBallot], projects: Ins
     >>> donor4 = CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20})
     >>> donor5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0})
     >>> donors = [donor1, donor2, donor3, donor4, donor5]
-    >>> combination = "ewt"
+    >>> combination = "improved_mt"
     >>> print(len(cstv_budgeting_combination_exp(donors, instance, combination)))
     1
     """
@@ -112,7 +112,7 @@ def cstv_budgeting_combination_exp(donors: List[CumulativeBallot], projects: Ins
     combination = combination.lower()
     if combination == "ewt":
         result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
-    elif combination == "mt":
+    elif combination == "improved_mt":
         result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects)
     elif combination == "old_mt":
         result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, old_minimal_transfer, acceptance_of_undersupported_projects)
@@ -123,7 +123,7 @@ def cstv_budgeting_combination_exp(donors: List[CumulativeBallot], projects: Ins
 
 def exp():
     initial_num_projects = 100
-    max_num_projects = 5000
+    max_num_projects = 400
     step = 100
     
     ex = Experiment("simulations/results","results.csv","simulations/backup_results")
@@ -136,7 +136,7 @@ def exp():
             donations[random.randint(0, num_projects - 1)] += 1
         return donations
 
-    timings = { "ewt": [],  "mt": [], "old_mt": [] }
+    timings = { "ewt": [],  "improved_mt": [], "old_mt": [] }
     project_counts = list(range(initial_num_projects, max_num_projects + 1, step))
 
     for num_projects in project_counts:
@@ -148,7 +148,7 @@ def exp():
         input_ranges = {
             "donors": donorsl,
             "projects": projectsl,
-            "combination": ["ewt", "mt", "old_mt"]
+            "combination": ["ewt", "improved_mt", "old_mt"]
         }
 
         for combination in input_ranges['combination']:
