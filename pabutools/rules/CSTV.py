@@ -706,4 +706,4 @@ if __name__ == "__main__":
     doctest.testmod()
     # random_example()
     # bad_example()
-    # regular_example()    
+    regular_example()    
