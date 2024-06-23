@@ -14,7 +14,7 @@ import time
 from pabutools.election import Project, CumulativeBallot ,Instance
 from typing import List
 import random
-import os
+
 
 logger = logging.getLogger(__name__)
 
@@ -417,6 +417,7 @@ def elimination_with_transfers(donors: List[CumulativeBallot], projects: Instanc
         
         return projects
     
+    
     if len(projects) < 2:
         logger.debug("Not enough projects to eliminate.")
         if len(projects) == 1:
@@ -431,9 +432,7 @@ def elimination_with_transfers(donors: List[CumulativeBallot], projects: Instanc
 
 
 
-
-
-def minimal_transfer(donors: List[CumulativeBallot], projects: Instance, eliminated_projects: Instance, project_to_fund_selection_procedure: callable) -> bool:
+def minimal_transfer(donors: List[CumulativeBallot], projects: Instance, eliminated_projects: Instance, project_to_fund_selection_procedure:callable) -> Instance:
     """
     Performs minimal transfer of donations to reach the required support for a selected project.
 
@@ -450,8 +449,8 @@ def minimal_transfer(donors: List[CumulativeBallot], projects: Instance, elimina
 
     Returns
     -------
-    bool
-        True if the minimal transfer was successful, False if the project was added to eliminated_projects.
+    Instance
+        The updated list of projects.
 
     Examples
     --------
@@ -472,48 +471,28 @@ def minimal_transfer(donors: List[CumulativeBallot], projects: Instance, elimina
     """
     chosen_project = project_to_fund_selection_procedure(donors, projects)
     logger.debug(f"Selected project for minimal transfer: {chosen_project.name}")
-
-    project_name = chosen_project.name
-    project_cost = chosen_project.cost
-
-    # Calculate initial support ratio
-    total_support = sum(donor.get(project_name, 0) for donor in donors)
-    r = total_support / project_cost
-
-    donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(project_name, 0) > 0]
-
-    # Loop until the required support is achieved
+    r = sum(donor.get(chosen_project.name, 0) for donor in donors) / chosen_project.cost
+    donors_of_selected_project = [donor for donor in donors if (donor.get(chosen_project.name, 0)) > 0]
     while r < 1:
-        # Check if all donors have their entire donation on the chosen project
-        all_on_chosen_project = all(
-            float(Decimal(str(sum(donors[i].values()))).quantize(Decimal('1e-5'))) ==
-            float(Decimal(str(donors[i].get(project_name, 0))).quantize(Decimal('1e-5')))
-            for i in donors_of_selected_project
-        )
-
-        if all_on_chosen_project:
+        flag = True
+        for donor in donors_of_selected_project:
+            if float(Decimal(str(sum(donor.values()))).quantize(Decimal('1e-'+str(5)))) != float(Decimal(str(donor.get(chosen_project))).quantize(Decimal('1e-'+str(5)))):
+                flag = False
+                break
+        if flag:
             eliminated_projects.add(chosen_project)
             return False
-
-        for i in donors_of_selected_project:
-            donor = donors[i]
-            total = sum(donor.values()) - donor.get(project_name, 0)
-            donation = donor.get(project_name, 0)
-
-            if total > 0:
-                to_distribute = min(total, donation / r - donation)
-                for proj_name, proj_donation in donor.items():
-                    if proj_name != project_name and proj_donation > 0:
-                        change = to_distribute * proj_donation / total
-                        donor[proj_name] -= change
-                        donor[project_name] += float(Decimal(str(change)).quantize(Decimal('1e-14'), rounding=ROUND_UP))
-
-        # Recalculate the support ratio
-        total_support = sum(donor.get(project_name, 0) for donor in donors)
-        r = total_support / project_cost
-
+        for donor in donors_of_selected_project:
+            total = sum(donor.values()) - donor.get(chosen_project.name)
+            donation = donor.get(chosen_project.name)
+            to_distribute = min(total, donation / r - donation)
+            for project_name, donation in donor.items():
+                if project_name != chosen_project.name and total > 0:
+                    change = to_distribute * donation / total
+                    donor[project_name] -= change
+                    donor[chosen_project.name] += float(Decimal(str(change)).quantize(Decimal('1e-'+str(14)), rounding=ROUND_UP))
+        r = sum(donor.get(chosen_project.name, 0) for donor in donors) / chosen_project.cost
     return True
-
 
 def reverse_eliminations(__:List[CumulativeBallot], S: Instance, eliminated_projects: Instance, _:callable, budget: int) -> Instance:
     """
@@ -690,7 +669,7 @@ def random_example():
 
     # Generate the donations for each donor
     donors = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(300, num_projects))})for _ in range(num_projects)]
-    selected_projects = cstv_budgeting_combination(donors, projects, "mtc")
+    selected_projects = cstv_budgeting_combination(donors, projects, "ewtc")
     print("Random example:")
     if selected_projects:
         logger.info(f"Selected projects: {[project for project in selected_projects]}")
@@ -701,9 +680,9 @@ def random_example():
 
     
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     import doctest
-    doctest.testmod()
+    # doctest.testmod()
     # random_example()
     # bad_example()
-    # regular_example()    
+    regular_example()    
