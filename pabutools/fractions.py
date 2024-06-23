@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from gmpy2 import mpq
 
 if TYPE_CHECKING:
     from pabutools.utils import Numeric
@@ -30,22 +29,22 @@ Constant describing which module to use for computing fractions. It can either b
 
 def frac(*arg: Numeric) -> Numeric:
     """
-    Returns a fraction instantiated from the module defined by the `FRACTION` constant. If more than two numbers are
+    Returns a fraction instantiated using Python's Fraction class. If more than two numbers are
     provided, an error is raised.
 
     Parameters
     ----------
-        Numeric
-            One or two numbers.
+    *arg : Numeric
+        One or two numbers.
 
     Returns
     -------
-        Numeric
-            The fraction.
+    Numeric
+        The fraction.
     """
     if len(arg) == 1:
         if FRACTION == GMPY_FRAC:
-            return mpq(arg[0])
+            raise ValueError("Cannot use 'gmpy2' fraction type without 'mpq' from gmpy2.")
         elif FRACTION == FLOAT_FRAC:
             return arg[0]
         else:
@@ -55,7 +54,7 @@ def frac(*arg: Numeric) -> Numeric:
             )
     elif len(arg) == 2:
         if FRACTION == GMPY_FRAC:
-            return mpq(arg[0], arg[1])
+            raise ValueError("Cannot use 'gmpy2' fraction type without 'mpq' from gmpy2.")
         elif FRACTION == FLOAT_FRAC:
             return arg[0] / arg[1]
         else:
@@ -72,16 +71,16 @@ def str_as_frac(s: str) -> Numeric:
 
     Parameters
     ----------
-        s: str
-            A string representing a number.
+    s : str
+        A string representing a number.
 
     Returns
     -------
-        Numeric
-            The fraction.
+    Numeric
+        The fraction.
     """
     if FRACTION == GMPY_FRAC:
-        return mpq(s)
+        raise ValueError("Cannot use 'gmpy2' fraction type without 'mpq' from gmpy2.")
     elif FRACTION == FLOAT_FRAC:
         return float(s)
     else:

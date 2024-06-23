@@ -1,0 +1,23 @@
+donors,projects,combination,ewt
+[{'Project_0': 300}],"Instance with budget limit 0 and 1 projects:
+	c(Project_0) = 297",ewt,"Instance with budget limit 0 and 1 projects:
+	c(Project_0) = 297"
+[{'Project_0': 300}],"Instance with budget limit 0 and 1 projects:
+	c(Project_0) = 297",ewtc,
+[{'Project_0': 300}],"Instance with budget limit 0 and 1 projects:
+	c(Project_0) = 297",mt,
+[{'Project_0': 300}],"Instance with budget limit 0 and 1 projects:
+	c(Project_0) = 297",mtc,
+"[{'Project_0': 154, 'Project_1': 146}, {'Project_0': 156, 'Project_1': 144}]","Instance with budget limit 0 and 2 projects:
+	c(Project_0) = 190
+	c(Project_1) = 571",ewt,"Instance with budget limit 0 and 1 projects:
+	c(Project_0) = 190"
+"[{'Project_0': 154, 'Project_1': 146}, {'Project_0': 156, 'Project_1': 144}]","Instance with budget limit 0 and 2 projects:
+	c(Project_0) = 190
+	c(Project_1) = 571",ewtc,
+"[{'Project_0': 154, 'Project_1': 146}, {'Project_0': 156, 'Project_1': 144}]","Instance with budget limit 0 and 2 projects:
+	c(Project_0) = 190
+	c(Project_1) = 571",mt,
+"[{'Project_0': 154, 'Project_1': 146}, {'Project_0': 156, 'Project_1': 144}]","Instance with budget limit 0 and 2 projects:
+	c(Project_0) = 190
+	c(Project_1) = 571",mtc,

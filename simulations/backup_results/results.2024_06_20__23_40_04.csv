@@ -1,0 +1,40 @@
+donors,projects,combination,ewt
+"[{'Project_0': 25, 'Project_1': 35, 'Project_2': 26, 'Project_3': 31, 'Project_4': 38, 'Project_5': 30, 'Project_6': 28, 'Project_7': 24, 'Project_8': 32, 'Project_9': 31}, {'Project_0': 36, 'Project_1': 20, 'Project_2': 33, 'Project_3': 22, 'Project_4': 38, 'Project_5': 32, 'Project_6': 30, 'Project_7': 31, 'Project_8': 36, 'Project_9': 22}, {'Project_0': 30, 'Project_1': 30, 'Project_2': 35, 'Project_3': 24, 'Project_4': 30, 'Project_5': 29, 'Project_6': 26, 'Project_7': 39, 'Project_8': 28, 'Project_9': 29}, {'Project_0': 21, 'Project_1': 34, 'Project_2': 24, 'Project_3': 32, 'Project_4': 22, 'Project_5': 45, 'Project_6': 30, 'Project_7': 24, 'Project_8': 33, 'Project_9': 35}, {'Project_0': 29, 'Project_1': 28, 'Project_2': 32, 'Project_3': 26, 'Project_4': 27, 'Project_5': 25, 'Project_6': 29, 'Project_7': 42, 'Project_8': 28, 'Project_9': 34}, {'Project_0': 33, 'Project_1': 28, 'Project_2': 25, 'Project_3': 23, 'Project_4': 31, 'Project_5': 26, 'Project_6': 32, 'Project_7': 35, 'Project_8': 33, 'Project_9': 34}, {'Project_0': 35, 'Project_1': 21, 'Project_2': 31, 'Project_3': 30, 'Project_4': 30, 'Project_5': 27, 'Project_6': 20, 'Project_7': 40, 'Project_8': 38, 'Project_9': 28}, {'Project_0': 39, 'Project_1': 28, 'Project_2': 37, 'Project_3': 33, 'Project_4': 30, 'Project_5': 17, 'Project_6': 24, 'Project_7': 27, 'Project_8': 29, 'Project_9': 36}, {'Project_0': 33, 'Project_1': 27, 'Project_2': 31, 'Project_3': 43, 'Project_4': 30, 'Project_5': 34, 'Project_6': 27, 'Project_7': 27, 'Project_8': 20, 'Project_9': 28}, {'Project_0': 21, 'Project_1': 27, 'Project_2': 36, 'Project_3': 27, 'Project_4': 34, 'Project_5': 39, 'Project_6': 30, 'Project_7': 38, 'Project_8': 27, 'Project_9': 21}]","Instance with budget limit 0 and 10 projects:
+	c(Project_0) = 913
+	c(Project_1) = 794
+	c(Project_2) = 637
+	c(Project_3) = 850
+	c(Project_4) = 667
+	c(Project_5) = 615
+	c(Project_6) = 420
+	c(Project_7) = 867
+	c(Project_8) = 425
+	c(Project_9) = 156",ewt,"Instance with budget limit 0 and 6 projects:
+	c(Project_9) = 156
+	c(Project_8) = 425
+	c(Project_6) = 420
+	c(Project_5) = 615
+	c(Project_2) = 637
+	c(Project_4) = 667"
+"[{'Project_0': 25, 'Project_1': 35, 'Project_2': 26, 'Project_3': 31, 'Project_4': 38, 'Project_5': 30, 'Project_6': 28, 'Project_7': 24, 'Project_8': 32, 'Project_9': 31}, {'Project_0': 36, 'Project_1': 20, 'Project_2': 33, 'Project_3': 22, 'Project_4': 38, 'Project_5': 32, 'Project_6': 30, 'Project_7': 31, 'Project_8': 36, 'Project_9': 22}, {'Project_0': 30, 'Project_1': 30, 'Project_2': 35, 'Project_3': 24, 'Project_4': 30, 'Project_5': 29, 'Project_6': 26, 'Project_7': 39, 'Project_8': 28, 'Project_9': 29}, {'Project_0': 21, 'Project_1': 34, 'Project_2': 24, 'Project_3': 32, 'Project_4': 22, 'Project_5': 45, 'Project_6': 30, 'Project_7': 24, 'Project_8': 33, 'Project_9': 35}, {'Project_0': 29, 'Project_1': 28, 'Project_2': 32, 'Project_3': 26, 'Project_4': 27, 'Project_5': 25, 'Project_6': 29, 'Project_7': 42, 'Project_8': 28, 'Project_9': 34}, {'Project_0': 33, 'Project_1': 28, 'Project_2': 25, 'Project_3': 23, 'Project_4': 31, 'Project_5': 26, 'Project_6': 32, 'Project_7': 35, 'Project_8': 33, 'Project_9': 34}, {'Project_0': 35, 'Project_1': 21, 'Project_2': 31, 'Project_3': 30, 'Project_4': 30, 'Project_5': 27, 'Project_6': 20, 'Project_7': 40, 'Project_8': 38, 'Project_9': 28}, {'Project_0': 39, 'Project_1': 28, 'Project_2': 37, 'Project_3': 33, 'Project_4': 30, 'Project_5': 17, 'Project_6': 24, 'Project_7': 27, 'Project_8': 29, 'Project_9': 36}, {'Project_0': 33, 'Project_1': 27, 'Project_2': 31, 'Project_3': 43, 'Project_4': 30, 'Project_5': 34, 'Project_6': 27, 'Project_7': 27, 'Project_8': 20, 'Project_9': 28}, {'Project_0': 21, 'Project_1': 27, 'Project_2': 36, 'Project_3': 27, 'Project_4': 34, 'Project_5': 39, 'Project_6': 30, 'Project_7': 38, 'Project_8': 27, 'Project_9': 21}]","Instance with budget limit 0 and 10 projects:
+	c(Project_0) = 913
+	c(Project_1) = 794
+	c(Project_2) = 637
+	c(Project_3) = 850
+	c(Project_4) = 667
+	c(Project_5) = 615
+	c(Project_6) = 420
+	c(Project_7) = 867
+	c(Project_8) = 425
+	c(Project_9) = 156",ewtc,
+"[{'Project_0': 25, 'Project_1': 35, 'Project_2': 26, 'Project_3': 31, 'Project_4': 38, 'Project_5': 30, 'Project_6': 28, 'Project_7': 24, 'Project_8': 32, 'Project_9': 31}, {'Project_0': 36, 'Project_1': 20, 'Project_2': 33, 'Project_3': 22, 'Project_4': 38, 'Project_5': 32, 'Project_6': 30, 'Project_7': 31, 'Project_8': 36, 'Project_9': 22}, {'Project_0': 30, 'Project_1': 30, 'Project_2': 35, 'Project_3': 24, 'Project_4': 30, 'Project_5': 29, 'Project_6': 26, 'Project_7': 39, 'Project_8': 28, 'Project_9': 29}, {'Project_0': 21, 'Project_1': 34, 'Project_2': 24, 'Project_3': 32, 'Project_4': 22, 'Project_5': 45, 'Project_6': 30, 'Project_7': 24, 'Project_8': 33, 'Project_9': 35}, {'Project_0': 29, 'Project_1': 28, 'Project_2': 32, 'Project_3': 26, 'Project_4': 27, 'Project_5': 25, 'Project_6': 29, 'Project_7': 42, 'Project_8': 28, 'Project_9': 34}, {'Project_0': 33, 'Project_1': 28, 'Project_2': 25, 'Project_3': 23, 'Project_4': 31, 'Project_5': 26, 'Project_6': 32, 'Project_7': 35, 'Project_8': 33, 'Project_9': 34}, {'Project_0': 35, 'Project_1': 21, 'Project_2': 31, 'Project_3': 30, 'Project_4': 30, 'Project_5': 27, 'Project_6': 20, 'Project_7': 40, 'Project_8': 38, 'Project_9': 28}, {'Project_0': 39, 'Project_1': 28, 'Project_2': 37, 'Project_3': 33, 'Project_4': 30, 'Project_5': 17, 'Project_6': 24, 'Project_7': 27, 'Project_8': 29, 'Project_9': 36}, {'Project_0': 33, 'Project_1': 27, 'Project_2': 31, 'Project_3': 43, 'Project_4': 30, 'Project_5': 34, 'Project_6': 27, 'Project_7': 27, 'Project_8': 20, 'Project_9': 28}, {'Project_0': 21, 'Project_1': 27, 'Project_2': 36, 'Project_3': 27, 'Project_4': 34, 'Project_5': 39, 'Project_6': 30, 'Project_7': 38, 'Project_8': 27, 'Project_9': 21}]","Instance with budget limit 0 and 10 projects:
+	c(Project_0) = 913
+	c(Project_1) = 794
+	c(Project_2) = 637
+	c(Project_3) = 850
+	c(Project_4) = 667
+	c(Project_5) = 615
+	c(Project_6) = 420
+	c(Project_7) = 867
+	c(Project_8) = 425
+	c(Project_9) = 156",mt,
