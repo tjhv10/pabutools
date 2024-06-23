@@ -26,6 +26,7 @@ requires-python = ">=3.9"
 dependencies = [
     "numpy",
     "mip>=1.16rc0",
+    "gmpy2>=2.1.5",
     "preflibtools",
     "natsort"
 ]
