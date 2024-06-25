@@ -8,7 +8,7 @@ Date: 2024/05/16.
 import logging
 import unittest
 from pabutools.election import Project, CumulativeBallot, Instance
-from pabutools.rules.CSTV import *
+from pabutools.rules.cstv import *
 import random
 
 
