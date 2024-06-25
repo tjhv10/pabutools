@@ -13,8 +13,7 @@ import matplotlib.pyplot as plt
 import copy
 from experiments_csv import Experiment
 
-
-def old_minimal_transfer(donors: List[CumulativeBallot], projects: Instance, eliminated_projects: Instance, project_to_fund_selection_procedure:callable) -> Instance:
+def old_minimal_transfer(donors: list[CumulativeBallot], projects: Instance, eliminated_projects: Instance, project_to_fund_selection_procedure:callable) -> Instance:
     chosen_project = project_to_fund_selection_procedure(donors, projects)
     r = sum(donor.get(chosen_project.name, 0) for donor in donors) / chosen_project.cost
     donors_of_selected_project = [donor for donor in donors if (donor.get(chosen_project.name, 0)) > 0]
@@ -39,8 +38,7 @@ def old_minimal_transfer(donors: List[CumulativeBallot], projects: Instance, eli
         r = sum(donor.get(chosen_project.name, 0) for donor in donors) / chosen_project.cost
     return True
 
-
-def improved_minimal_transfer(donors: List[CumulativeBallot], projects: Instance, eliminated_projects: Instance, project_to_fund_selection_procedure: callable) -> bool:
+def improved_minimal_transfer(donors: list[CumulativeBallot], projects: Instance, eliminated_projects: Instance, project_to_fund_selection_procedure: callable) -> bool:
     chosen_project = project_to_fund_selection_procedure(donors, projects)
     # 1. Simplified and descriptive variable names
     project_name = chosen_project.name
@@ -55,14 +53,13 @@ def improved_minimal_transfer(donors: List[CumulativeBallot], projects: Instance
 
     # 4. Loop focused on achieving required support
     while r < 1:
-        # 5. Concise check if all donors are fully allocated to the chosen project insted of checking one by one.
+        # 5. Concise check if all donors are fully allocated to the chosen project instead of checking one by one.
         all_on_chosen_project = all(
             float(Decimal(str(sum(donors[i].values()))).quantize(Decimal('1e-5'))) ==
             float(Decimal(str(donors[i].get(project_name, 0))).quantize(Decimal('1e-5')))
             for i in donors_of_selected_project
         )
 
-        
         if all_on_chosen_project:
             eliminated_projects.add(chosen_project)
             return False
@@ -85,9 +82,7 @@ def improved_minimal_transfer(donors: List[CumulativeBallot], projects: Instance
 
     return True
 
-
-
-def cstv_budgeting_combination_exp(donors: List[CumulativeBallot], projects: Instance, combination: str) -> dict[str, Instance]:
+def cstv_budgeting_combination_exp(donors: list[CumulativeBallot], projects: Instance, combination: str) -> dict[str, Instance]:
     projects = copy.deepcopy(projects)
     donors = copy.deepcopy(donors)
     combination = combination.lower()
@@ -102,12 +97,11 @@ def cstv_budgeting_combination_exp(donors: List[CumulativeBallot], projects: Ins
     
     return {combination: result}
 
-
 def exp():
     initial_num_projects = 100
-    max_num_projects = 200
-    step = 100
-    
+    step = 10
+    max_time = 60  # Max time in seconds for each run
+
     ex = Experiment("simulations/results","results.csv","simulations/backup_results")
     ex.logger.setLevel(logging.CRITICAL)
     ex.clear_previous_results()
@@ -119,31 +113,44 @@ def exp():
         return donations
 
     timings = { "ewt": [],  "improved_mt": [], "old_mt": [] }
-    project_counts = list(range(initial_num_projects, max_num_projects + 1, step))
+    max_projects_handled = { "ewt": 0, "improved_mt": 0, "old_mt": 0 }
+    combinations = ["ewt", "improved_mt", "old_mt"]
 
-    for num_projects in project_counts:
+    num_projects = initial_num_projects
+    while True:
         projects = Instance([Project(f"Project_{i}", random.randint(100, 1000)) for i in range(num_projects)])
         donors = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(300, num_projects))}) for _ in range(num_projects)]
-        
+
         donorsl = [donors]
         projectsl = [projects]
-        input_ranges = {
-            "donors": donorsl,
-            "projects": projectsl,
-            "combination": ["ewt", "improved_mt", "old_mt"]
-        }
+        
+        all_within_time_limit = True
 
-        for combination in input_ranges['combination']:
+        for combination in combinations:
             start_time = time.time()
             ex.run(cstv_budgeting_combination_exp, {"donors": donorsl, "projects": projectsl, "combination": [combination]})
             end_time = time.time()
             duration = end_time - start_time
+
+            if duration <= max_time:
+                max_projects_handled[combination] = num_projects
+            else:
+                all_within_time_limit = False
+
             timings[combination].append(duration)
-            
+        
+        if not all_within_time_limit:
+            break
+
+        num_projects += step
+
+    # Print the results
+    for combination, max_projects in max_projects_handled.items():
+        print(f"Maximum number of projects {combination} can handle in 60 seconds: {max_projects}")
 
     # Plotting the results
     for combination, times in timings.items():
-        plt.plot(project_counts, times, label=f"{combination}")
+        plt.plot(range(initial_num_projects, num_projects, step), times, label=f"{combination}")
 
     plt.xlabel("Number of Projects")
     plt.ylabel("Time (seconds)")
