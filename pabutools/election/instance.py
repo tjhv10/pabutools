@@ -364,9 +364,7 @@ class Instance(set[Project]):
         raise KeyError(
             "No project with name {} found in the instance.".format(project_name)
         )
-    
-    def get_project(self, project_name: str) -> Collection[Project]:
-        return 
+
     def budget_allocations(self) -> Generator[Collection[Project]]:
         """
         Returns a generator for all the feasible budget allocations of the instance.
@@ -454,18 +452,6 @@ class Instance(set[Project]):
 
     def __repr__(self) -> str:
         return self.__str__()
-    def __hash__(self) -> int:
-        return hash((
-            tuple(sorted(self, key=lambda p: p.name)),
-            self.budget_limit,
-            tuple(sorted(self.categories)),
-            tuple(sorted(self.targets)),
-            self.file_path,
-            self.file_name,
-            self.parsing_errors,
-            frozenset((k, tuple(sorted(v.items()))) for k, v in self.meta.items()),
-            frozenset((p, frozenset(sorted(meta.items()))) for p, meta in self.project_meta.items())
-        ))
 
     # This allows set method returning copies of a set to work with PBInstances
     @classmethod
