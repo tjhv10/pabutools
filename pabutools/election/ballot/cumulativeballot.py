@@ -165,4 +165,4 @@ class CumulativeBallot(CardinalBallot, AbstractCumulativeBallot):
             wrap_method_closure(n)
 
 
-CumulativeBallot._wrap_methods(["copy", "__ior__", "__or__", "__ror__", "__reversed__"])
+CumulativeBallot._wrap_methods(["copy", "__ior__", "__or__", "__ror__", "__reversed__"]) 
