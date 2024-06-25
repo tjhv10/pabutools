@@ -17,6 +17,7 @@ sequential Phragmén rule), we also implement methods to make the outcome exhaus
 All rules return one or several lists of projects called budget allocations, represented by the class
 :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation`.
 """
+
 from pabutools.rules.exhaustion import (
     completion_by_rule_combination,
     exhaustion_by_budget_increase,
@@ -39,7 +40,6 @@ from pabutools.rules.budgetallocation import (
 )
 
 __all__ = [
-    "cstv_budgeting"
     "completion_by_rule_combination",
     "exhaustion_by_budget_increase",
     "greedy_utilitarian_welfare",
