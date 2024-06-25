@@ -86,7 +86,6 @@ class TestFunctions(unittest.TestCase):
                 for _ in range(total):
                     donations[random.randint(0, num_projects - 1)] += 1
                 return donations
-
             # Generate the donations for each donor
             self.donors = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(20, len(self.projects)))})for _ in range(100)]
             num_projects = len(self.projects)
@@ -98,6 +97,4 @@ class TestFunctions(unittest.TestCase):
             self.assertGreaterEqual(len(selected_projects), positive_excess)  # Ensure the number of selected projects is at least the number of projects with non-negative excess support
             self.assertGreaterEqual(support, total_cost)  # Ensure the total initial support from donors is at least the total cost of the selected projects
 
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    unittest.main()
+unittest.main()

@@ -362,7 +362,7 @@ def elimination_with_transfers(projects: Instance, donors: Profile, eliminated_p
     >>> print(donor2["Project C"])
     5.0
     """
-    def distribute_project_support(projects: Instance, donors: Profile, eliminated_project: Project) -> bool:
+    def distribute_project_support(projects: Instance, donors: Profile, eliminated_project: Project) -> Instance:
         """
         Distributes the support of an eliminated project to the remaining projects.
 
@@ -406,7 +406,7 @@ def elimination_with_transfers(projects: Instance, donors: Profile, eliminated_p
                     donor[key] = donation + toDistribute * part
                     donor[eliminated_name] = 0 
         
-        return BudgetAllocation(projects)
+        return projects
     
 
     if len(projects) < 2:
