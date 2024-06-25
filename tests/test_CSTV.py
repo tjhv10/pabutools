@@ -5,10 +5,9 @@ Programmer: Achiya Ben Natan
 Date: 2024/05/16.
 """
 
-import logging
 import unittest
 from pabutools.election import Project, CumulativeBallot, Instance
-from pabutools.rules.cstv import *
+from pabutools.rules.cstv_flask.cstv import *
 import random
 
 

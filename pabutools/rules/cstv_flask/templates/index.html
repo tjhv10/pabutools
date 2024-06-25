@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Funding</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Enter Projects and Donors</h1>
+    <form action="/" method="POST">
+        <h2>Projects</h2>
+        <div id="projects">
+            <div>
+                <input type="text" name="projects" placeholder="Project Name">
+                <input type="number" name="costs" placeholder="Cost">
+            </div>
+        </div>
+        <button type="button" onclick="addProject()">Add Project</button>
+        
+        <h2>Donors</h2>
+        <div id="donors">
+            <div>
+                <input type="text" name="donors" placeholder="Donor Name">
+                <input type="text" name="donations" placeholder="Donations (comma-separated)">
+            </div>
+        </div>
+        <button type="button" onclick="addDonor()">Add Donor</button>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        function addProject() {
+            var projectDiv = document.createElement('div');
+            projectDiv.innerHTML = '<input type="text" name="projects" placeholder="Project Name"> <input type="number" name="costs" placeholder="Cost">';
+            document.getElementById('projects').appendChild(projectDiv);
+        }
+
+        function addDonor() {
+            var donorDiv = document.createElement('div');
+            donorDiv.innerHTML = '<input type="text" name="donors" placeholder="Donor Name"> <input type="text" name="donations" placeholder="Donations (comma-separated)">';
+            document.getElementById('donors').appendChild(donorDiv);
+        }
+    </script>
+</body>
+</html>
