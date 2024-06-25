@@ -26,7 +26,10 @@ logger = logging.getLogger(__name__)
 def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selection_procedure: callable, eligible_fn: callable,
                     no_eligible_project_procedure: callable, inclusive_maximality_postprocedure: callable) -> BudgetAllocation:
     """
-    The CSTV (Cumulative Support Transfer Voting) budgeting algorithm to select projects based on donor ballots.
+    The CSTV (Cumulative Support Transfer Voting) budgeting algorithm determines project funding based on cumulative support from donor ballots.
+    This function evaluates a list of projects and donor profiles, selecting projects for funding according to the CSTV methodology. 
+    It employs various procedures for project selection, eligibility determination, and handling of scenarios where no eligible projects exist or to ensure inclusive maximality.
+    You can read more about the algorithm in sections 4 and 5 in the paper here: https://arxiv.org/pdf/2009.02690 in sections 4 and 5.
 
     Parameters
     ----------
@@ -651,5 +654,4 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod()
     regular_example()
-    
     

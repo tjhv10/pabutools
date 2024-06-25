@@ -282,6 +282,30 @@ performances, one should use the following:
     )
 
 
+CSTV Algorithm
+--------------
+
+:py:func:`~pabutools.rules.cstv.cstv`
+
+The `cstv` function implements the Cost-Sensitive Approval Voting algorithm for participatory budgeting. It takes into account both voter preferences and project costs to allocate budgets efficiently.
+
+.. code-block:: python
+
+    from pabutools.election import Instance, Project, ApprovalProfile, ApprovalBallot
+    from pabutools.rules import cstv
+
+    projects = Instance(Project("Project A", 35), Project("Project B", 30))
+    instance = Instance(projects)
+
+    donors = Profile([CumulativeBallot({"Project A": 5, "Project B": 10), CumulativeBallot({"Project A": 5, "Project B": 10), CumulativeBallot({"Project A": 0, "Project B": 15), CumulativeBallot({"Project A": 8, "Project B": 7}), CumulativeBallot({"Project A": 10, "Project B": 5)])
+    outcome1 = cstv_allocation(instance, profile1)
+
+Details for the Budget Allocation Rule
+--------------------------------------
+
+The `cstv` function returns a :py:class:`~pabutools.rules.budgetallocation.BudgetAllocation` object, which includes information about the allocated budget and can be used for further analysis or visualization.
+
+
 Exhaustion Methods
 ------------------
 
