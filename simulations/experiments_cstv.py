@@ -126,7 +126,6 @@ def exp_time():
         }
 
         for combination in input_ranges['combination']:
-            print(combination)
             start_time = time.time()
             ex.run(cstv_budgeting_combination_exp, {"donors": donorsl, "projects": projectsl, "combination": [combination]})
             end_time = time.time()
@@ -206,4 +205,4 @@ def exp_with_variations():
 # Run the experiments
 logging.basicConfig(level=logging.INFO)
 exp_time()
-# exp_with_variations()
+exp_with_variations()
