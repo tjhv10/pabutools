@@ -298,7 +298,8 @@ The `cstv` function implements the Cost-Sensitive Approval Voting algorithm for 
     instance = Instance(projects)
 
     donors = Profile([CumulativeBallot({"Project A": 5, "Project B": 10), CumulativeBallot({"Project A": 5, "Project B": 10), CumulativeBallot({"Project A": 0, "Project B": 15), CumulativeBallot({"Project A": 8, "Project B": 7}), CumulativeBallot({"Project A": 10, "Project B": 5)])
-    outcome1 = cstv_allocation(instance, profile1)
+    alg_str = "ewt" # Look in the paper that is the insperation for this code in section 5.6
+    outcome1 = cstv_budgeting_combination(instance, donors, alg_str)
 
 Details for the Budget Allocation Rule
 --------------------------------------
