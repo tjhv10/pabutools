@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 import copy
 from experiments_csv import Experiment
 
-def old_minimal_transfer(donors: list[CumulativeBallot], projects: Instance, eliminated_projects: Instance, project_to_fund_selection_procedure:callable) -> Instance:
-    chosen_project = project_to_fund_selection_procedure(donors, projects)
+def old_minimal_transfer(projects: Instance, donors: list[CumulativeBallot], eliminated_projects: Instance, project_to_fund_selection_procedure:callable) -> Instance:
+    chosen_project = project_to_fund_selection_procedure(projects, donors)
     r = sum(donor.get(chosen_project.name, 0) for donor in donors) / chosen_project.cost
     donors_of_selected_project = [donor for donor in donors if (donor.get(chosen_project.name, 0)) > 0]
     while r < 1:
@@ -38,12 +38,11 @@ def old_minimal_transfer(donors: list[CumulativeBallot], projects: Instance, eli
         r = sum(donor.get(chosen_project.name, 0) for donor in donors) / chosen_project.cost
     return True
 
-def improved_minimal_transfer(donors: list[CumulativeBallot], projects: Instance, eliminated_projects: Instance, project_to_fund_selection_procedure: callable) -> bool:
-    chosen_project = project_to_fund_selection_procedure(donors, projects)
+def improved_minimal_transfer(projects: Instance, donors: list[CumulativeBallot],  eliminated_projects: Instance, project_to_fund_selection_procedure: callable) -> bool:
+    chosen_project = project_to_fund_selection_procedure(projects,donors)
     # 1. Simplified and descriptive variable names
     project_name = chosen_project.name
     project_cost = chosen_project.cost
-
     # 2. Clear initial support calculation
     total_support = sum(donor.get(project_name, 0) for donor in donors)
     r = total_support / project_cost
@@ -82,24 +81,24 @@ def improved_minimal_transfer(donors: list[CumulativeBallot], projects: Instance
 
     return True
 
-def cstv_budgeting_combination_exp(donors: list[CumulativeBallot], projects: Instance, combination: str) -> dict[str, Instance]:
+def cstv_budgeting_combination_exp(projects: Instance, donors: list[CumulativeBallot], combination: str) -> dict[str, Instance]:
     projects = copy.deepcopy(projects)
     donors = copy.deepcopy(donors)
     combination = combination.lower()
     if combination == "ewt":
-        result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
+        result = cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
     elif combination == "improved_mt":
-        result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, improved_minimal_transfer, acceptance_of_undersupported_projects)
+        result = cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, improved_minimal_transfer, acceptance_of_undersupported_projects)
     elif combination == "old_mt":
-        result = cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, old_minimal_transfer, acceptance_of_undersupported_projects)
+        result = cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, old_minimal_transfer, acceptance_of_undersupported_projects)
     else:
         raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
     
     return {combination: result}
 
-def exp():
+def exp_time():
     initial_num_projects = 100
-    step = 10
+    step = 100
     max_time = 60  # Max time in seconds for each run
 
     ex = Experiment("simulations/results","results.csv","simulations/backup_results")
@@ -128,7 +127,7 @@ def exp():
 
         for combination in combinations:
             start_time = time.time()
-            ex.run(cstv_budgeting_combination_exp, {"donors": donorsl, "projects": projectsl, "combination": [combination]})
+            ex.run(cstv_budgeting_combination_exp, {"projects": projectsl, "donors": donorsl, "combination": [combination]})
             end_time = time.time()
             duration = end_time - start_time
 
@@ -159,6 +158,79 @@ def exp():
     plt.grid(True)
     plt.show()
 
+def exp_with_variations():
+    initial_num_projects = 100
+    step = 100
+    max_time = 10  # Max time in seconds for each run
+
+    ex = Experiment("simulations/results", "results.csv", "simulations/backup_results")
+    ex.logger.setLevel(logging.CRITICAL)
+    ex.clear_previous_results()
+
+    def generate_donations(total, num_projects):
+        donations = [0] * num_projects
+        for _ in range(total):
+            donations[random.randint(0, num_projects - 1)] += 1
+        return donations
+
+    variations = [
+        {"num_donors": 50, "total_donations": 300},
+        {"num_donors": 100, "total_donations": 600},
+        {"num_donors": 150, "total_donations": 900}
+    ]
+
+    for variation in variations:
+        num_donors = variation["num_donors"]
+        total_donations = variation["total_donations"]
+
+        timings = {"ewt": [], "improved_mt": [], "old_mt": []}
+        max_projects_handled = {"ewt": 0, "improved_mt": 0, "old_mt": 0}
+        combinations = ["ewt", "improved_mt", "old_mt"]
+
+        num_projects = initial_num_projects
+        while True:
+            projects = Instance([Project(f"Project_{i}", random.randint(100, 1000)) for i in range(num_projects)])
+            donors = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(total_donations, num_projects))}) for _ in range(num_donors)]
+
+            donorsl = [donors]
+            projectsl = [projects]
+
+            all_within_time_limit = True
+
+            for combination in combinations:
+                start_time = time.time()
+                ex.run(cstv_budgeting_combination_exp, {"projects": projectsl, "donors": donorsl, "combination": [combination]})
+                end_time = time.time()
+                duration = end_time - start_time
+
+                if duration <= max_time:
+                    max_projects_handled[combination] = num_projects
+                else:
+                    all_within_time_limit = False
+
+                timings[combination].append(duration)
+
+            if not all_within_time_limit:
+                break
+
+            num_projects += step
+
+        # Print the results for the current variation
+        print(f"Variation: {variation}")
+        for combination, max_projects in max_projects_handled.items():
+            print(f"Maximum number of projects {combination} can handle in 60 seconds: {max_projects}")
+
+        # Plotting the results for the current variation
+        for combination, times in timings.items():
+            plt.plot(range(initial_num_projects, num_projects, step), times, label=f"{combination}")
+
+        plt.xlabel("Number of Projects")
+        plt.ylabel("Time (seconds)")
+        plt.title(f"Time Taken for Different Combinations with Increasing Projects\nVariation: {variation}")
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
 # Run the experiment
-logging.basicConfig(level=logging.CRITICAL)
-exp()
+logging.basicConfig(level=logging.INFO)
+exp_with_variations()

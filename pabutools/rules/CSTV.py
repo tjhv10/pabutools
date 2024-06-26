@@ -8,10 +8,8 @@ Date: 2024/05/16.
 
 from decimal import ROUND_UP, Decimal
 import logging
-import re
 from pabutools.election import Project, CumulativeBallot, Instance, Profile
 from pabutools.rules.budgetallocation import BudgetAllocation
-import random
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +24,10 @@ logger = logging.getLogger(__name__)
 def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selection_procedure: callable, eligible_fn: callable,
                     no_eligible_project_procedure: callable, inclusive_maximality_postprocedure: callable) -> BudgetAllocation:
     """
-    The CSTV (Cumulative Support Transfer Voting) budgeting algorithm to select projects based on donor ballots.
+    The CSTV (Cumulative Support Transfer Voting) budgeting algorithm determines project funding based on cumulative support from donor ballots.
+    This function evaluates a list of projects and donor profiles, selecting projects for funding according to the CSTV methodology. 
+    It employs various procedures for project selection, eligibility determination, and handling of scenarios where no eligible projects exist or to ensure inclusive maximality.
+    You can read more about the algorithm in sections 4 and 5 in the paper here: https://arxiv.org/pdf/2009.02690 in sections 4 and 5.
 
     Parameters
     ----------
@@ -67,6 +68,7 @@ def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selectio
     >>> len(cstv_budgeting(projects, donors, project_to_fund_selection_procedure, eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure))
     3
     """
+
     # Check if all donors donate the same amount
     if not len(set([sum(donor.values()) for donor in donors])) == 1:
         logger.warning("Not all donors donate the same amount. Change the donations and try again.")
@@ -98,7 +100,6 @@ def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selectio
         # Determine eligible projects for funding
         eligible_projects = eligible_fn(projects, donors)
         logger.debug("Eligible projects: %s", [project.name for project in eligible_projects])
-
         # If no eligible projects, execute the no-eligible-project procedure
         while not eligible_projects:
             flag = no_eligible_project_procedure(projects, donors, eliminated_projects, project_to_fund_selection_procedure)
@@ -362,7 +363,7 @@ def elimination_with_transfers(projects: Instance, donors: Profile, eliminated_p
     >>> print(donor2["Project C"])
     5.0
     """
-    def distribute_project_support(projects: Instance, donors: Profile, eliminated_project: Project) -> bool:
+    def distribute_project_support(projects: Instance, donors: Profile, eliminated_project: Project) -> Instance:
         """
         Distributes the support of an eliminated project to the remaining projects.
 
@@ -406,7 +407,7 @@ def elimination_with_transfers(projects: Instance, donors: Profile, eliminated_p
                     donor[key] = donation + toDistribute * part
                     donor[eliminated_name] = 0 
         
-        return BudgetAllocation(projects)
+        return projects
     
 
     if len(projects) < 2:
@@ -620,19 +621,19 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
     >>> donor5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0})
     >>> donors = [donor1, donor2, donor3, donor4, donor5]
     >>> combination = "ewt"
-    >>> print(len(cstv_budgeting_combination(donors, instance, combination)))
+    >>> print(len(cstv_budgeting_combination(instance, donors, combination)))
     3
     """
     
     combination = combination.lower()
     if combination == "ewt":
-        return cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
+        return cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
     elif combination == "ewtc":
-        return cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)
+        return cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)
     elif combination == "mt":
-        return cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects)
+        return cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects)
     elif combination == "mtc":
-        return cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects)
+        return cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects)
     else:
         raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
 
@@ -640,7 +641,7 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
 def regular_example():
     instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
     donors = Profile([CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})])
-    selected_projects = cstv_budgeting_combination(donors, instance,"mt")
+    selected_projects = cstv_budgeting_combination(instance, donors, "mt")
     print("Regular example:")
     if selected_projects:
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
@@ -651,5 +652,4 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod()
     regular_example()
-    
     
