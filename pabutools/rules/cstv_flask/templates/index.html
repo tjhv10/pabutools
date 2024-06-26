@@ -29,9 +29,8 @@
         <button type="button" onclick="addProject()">Add Project</button>
         
         <h2>Donors</h2>
-        <div id="donors">
+        <div id="Donations">
             <div>
-                <input type="text" name="donors" placeholder="Donor Name" required>
                 <input type="text" name="donations" placeholder="Donations: example: 30,20" required>
             </div>
         </div>
@@ -49,7 +48,7 @@
 
         function addDonor() {
             var donorDiv = document.createElement('div');
-            donorDiv.innerHTML = '<input type="text" name="donors" placeholder="Donor Name" required> <input type="text" name="donations" placeholder="Donations (comma-separated)" required>';
+            donorDiv.innerHTML = '<input type="text" name="donations" placeholder="Donations (comma-separated)" required>';
             document.getElementById('donors').appendChild(donorDiv);
         }
 
@@ -64,7 +63,7 @@
                 
                 if (donations.length !== projectCount) {
                     alert('The number of donations for donor ' + (i + 1) + ' does not match the number of projects.');
-                    event.preventDefault(); // Prevent form submission
+                    event.preventDefault();
                     return false;
                 }
             }

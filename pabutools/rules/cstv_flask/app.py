@@ -8,7 +8,6 @@ def index():
     if request.method == 'POST':
         projects = request.form.getlist('projects')
         costs = request.form.getlist('costs')
-        donors_data = request.form.getlist('donors')
         donations_data = request.form.getlist('donations')
 
         # Convert inputs to appropriate structures
