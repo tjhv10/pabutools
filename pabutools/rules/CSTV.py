@@ -8,11 +8,8 @@ Date: 2024/05/16.
 
 from decimal import ROUND_UP, Decimal
 import logging
-import re
 from pabutools.election import Project, CumulativeBallot, Instance, Profile
 from pabutools.rules.budgetallocation import BudgetAllocation
-import random
-
 
 logger = logging.getLogger(__name__)
 
