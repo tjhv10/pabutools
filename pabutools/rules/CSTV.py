@@ -647,9 +647,9 @@ def regular_example():
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
 
     
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    import doctest
-    doctest.testmod()
-    regular_example()
+# if __name__ == "__main__":
+#     logging.basicConfig(level=logging.INFO)
+#     import doctest
+#     doctest.testmod()
+#     regular_example()
     
