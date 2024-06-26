@@ -205,6 +205,7 @@ def exp_with_variations():
         plt.grid(True)
         plt.show()
 
-# Run the experiment
+# Run the experiments
 logging.basicConfig(level=logging.INFO)
+exp_time()
 exp_with_variations()
