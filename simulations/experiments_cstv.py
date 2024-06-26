@@ -99,7 +99,7 @@ def cstv_budgeting_combination_exp(donors: list[CumulativeBallot], projects: Ins
 
 def exp():
     initial_num_projects = 100
-    step = 10
+    step = 100
     max_time = 60  # Max time in seconds for each run
 
     ex = Experiment("simulations/results","results.csv","simulations/backup_results")
