@@ -8,10 +8,8 @@ Date: 2024/05/16.
 
 from decimal import ROUND_UP, Decimal
 import logging
-import re
 from pabutools.election import Project, CumulativeBallot, Instance, Profile
 from pabutools.rules.budgetallocation import BudgetAllocation
-import random
 
 
 logger = logging.getLogger(__name__)
@@ -623,7 +621,7 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
     >>> donor5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0})
     >>> donors = [donor1, donor2, donor3, donor4, donor5]
     >>> combination = "ewt"
-    >>> print(len(cstv_budgeting_combination(donors, instance, combination)))
+    >>> print(len(cstv_budgeting_combination(instance, donors, combination)))
     3
     """
     
@@ -643,7 +641,7 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
 def regular_example():
     instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
     donors = Profile([CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})])
-    selected_projects = cstv_budgeting_combination(donors, instance,"mt")
+    selected_projects = cstv_budgeting_combination(instance, donors, "mt")
     print("Regular example:")
     if selected_projects:
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
