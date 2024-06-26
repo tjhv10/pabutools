@@ -171,7 +171,6 @@ def exp_with_variations():
         total_donations = variation["total_donations"]
 
         timings = {"ewt": [], "improved_mt": [], "old_mt": []}
-        max_projects_handled = {"ewt": 0, "improved_mt": 0, "old_mt": 0}
         combinations = ["ewt", "improved_mt", "old_mt"]
 
         num_projects = initial_num_projects
@@ -188,7 +187,6 @@ def exp_with_variations():
                 end_time = time.time()
                 duration = end_time - start_time
 
-                max_projects_handled[combination] = num_projects
                 timings[combination].append(duration)
 
             num_projects += step        
