@@ -6,13 +6,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
     <h1>Enter Projects and Donors</h1>
-    <form action="/" method="POST">
+    <h2>The sum of donations of each donor should be the same!</h2>
+    <h2>The number of donotions for each donor should be equals to the number of projects!</h2>
+    <form id="fundingForm" action="/" method="POST">
         <h2>Projects</h2>
         <div id="projects">
             <div>
-                <input type="text" name="projects" placeholder="Project Name">
-                <input type="number" name="costs" placeholder="Cost">
+                <input type="text" name="projects" placeholder="Project Name" required>
+                <input type="number" name="costs" placeholder="Cost" required>
             </div>
         </div>
         <button type="button" onclick="addProject()">Add Project</button>
@@ -20,26 +31,58 @@
         <h2>Donors</h2>
         <div id="donors">
             <div>
-                <input type="text" name="donors" placeholder="Donor Name">
-                <input type="text" name="donations" placeholder="Donations (comma-separated)">
+                <input type="text" name="donors" placeholder="Donor Name" required>
+                <input type="text" name="donations" placeholder="Donations: example: 30,20" required>
             </div>
         </div>
         <button type="button" onclick="addDonor()">Add Donor</button>
-
+        <br>
         <button type="submit">Submit</button>
     </form>
 
     <script>
         function addProject() {
             var projectDiv = document.createElement('div');
-            projectDiv.innerHTML = '<input type="text" name="projects" placeholder="Project Name"> <input type="number" name="costs" placeholder="Cost">';
+            projectDiv.innerHTML = '<input type="text" name="projects" placeholder="Project Name" required> <input type="number" name="costs" placeholder="Cost" required>';
             document.getElementById('projects').appendChild(projectDiv);
         }
 
         function addDonor() {
             var donorDiv = document.createElement('div');
-            donorDiv.innerHTML = '<input type="text" name="donors" placeholder="Donor Name"> <input type="text" name="donations" placeholder="Donations (comma-separated)">';
+            donorDiv.innerHTML = '<input type="text" name="donors" placeholder="Donor Name" required> <input type="text" name="donations" placeholder="Donations (comma-separated)" required>';
             document.getElementById('donors').appendChild(donorDiv);
+        }
+
+        document.getElementById('fundingForm').onsubmit = function(event) {
+            var projects = document.querySelectorAll('#projects > div');
+            var donors = document.querySelectorAll('#donors > div');
+            var projectCount = projects.length;
+            
+            // Ensure each donor's donations match the number of projects
+            for (var i = 0; i < donors.length; i++) {
+                var donations = donors[i].querySelector('input[name="donations"]').value.split(',').map(Number);
+                
+                if (donations.length !== projectCount) {
+                    alert('The number of donations for donor ' + (i + 1) + ' does not match the number of projects.');
+                    event.preventDefault(); // Prevent form submission
+                    return false;
+                }
+            }
+            
+            var firstDonorDonations = donors[0].querySelector('input[name="donations"]').value.split(',').map(Number);
+            var expectedTotal = firstDonorDonations.reduce((a, b) => a + b, 0);
+
+            for (var i = 1; i < donors.length; i++) {
+                var donations = donors[i].querySelector('input[name="donations"]').value.split(',').map(Number);
+                var donationSum = donations.reduce((a, b) => a + b, 0);
+
+                if (expectedTotal !== donationSum) {
+                    alert('Total donation amount does not match the sum of donations for donor ' + (i + 1));
+                    event.preventDefault(); // Prevent form submission
+                    return false;
+                }
+            }
+            return true; // Allow form submission if all checks pass
         }
     </script>
 </body>
