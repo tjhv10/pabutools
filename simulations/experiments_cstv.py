@@ -98,7 +98,7 @@ def cstv_budgeting_combination_exp(projects: Instance, donors: list[CumulativeBa
 
 def exp_time():
     initial_num_projects = 100
-    max_num_projects = 1000
+    max_num_projects = 400
     step = 100
     
     ex = Experiment("simulations/results","results.csv","simulations/backup_results")
@@ -206,4 +206,4 @@ def exp_with_variations():
 # Run the experiments
 logging.basicConfig(level=logging.INFO)
 exp_time()
-exp_with_variations()
+# exp_with_variations()
