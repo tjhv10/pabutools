@@ -462,7 +462,15 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
     >>> print(donor2["Project B"])
     0
     """
-    chosen_project = project_to_fund_selection_procedure(projects, donors)
+    
+    projects_with_chance = []
+    for project in projects:
+        donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(project.name, 0) > 0]
+        if sum(donors_of_selected_project) >= project.cost:
+            projects_with_chance.append(project)
+
+    chosen_project = project_to_fund_selection_procedure(projects_with_chance, donors)
+    donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(chosen_project.name, 0) > 0]
     logger.debug(f"Selected project for minimal transfer: {chosen_project.name}")
 
     project_name = chosen_project.name
@@ -472,10 +480,11 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
     total_support = sum(donor.get(project_name, 0) for donor in donors)
     r = total_support / project_cost
 
-    donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(project_name, 0) > 0]
+    
 
     # Loop until the required support is achieved
     while r < 1:
+        print(r)
         # Check if all donors have their entire donation on the chosen project
         all_on_chosen_project = all(
             float(Decimal(str(sum(donors[i].values()))).quantize(Decimal('1e-5'))) ==
@@ -484,14 +493,14 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
         )
 
         if all_on_chosen_project:
-            eliminated_projects.add(chosen_project)
+            for p in projects:
+                eliminated_projects.add(p)
             return False
 
         for i in donors_of_selected_project:
             donor = donors[i]
             total = sum(donor.values()) - donor.get(project_name, 0)
             donation = donor.get(project_name, 0)
-
             if total > 0:
                 to_distribute = min(total, donation / r - donation)
                 for proj_name, proj_donation in donor.items():
@@ -578,8 +587,10 @@ def acceptance_of_undersupported_projects(S: Instance, donors: Profile, eliminat
     2
     """
     logger.debug("Performing inclusive maximality postprocedure: AUP")
+    print(eliminated_projects)
     while len(eliminated_projects) != 0:
         selected_project = project_to_fund_selection_procedure(eliminated_projects, donors, True)
+        print(selected_project.cost,budget)
         if selected_project.cost <= budget:
             S.add(selected_project)
             eliminated_projects.remove(selected_project)
@@ -626,13 +637,13 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
     
     combination = combination.lower()
     if combination == "ewt":
-        return cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
+        return cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations)
     elif combination == "ewtc":
-        return cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)
+        return cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations)
     elif combination == "mt":
-        return cstv_budgeting(donors, projects, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects)
+        return cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects)
     elif combination == "mtc":
-        return cstv_budgeting(donors, projects, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects)
+        return cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects)
     else:
         raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
 
@@ -647,8 +658,24 @@ def regular_example():
 
     
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    import doctest
+    logging.basicConfig(level=logging.DEBUG)
+    import doctest, random
     doctest.testmod()
-    regular_example()
+    # regular_example()
+    for alg_str in ["mt"]:
+            Projects = [Project(f"Project_{i}", random.randint(100, 1000)) for i in range(100)]
+            # Function to generate a list of donations that sum to total_donation
+            def generate_donations(total, num_projects):
+                donations = [0] * num_projects
+                for _ in range(total):
+                    donations[random.randint(0, num_projects - 1)] += 1
+                return donations
+            # Generate the donations for each donor
+            donors = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(20, len(Projects)))})for _ in range(100)]
+            num_projects = len(Projects)
+            positive_excess = sum(1 for p in Projects if sum(donor.get(p.name, 0) for donor in donors) - p.cost >= 0)
+            support = sum(sum(donor.values()) for donor in donors)
+            selected_projects = cstv_budgeting_combination(Projects, donors, alg_str)
+            total_cost = sum(project.cost for project in selected_projects)
+            print(total_cost)
     
