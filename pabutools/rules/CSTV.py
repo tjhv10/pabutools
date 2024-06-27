@@ -6,11 +6,13 @@ Date: 2024/05/16.
 """
 
 
+import copy
 from decimal import ROUND_UP, Decimal
 import logging
+
+import numpy as np
 from pabutools.election import Project, CumulativeBallot, Instance, Profile
 from pabutools.rules.budgetallocation import BudgetAllocation
-
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +70,6 @@ def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selectio
     >>> len(cstv_budgeting(projects, donors, project_to_fund_selection_procedure, eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure))
     3
     """
-
     # Check if all donors donate the same amount
     if not len(set([sum(donor.values()) for donor in donors])) == 1:
         logger.warning("Not all donors donate the same amount. Change the donations and try again.")
@@ -100,6 +101,7 @@ def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selectio
         # Determine eligible projects for funding
         eligible_projects = eligible_fn(projects, donors)
         logger.debug("Eligible projects: %s", [project.name for project in eligible_projects])
+
         # If no eligible projects, execute the no-eligible-project procedure
         while not eligible_projects:
             flag = no_eligible_project_procedure(projects, donors, eliminated_projects, project_to_fund_selection_procedure)
@@ -278,8 +280,9 @@ def select_project_GE(projects: Instance, donors: Profile, impFlag:bool = False)
     >>> select_project_GE([project_A, project_B], [donor1, donor2]).name
     'Project B'
     """
-    
+    # print(projects)
     excess_support = {project: sum(donor.get(project.name, 0) for donor in donors) - project.cost for project in projects}
+    # print(excess_support)
     max_excess_project = max(excess_support, key=excess_support.get)
     if impFlag:
         logger.debug(f"Selected project by GE method in inclusive maximality postprocedure: {max_excess_project.name}")
@@ -463,7 +466,16 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
     >>> print(donor2["Project B"])
     0
     """
-    chosen_project = project_to_fund_selection_procedure(projects, donors)
+    
+    projects_with_chance = []
+    for project in projects:
+        donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(project.name, 0) > 0]
+        if sum(donors_of_selected_project) >= project.cost:
+            projects_with_chance.append(project)
+    if not projects_with_chance:
+        return False
+    chosen_project = project_to_fund_selection_procedure(projects_with_chance, donors)
+    donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(chosen_project.name, 0) > 0]
     logger.debug(f"Selected project for minimal transfer: {chosen_project.name}")
 
     project_name = chosen_project.name
@@ -473,33 +485,31 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
     total_support = sum(donor.get(project_name, 0) for donor in donors)
     r = total_support / project_cost
 
-    donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(project_name, 0) > 0]
+    
 
     # Loop until the required support is achieved
     while r < 1:
         # Check if all donors have their entire donation on the chosen project
         all_on_chosen_project = all(
-            float(Decimal(str(sum(donors[i].values()))).quantize(Decimal('1e-5'))) ==
-            float(Decimal(str(donors[i].get(project_name, 0))).quantize(Decimal('1e-5')))
-            for i in donors_of_selected_project
-        )
+            sum(donors[i].values()) == donors[i].get(project_name, 0)
+            for i in donors_of_selected_project)
 
         if all_on_chosen_project:
-            eliminated_projects.add(chosen_project)
+            for project in projects:
+                eliminated_projects.add(copy.deepcopy(project))
             return False
 
         for i in donors_of_selected_project:
             donor = donors[i]
             total = sum(donor.values()) - donor.get(project_name, 0)
             donation = donor.get(project_name, 0)
-
             if total > 0:
                 to_distribute = min(total, donation / r - donation)
                 for proj_name, proj_donation in donor.items():
                     if proj_name != project_name and proj_donation > 0:
                         change = to_distribute * proj_donation / total
                         donor[proj_name] -= change
-                        donor[project_name] += float(Decimal(str(change)).quantize(Decimal('1e-14'), rounding=ROUND_UP))
+                        donor[project_name] += np.ceil(change * 1000000000000000) / 1000000000000000
 
         # Recalculate the support ratio
         total_support = sum(donor.get(project_name, 0) for donor in donors)
@@ -579,8 +589,10 @@ def acceptance_of_undersupported_projects(S: Instance, donors: Profile, eliminat
     2
     """
     logger.debug("Performing inclusive maximality postprocedure: AUP")
+    # print(eliminated_projects)
     while len(eliminated_projects) != 0:
         selected_project = project_to_fund_selection_procedure(eliminated_projects, donors, True)
+        # print(selected_project.cost,budget)
         if selected_project.cost <= budget:
             S.add(selected_project)
             eliminated_projects.remove(selected_project)
@@ -621,7 +633,7 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
     >>> donor5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0})
     >>> donors = [donor1, donor2, donor3, donor4, donor5]
     >>> combination = "ewt"
-    >>> print(len(cstv_budgeting_combination(instance, donors, combination)))
+    >>> print(len(cstv_budgeting_combination(donors, instance, combination)))
     3
     """
     
@@ -641,15 +653,31 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
 def regular_example():
     instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
     donors = Profile([CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})])
-    selected_projects = cstv_budgeting_combination(instance, donors, "mt")
+    selected_projects = cstv_budgeting_combination(donors, instance,"mt")
     print("Regular example:")
     if selected_projects:
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
 
     
-# if __name__ == "__main__":
-#     logging.basicConfig(level=logging.INFO)
-#     import doctest
-#     doctest.testmod()
-#     regular_example()
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    import doctest, random
+    doctest.testmod()
+    # regular_example()
+    for alg_str in ["mt"]:
+            Projects = [Project(f"Project_{i}", random.randint(100, 1000)) for i in range(100)]
+            # Function to generate a list of donations that sum to total_donation
+            def generate_donations(total, num_projects):
+                donations = [0] * num_projects
+                for _ in range(total):
+                    donations[random.randint(0, num_projects - 1)] += 1
+                return donations
+            # Generate the donations for each donor
+            donors = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(20, len(Projects)))})for _ in range(100)]
+            num_projects = len(Projects)
+            positive_excess = sum(1 for p in Projects if sum(donor.get(p.name, 0) for donor in donors) - p.cost >= 0)
+            support = sum(sum(donor.values()) for donor in donors)
+            selected_projects = cstv_budgeting_combination(Projects, donors, alg_str)
+            total_cost = sum(project.cost for project in selected_projects)
+            print(total_cost)
     
