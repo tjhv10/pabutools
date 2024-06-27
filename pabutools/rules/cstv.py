@@ -6,8 +6,11 @@ Date: 2024/05/16.
 """
 
 
+import copy
 from decimal import ROUND_UP, Decimal
 import logging
+
+import numpy as np
 from pabutools.election import Project, CumulativeBallot, Instance, Profile
 from pabutools.rules.budgetallocation import BudgetAllocation
 
@@ -277,8 +280,9 @@ def select_project_GE(projects: Instance, donors: Profile, impFlag:bool = False)
     >>> select_project_GE([project_A, project_B], [donor1, donor2]).name
     'Project B'
     """
-    
+    # print(projects)
     excess_support = {project: sum(donor.get(project.name, 0) for donor in donors) - project.cost for project in projects}
+    # print(excess_support)
     max_excess_project = max(excess_support, key=excess_support.get)
     if impFlag:
         logger.debug(f"Selected project by GE method in inclusive maximality postprocedure: {max_excess_project.name}")
@@ -468,7 +472,8 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
         donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(project.name, 0) > 0]
         if sum(donors_of_selected_project) >= project.cost:
             projects_with_chance.append(project)
-
+    if not projects_with_chance:
+        return False
     chosen_project = project_to_fund_selection_procedure(projects_with_chance, donors)
     donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(chosen_project.name, 0) > 0]
     logger.debug(f"Selected project for minimal transfer: {chosen_project.name}")
@@ -484,17 +489,14 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
 
     # Loop until the required support is achieved
     while r < 1:
-        print(r)
         # Check if all donors have their entire donation on the chosen project
         all_on_chosen_project = all(
-            float(Decimal(str(sum(donors[i].values()))).quantize(Decimal('1e-5'))) ==
-            float(Decimal(str(donors[i].get(project_name, 0))).quantize(Decimal('1e-5')))
-            for i in donors_of_selected_project
-        )
+            sum(donors[i].values()) == donors[i].get(project_name, 0)
+            for i in donors_of_selected_project)
 
         if all_on_chosen_project:
-            for p in projects:
-                eliminated_projects.add(p)
+            for project in projects:
+                eliminated_projects.add(copy.deepcopy(project))
             return False
 
         for i in donors_of_selected_project:
@@ -507,7 +509,7 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
                     if proj_name != project_name and proj_donation > 0:
                         change = to_distribute * proj_donation / total
                         donor[proj_name] -= change
-                        donor[project_name] += float(Decimal(str(change)).quantize(Decimal('1e-14'), rounding=ROUND_UP))
+                        donor[project_name] += np.ceil(change * 1000000000000000) / 1000000000000000
 
         # Recalculate the support ratio
         total_support = sum(donor.get(project_name, 0) for donor in donors)
@@ -587,10 +589,10 @@ def acceptance_of_undersupported_projects(S: Instance, donors: Profile, eliminat
     2
     """
     logger.debug("Performing inclusive maximality postprocedure: AUP")
-    print(eliminated_projects)
+    # print(eliminated_projects)
     while len(eliminated_projects) != 0:
         selected_project = project_to_fund_selection_procedure(eliminated_projects, donors, True)
-        print(selected_project.cost,budget)
+        # print(selected_project.cost,budget)
         if selected_project.cost <= budget:
             S.add(selected_project)
             eliminated_projects.remove(selected_project)
