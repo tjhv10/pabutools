@@ -21,8 +21,10 @@ def exp_time():
         "inputs" : he.create_input_1(),
         "combination": ["ewt", "improved_mt", "old_mt", "ewtc", "improved_mtc", "old_mtc"]
     }
+    
     ex.run(he.cstv_budgeting_combination_exp, input_ranges)
-    print(ex.dataFrame)
+    print("exp time: \n", ex.dataFrame)
+    
 
 
 def exp_with_variations():
@@ -34,17 +36,19 @@ def exp_with_variations():
         "combination": ["ewt", "improved_mt", "old_mt", "ewtc", "improved_mtc", "old_mtc"]
     }  
     ex.run(he.cstv_budgeting_combination_exp,input_ranges)
-    print(ex.dataFrame)
+    print("exp with variations:\n", ex.dataFrame)
 
 def exp_para():
     ex = Experiment("simulations/results", "results_para.csv", "simulations/backup_results")
     ex.logger.setLevel(logging.CRITICAL)
     ex.clear_previous_results()
-    donors , selected_projects = he.create_input_3()
+    projects, donors = he.create_input_3()
+    inputs = (copy.deepcopy(projects),copy.deepcopy(donors))
     input_ranges = {
-        "selected_projects" : selected_projects,
-        "donors": [copy.deepcopy(donors)]
-    }  
+        "inputs" : [inputs],
+        "combination": ["improved_mt", "ewt", "old_mt", "ewtc", "improved_mtc", "old_mtc"]
+    }
+    
     ex.run(he.calculate_metrics,input_ranges)
     print(ex.dataFrame)
 
@@ -52,3 +56,4 @@ logging.basicConfig(level=logging.INFO)
 # exp_time()
 # exp_with_variations()
 exp_para()
+

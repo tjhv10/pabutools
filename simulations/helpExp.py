@@ -1,4 +1,5 @@
 import random
+import time
 from pabutools.rules.cstv import *
 import copy
 from experiments_csv import *
@@ -127,33 +128,40 @@ def improved_minimal_transfer(projects: Instance, donors: Profile, eliminated_pr
         r = total_support / project_cost
     return True
 
-def cstv_budgeting_combination_exp(inputs, combination: str) -> dict[str, BudgetAllocation]:
+def cstv_budgeting_combination_exp(inputs, combination: str,para = False) -> dict[str, BudgetAllocation]:
+    
     
     combination = combination.lower()
     projects = copy.deepcopy(inputs[0])
     donors = copy.deepcopy(inputs[1])
+    start_time = time.time()
     if combination == "ewt":
-        result = cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations, lexico_tie_breaking)
+        results = cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations, lexico_tie_breaking)
     elif combination == "improved_mt":
-        result = cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, improved_minimal_transfer, acceptance_of_undersupported_projects, lexico_tie_breaking)
+        results = cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, improved_minimal_transfer, acceptance_of_undersupported_projects, lexico_tie_breaking)
     elif combination == "old_mt":
-        result = cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, old_minimal_transfer, acceptance_of_undersupported_projects, lexico_tie_breaking)
+        results = cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, old_minimal_transfer, acceptance_of_undersupported_projects, lexico_tie_breaking)
     elif combination == "ewtc":
-        result = cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations, lexico_tie_breaking)
+        results = cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations, lexico_tie_breaking)
     elif combination == "old_mtc":
-        result = cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, old_minimal_transfer, acceptance_of_undersupported_projects, lexico_tie_breaking)
+        results = cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, old_minimal_transfer, acceptance_of_undersupported_projects, lexico_tie_breaking)
     elif combination == "improved_mtc":
-        result = cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, improved_minimal_transfer, acceptance_of_undersupported_projects, lexico_tie_breaking)    
+        results = cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, improved_minimal_transfer, acceptance_of_undersupported_projects, lexico_tie_breaking)
     else:
         raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
-    dic = {combination : result}
-    return dic
+    
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"{combination} executed in {elapsed_time:.2f} seconds")
+    if para:
+        return {"results": results}
+    return {"time_taken": elapsed_time}
 
 
 def create_inputs_2():
-    initial_num_projects = 500
-    step = 100
-    max_projects = 1000
+    initial_num_projects = 3
+    step = 1
+    max_projects = 5
 
     
     def generate_donations(total, num_projects):
@@ -203,25 +211,22 @@ def create_input_1():
     return inputs
 
 def create_input_3():
-    
-    
     def generate_donations(total, num_projects):
         donations = [0] * num_projects
         for _ in range(total):
             donations[random.randint(0, num_projects - 1)] += 1
         return donations
 
-    results = []
-    num_projects = 10
+    num_projects = 100
     projects = Instance([Project(f"Project_{i}", random.randint(100, 1000)) for i in range(num_projects)])
     donors = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(300, num_projects))}) for _ in range(num_projects)]
-    for comb in ["improved_mt", "ewt", "old_mt", "ewtc", "improved_mtc", "old_mtc"]:
-        inputs = (projects,donors)
-        results.append(cstv_budgeting_combination_exp(inputs,comb))
-    return donors, results
+    
+    return projects, donors
 
 
-def calculate_metrics(selected_projects, donors):
+def calculate_metrics(inputs, combination):
+    donors = inputs[1]
+    selected_projects = cstv_budgeting_combination_exp(inputs,combination,True)
     total_voters = len(donors)
     # print(total_voters)
     key = next(iter(selected_projects))
@@ -237,4 +242,39 @@ def calculate_metrics(selected_projects, donors):
     vs = sum(voter_satisfaction) / total_voters
     ar = ignored_voters / total_voters
     ac = sum(project.cost for project in selected_projects[key]) / len(selected_projects[key])
-    return {key:(vs, ar, ac)}
+    return {"Voter Satisfaction | Anger Ratio | Average Cost":(vs, ar, ac)}
+
+
+
+
+
+
+
+# def add(self, new_row:dict):
+#         def extract_number_of_projects(data: dict) -> int:
+#         # Extract the string containing project details
+#             project_details = data['inputs'][0]
+
+#             # Use regular expressions to find all occurrences of 'Project_' followed by a number
+#             project_names = re.findall(r'Project_\d+', str(project_details))
+
+#             # Use a set to find unique project names and get the count
+#             unique_projects = set(project_names)
+#             number_of_projects = len(unique_projects)
+        
+#             return number_of_projects
+#         """
+#         Add a data-row whose values exactly match the columns in self.columns.
+#         """
+#         if self.dataFrame is None:
+#             columns = list(new_row.keys())
+#             logger.debug("    Inserting first row: setting columns to %s", columns)
+#             self.dataFrame = pandas.DataFrame(columns=columns)
+#         index_of_new_row = self.dataFrame.shape[0]
+        
+#         new_row['inputs'] = "Projects num: "+str(extract_number_of_projects(new_row))
+        
+#         self.dataFrame.loc[index_of_new_row] = pandas.Series(new_row)
+#         # self.dataFrame.iloc[index_of_new_row] = pandas.Series(dataRow) # IndexError: single positional indexer is out-of-bounds
+#         # self.dataFrame = self.dataFrame.append(pandas.Series(dataRow), ignore_index=True) # This is inefficient! It creates and returns a new dataFrame.
+#         self.to_csv(self.results_file)
