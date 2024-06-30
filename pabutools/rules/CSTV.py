@@ -103,14 +103,13 @@ def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selectio
 
         # If no eligible projects, execute the no-eligible-project procedure
         while not eligible_projects:
-            flag = no_eligible_project_procedure(projects, donors, eliminated_projects, project_to_fund_selection_procedure)
+            flag = no_eligible_project_procedure(projects, donors, eliminated_projects, project_to_fund_selection_procedure,tie_breaking)
             if not flag:
                 # Perform the inclusive maximality postprocedure
-                S = inclusive_maximality_postprocedure(S, donors, eliminated_projects, project_to_fund_selection_procedure, budget)
+                S = inclusive_maximality_postprocedure(S, donors, eliminated_projects, project_to_fund_selection_procedure, budget,tie_breaking)
                 logger.debug("Final selected projects: %s", [project.name for project in S])
                 return BudgetAllocation(S)
             eligible_projects = eligible_fn(projects, donors)
-        
         # Choose one project to fund according to the project-to-fund selection procedure
         p = project_to_fund_selection_procedure(eligible_projects, donors, tie_breaking)
         excess_support = sum(donor.get(p.name, 0) for donor in donors) - p.cost
@@ -344,7 +343,7 @@ def select_project_GSC(projects: Instance, donors: Profile, tie_breaking: TieBre
     
     return max_excess_project
 
-def elimination_with_transfers(projects: Instance, donors: Profile, eliminated_projects: Instance, _:callable) -> bool:
+def elimination_with_transfers(projects: Instance, donors: Profile, eliminated_projects: Instance, _:callable, __: TieBreakingRule) -> bool:
     """
     Eliminates the project with the least excess support and redistributes its support to the remaining projects.
 
@@ -608,10 +607,8 @@ def acceptance_of_undersupported_projects(S: Instance, donors: Profile, eliminat
     [Project A, Project C]
     """
     logger.debug("Performing inclusive maximality postprocedure: AUP")
-    # print(eliminated_projects)
     while len(eliminated_projects) != 0:
         selected_project = project_to_fund_selection_procedure(eliminated_projects, donors, tie_breaking, True)
-        # print(selected_project.cost,budget)
         if selected_project.cost <= budget:
             S.add(selected_project)
             eliminated_projects.remove(selected_project)
@@ -621,7 +618,7 @@ def acceptance_of_undersupported_projects(S: Instance, donors: Profile, eliminat
     return BudgetAllocation(S)
 
 
-def cstv_budgeting_combination(projects: Instance, donors: Profile, combination: str, tie_breaking: TieBreakingRule, resoluteness: bool = True) -> BudgetAllocation:
+def cstv_budgeting_combination(projects: Instance, donors: Profile, combination: str, tie_breaking: TieBreakingRule = lexico_tie_breaking, resoluteness: bool = True) -> BudgetAllocation:
     """
     Runs the CSTV test based on the combination of functions provided.
 
@@ -673,22 +670,26 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
 
 
 def regular_example():
-    instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
+    instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 300)])
     donors = Profile([
         CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), 
         CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), 
-        CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), 
+        CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 0, "Project D": 25}), 
         CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), 
         CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})
         ])    
-    selected_projects = cstv_budgeting_combination(instance, donors, "mt")
-    print("Regular example:")
-    if selected_projects:
-        logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
+    selected_projects = cstv_budgeting_combination(copy.deepcopy(instance), copy.deepcopy(donors), "ewtc")
+    
+    
+
+
+
+
 
     
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     import doctest
-    doctest.testmod()
+    # doctest.testmod()
+    regular_example()
     
