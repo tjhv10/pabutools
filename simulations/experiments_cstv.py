@@ -33,7 +33,7 @@ def exp_with_variations():
     ex.clear_previous_results()
     input_ranges = {
         "inputs" : he.create_inputs_2(),
-        "combination": ["ewt", "improved_mt", "old_mt", "ewtc", "improved_mtc", "old_mtc"]
+        "combination": ["var_ewt", "var_improved_mt", "var_old_mt", "var_ewtc", "var_improved_mtc", "var_old_mtc"]
     }  
     ex.run(he.cstv_budgeting_combination_exp,input_ranges)
     print("exp with variations:\n", ex.dataFrame)
@@ -48,7 +48,6 @@ def exp_para():
         "inputs" : [inputs],
         "combination": ["improved_mt", "ewt", "old_mt", "ewtc", "improved_mtc", "old_mtc"]
     }
-    
     ex.run(he.calculate_metrics,input_ranges)
     print(ex.dataFrame)
 
