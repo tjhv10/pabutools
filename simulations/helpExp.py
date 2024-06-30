@@ -159,9 +159,9 @@ def cstv_budgeting_combination_exp(inputs, combination: str,para = False) -> dic
 
 
 def create_inputs_2():
-    initial_num_projects = 3
-    step = 1
-    max_projects = 5
+    initial_num_projects = 300
+    step = 100
+    max_projects = 500
 
     
     def generate_donations(total, num_projects):

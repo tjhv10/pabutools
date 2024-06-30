@@ -53,7 +53,7 @@ def exp_para():
     print(ex.dataFrame)
 
 logging.basicConfig(level=logging.INFO)
-# exp_time()
-# exp_with_variations()
+exp_time()
+exp_with_variations()
 exp_para()
 
