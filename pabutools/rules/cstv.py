@@ -664,20 +664,5 @@ if __name__ == "__main__":
     import doctest, random
     doctest.testmod()
     # regular_example()
-    for alg_str in ["mt"]:
-            Projects = [Project(f"Project_{i}", random.randint(100, 1000)) for i in range(100)]
-            # Function to generate a list of donations that sum to total_donation
-            def generate_donations(total, num_projects):
-                donations = [0] * num_projects
-                for _ in range(total):
-                    donations[random.randint(0, num_projects - 1)] += 1
-                return donations
-            # Generate the donations for each donor
-            donors = [CumulativeBallot({f"Project_{i}": donation for i, donation in enumerate(generate_donations(20, len(Projects)))})for _ in range(100)]
-            num_projects = len(Projects)
-            positive_excess = sum(1 for p in Projects if sum(donor.get(p.name, 0) for donor in donors) - p.cost >= 0)
-            support = sum(sum(donor.values()) for donor in donors)
-            selected_projects = cstv_budgeting_combination(Projects, donors, alg_str)
-            total_cost = sum(project.cost for project in selected_projects)
-            print(total_cost)
+   
     

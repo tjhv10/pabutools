@@ -95,3 +95,4 @@ class TestFunctions(unittest.TestCase):
             self.assertLessEqual(len(selected_projects), num_projects)  # Ensure the number of selected projects does not exceed the total number of projects
             self.assertGreaterEqual(len(selected_projects), positive_excess)  # Ensure the number of selected projects is at least the number of projects with non-negative excess support
             self.assertGreaterEqual(support, total_cost)  # Ensure the total initial support from donors is at least the total cost of the selected projects
+# unittest.main()
