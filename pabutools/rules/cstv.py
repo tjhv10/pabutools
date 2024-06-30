@@ -5,13 +5,10 @@ Programmer: Achiya Ben Natan
 Date: 2024/05/16.
 """
 
-import copy
-from decimal import ROUND_UP, Decimal
-import logging
-
-import numpy as np
+import copy, logging, numpy as np
 from pabutools.election import Project, CumulativeBallot, Instance, Profile
 from pabutools.rules.budgetallocation import BudgetAllocation
+from pabutools.tiebreaking import *
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selection_procedure: callable, eligible_fn: callable,
-                    no_eligible_project_procedure: callable, inclusive_maximality_postprocedure: callable, resoluteness: bool = True) -> BudgetAllocation:
+                    no_eligible_project_procedure: callable, inclusive_maximality_postprocedure: callable, tie_breaking: TieBreakingRule, resoluteness: bool = True) -> BudgetAllocation:
     """
     The CSTV (Cumulative Support Transfer Voting) budgeting algorithm determines project funding based on cumulative support from donor ballots.
     This function evaluates a list of projects and donor profiles, selecting projects for funding according to the CSTV methodology. 
@@ -69,8 +66,8 @@ def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selectio
     >>> eligible_fn = is_eligible_GE
     >>> no_eligible_project_procedure = elimination_with_transfers
     >>> inclusive_maximality_postprocedure = reverse_eliminations
-    >>> len(cstv_budgeting(projects, donors, project_to_fund_selection_procedure, eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure))
-    3
+    >>> sorted(cstv_budgeting(projects, donors, project_to_fund_selection_procedure, eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure,lexico_tie_breaking))
+    [Project A, Project B, Project C]
     """
     # Check if all donors donate the same amount
     if not len(set([sum(donor.values()) for donor in donors])) == 1:
@@ -78,8 +75,8 @@ def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selectio
         return
 
     # Initialize the set of selected projects and eliminated projects
-    S = Instance([])  
-    eliminated_projects = Instance([])  
+    S = Instance([])
+    eliminated_projects = Instance([])
 
     # Loop until a halting condition is met
     while True:
@@ -90,7 +87,7 @@ def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selectio
         # Halting condition: if there are no more projects to consider
         if not projects:
             # Perform the inclusive maximality postprocedure
-            S = inclusive_maximality_postprocedure(S, donors, eliminated_projects, project_to_fund_selection_procedure, budget)
+            S = inclusive_maximality_postprocedure(S, donors, eliminated_projects, project_to_fund_selection_procedure, budget, tie_breaking)
             logger.debug("Final selected projects: %s", [project.name for project in S])
             return S
         
@@ -115,7 +112,7 @@ def cstv_budgeting(projects: Instance, donors: Profile, project_to_fund_selectio
             eligible_projects = eligible_fn(projects, donors)
         
         # Choose one project to fund according to the project-to-fund selection procedure
-        p = project_to_fund_selection_procedure(eligible_projects, donors)
+        p = project_to_fund_selection_procedure(eligible_projects, donors, tie_breaking)
         excess_support = sum(donor.get(p.name, 0) for donor in donors) - p.cost
         logger.debug("Excess support for %s: %s", p.name, excess_support)
         
@@ -257,7 +254,7 @@ def is_eligible_GSC(projects: Instance, donors: Profile) -> BudgetAllocation:
 
 
 
-def select_project_GE(projects: Instance, donors: Profile, impFlag:bool = False) -> Project:
+def select_project_GE(projects: Instance, donors: Profile, tie_breaking: TieBreakingRule, impFlag: bool = False) -> Project:
     """
     Selects the project with the maximum excess support using the General Election (GE) rule.
 
@@ -267,6 +264,10 @@ def select_project_GE(projects: Instance, donors: Profile, impFlag:bool = False)
         The list of donor ballots.
     projects : Instance
         The list of projects.
+    tie_breaking : TieBreakingRule
+        The tie-breaking rule to use when multiple projects have the same excess support.
+    impFlag : bool, optional
+        Flag indicating if this selection is part of the inclusive maximality postprocedure.
 
     Returns
     -------
@@ -279,22 +280,28 @@ def select_project_GE(projects: Instance, donors: Profile, impFlag:bool = False)
     >>> project_B = Project("Project B", 30)
     >>> donor1 = CumulativeBallot({"Project A": 5, "Project B": 10})
     >>> donor2 = CumulativeBallot({"Project A": 10, "Project B": 0})
-    >>> select_project_GE([project_A, project_B], [donor1, donor2]).name
+    >>> select_project_GE([project_A, project_B], [donor1, donor2], lexico_tie_breaking).name
     'Project B'
     """
-    # print(projects)
     excess_support = {project: sum(donor.get(project.name, 0) for donor in donors) - project.cost for project in projects}
-    # print(excess_support)
-    max_excess_project = max(excess_support, key=excess_support.get)
+    max_excess_value = max(excess_support.values())
+    max_excess_projects = [project for project, excess in excess_support.items() if excess == max_excess_value]
+    
+    if len(max_excess_projects) > 1:
+        max_excess_project = tie_breaking.untie(None, donors, max_excess_projects)
+    else:
+        max_excess_project = max_excess_projects[0]
+        
     if impFlag:
         logger.debug(f"Selected project by GE method in inclusive maximality postprocedure: {max_excess_project.name}")
     else:
         logger.debug(f"Selected project by GE method: {max_excess_project.name}")
+    
     return max_excess_project
 
-def select_project_GSC(projects: Instance, donors: Profile, impFlag:bool = False) -> Project:
+def select_project_GSC(projects: Instance, donors: Profile, tie_breaking: TieBreakingRule, impFlag: bool = False) -> Project:
     """
-    Selects the project with the maximum ratio of support to cost using the Greatest Support to Cost (GSC) rule.
+    Selects the project with the maximum excess support using the General Election (GSC) rule.
 
     Parameters
     ----------
@@ -302,6 +309,10 @@ def select_project_GSC(projects: Instance, donors: Profile, impFlag:bool = False
         The list of donor ballots.
     projects : Instance
         The list of projects.
+    tie_breaking : TieBreakingRule
+        The tie-breaking rule to use when multiple projects have the same excess support.
+    impFlag : bool, optional
+        Flag indicating if this selection is part of the inclusive maximality postprocedure.
 
     Returns
     -------
@@ -310,21 +321,28 @@ def select_project_GSC(projects: Instance, donors: Profile, impFlag:bool = False
 
     Examples
     --------
-    >>> project_A = Project("Project A", 34)
+    >>> project_A = Project("Project A", 36)
     >>> project_B = Project("Project B", 30)
     >>> donor1 = CumulativeBallot({"Project A": 5, "Project B": 10})
     >>> donor2 = CumulativeBallot({"Project A": 10, "Project B": 0})
-    >>> select_project_GSC([project_A, project_B], [donor1, donor2]).name
-    'Project A'
+    >>> select_project_GSC([project_A, project_B], [donor1, donor2], lexico_tie_breaking)
+    Project A
     """
+    excess_support = {project: sum(donor.get(project.name, 0) for donor in donors) / project.cost for project in projects}
+    max_excess_value = max(excess_support.values())
+    max_excess_projects = [project for project, excess in excess_support.items() if excess == max_excess_value]
     
-    ratio_support = {project: sum(donor.get(project.name, 0) for donor in donors) / project.cost for project in projects}
-    max_ratio_project = max(ratio_support, key=ratio_support.get)
-    if impFlag:
-        logger.debug(f"Selected project by GSC method in inclusive maximality postprocedure: {max_ratio_project.name}")
+    if len(max_excess_projects) > 1:
+        max_excess_project = tie_breaking.untie(None, donors, max_excess_projects)
     else:
-        logger.debug(f"Selected project by GSC method: {max_ratio_project.name}")
-    return max_ratio_project
+        max_excess_project = max_excess_projects[0]
+        
+    if impFlag:
+        logger.debug(f"Selected project by GE method in inclusive maximality postprocedure: {max_excess_project.name}")
+    else:
+        logger.debug(f"Selected project by GE method: {max_excess_project.name}")
+    
+    return max_excess_project
 
 def elimination_with_transfers(projects: Instance, donors: Profile, eliminated_projects: Instance, _:callable) -> bool:
     """
@@ -428,7 +446,7 @@ def elimination_with_transfers(projects: Instance, donors: Profile, eliminated_p
     return True
 
 
-def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: Instance, project_to_fund_selection_procedure: callable) -> bool:
+def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: Instance, project_to_fund_selection_procedure: callable, tie_breaking: TieBreakingRule) -> bool:
     """
     Performs minimal transfer of donations to reach the required support for a selected project.
 
@@ -454,7 +472,7 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
     >>> project_B = Project("Project B", 30)
     >>> donor1 = CumulativeBallot({"Project A": 5, "Project B": 10})
     >>> donor2 = CumulativeBallot({"Project A": 30, "Project B": 0})
-    >>> minimal_transfer([project_A, project_B], [donor1, donor2], Instance([]), select_project_GE)
+    >>> minimal_transfer([project_A, project_B], [donor1, donor2], Instance([]), select_project_GE,lexico_tie_breaking)
     True
     >>> print(donor1["Project A"])
     9.999999999999996
@@ -475,7 +493,7 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
             projects_with_chance.append(project)
     if not projects_with_chance:
         return False
-    chosen_project = project_to_fund_selection_procedure(projects_with_chance, donors)
+    chosen_project = project_to_fund_selection_procedure(projects_with_chance, donors,tie_breaking)
     donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(chosen_project.name, 0) > 0]
     logger.debug(f"Selected project for minimal transfer: {chosen_project.name}")
 
@@ -519,7 +537,7 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
 
 
 
-def reverse_eliminations(S: Instance, __:Profile, eliminated_projects: Instance, _:callable, budget: int) -> BudgetAllocation:
+def reverse_eliminations(S: Instance, __:Profile, eliminated_projects: Instance, _:callable, budget: int, ___:TieBreakingRule) -> BudgetAllocation:
     """
     Reverses eliminations of projects if the budget allows.
 
@@ -547,8 +565,8 @@ def reverse_eliminations(S: Instance, __:Profile, eliminated_projects: Instance,
     >>> project_B = Project("Project B", 30)
     >>> selected_projects = Instance([project_A])
     >>> eliminated_projects =  Instance([project_B])
-    >>> len(reverse_eliminations(selected_projects, [], eliminated_projects, None, 30))
-    2
+    >>> sorted(reverse_eliminations(selected_projects, [], eliminated_projects, None, 30,lexico_tie_breaking))
+    [Project A, Project B]
     """
     logger.debug("Performing inclusive maximality postprocedure RE")
     for project in eliminated_projects:
@@ -557,7 +575,7 @@ def reverse_eliminations(S: Instance, __:Profile, eliminated_projects: Instance,
             budget -= project.cost
     return BudgetAllocation(S)
 
-def acceptance_of_undersupported_projects(S: Instance, donors: Profile, eliminated_projects:Instance, project_to_fund_selection_procedure: callable, budget: int) -> BudgetAllocation:
+def acceptance_of_undersupported_projects(S: Instance, donors: Profile, eliminated_projects:Instance, project_to_fund_selection_procedure: callable, budget: int, tie_breaking:TieBreakingRule) -> BudgetAllocation:
     """
     Accepts undersupported projects if the budget allows.
 
@@ -586,13 +604,13 @@ def acceptance_of_undersupported_projects(S: Instance, donors: Profile, eliminat
     >>> project_C = Project("Project C", 20)
     >>> selected_projects = Instance(init=[project_A])
     >>> eliminated_projects = Instance(init=[project_B, project_C])
-    >>> print(len(acceptance_of_undersupported_projects(selected_projects, [], eliminated_projects, select_project_GE, 25)))
-    2
+    >>> sorted(acceptance_of_undersupported_projects(selected_projects, [], eliminated_projects, select_project_GE, 25,lexico_tie_breaking))
+    [Project A, Project C]
     """
     logger.debug("Performing inclusive maximality postprocedure: AUP")
     # print(eliminated_projects)
     while len(eliminated_projects) != 0:
-        selected_project = project_to_fund_selection_procedure(eliminated_projects, donors, True)
+        selected_project = project_to_fund_selection_procedure(eliminated_projects, donors, tie_breaking, True)
         # print(selected_project.cost,budget)
         if selected_project.cost <= budget:
             S.add(selected_project)
@@ -603,7 +621,7 @@ def acceptance_of_undersupported_projects(S: Instance, donors: Profile, eliminat
     return BudgetAllocation(S)
 
 
-def cstv_budgeting_combination(projects: Instance, donors: Profile, combination: str, resoluteness: bool = True) -> BudgetAllocation:
+def cstv_budgeting_combination(projects: Instance, donors: Profile, combination: str, tie_breaking: TieBreakingRule, resoluteness: bool = True) -> BudgetAllocation:
     """
     Runs the CSTV test based on the combination of functions provided.
 
@@ -636,27 +654,33 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
     >>> donor4 = CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20})
     >>> donor5 = CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0})
     >>> donors = [donor1, donor2, donor3, donor4, donor5]
-    >>> combination = "ewt"
-    >>> print(len(cstv_budgeting_combination(instance, donors, combination)))
-    3
+    >>> combination = "mt"
+    >>> sorted(cstv_budgeting_combination(instance, donors, combination,lexico_tie_breaking))
+    [Project A, Project B, Project C]
     """
     
     combination = combination.lower()
     if combination == "ewt":
-        return cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations, resoluteness)
+        return cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, elimination_with_transfers, reverse_eliminations,tie_breaking, resoluteness)
     elif combination == "ewtc":
-        return cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations, resoluteness)
+        return cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, elimination_with_transfers, reverse_eliminations, tie_breaking, resoluteness)
     elif combination == "mt":
-        return cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects, resoluteness)
+        return cstv_budgeting(projects, donors, select_project_GE, is_eligible_GE, minimal_transfer, acceptance_of_undersupported_projects, tie_breaking, resoluteness)
     elif combination == "mtc":
-        return cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects, resoluteness)
+        return cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects, tie_breaking, resoluteness)
     else:
         raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
 
 
 def regular_example():
     instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
-    donors = Profile([CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})])
+    donors = Profile([
+        CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), 
+        CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), 
+        CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), 
+        CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), 
+        CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})
+        ])    
     selected_projects = cstv_budgeting_combination(instance, donors, "mt")
     print("Regular example:")
     if selected_projects:
@@ -667,5 +691,4 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     import doctest
     doctest.testmod()
-    # regular_example()
     
