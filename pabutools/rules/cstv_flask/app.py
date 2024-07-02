@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from cstv import *
+from pabutools.rules.cstv_flask.cstv import *
 
 app = Flask(__name__)
 
