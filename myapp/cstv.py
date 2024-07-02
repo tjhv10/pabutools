@@ -342,9 +342,9 @@ def select_project_GSC(projects: Instance, donors: Profile, tie_breaking: TieBre
         max_excess_project = max_excess_projects[0]
         
     if impFlag:
-        logger.debug(f"Selected project by GE method in inclusive maximality postprocedure: {max_excess_project.name}")
+        logger.debug(f"Selected project by GSC method in inclusive maximality postprocedure: {max_excess_project.name}")
     else:
-        logger.debug(f"Selected project by GE method: {max_excess_project.name}")
+        logger.debug(f"Selected project by GSC method: {max_excess_project.name}")
     
     return max_excess_project
 
@@ -673,3 +673,24 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
     else:
         raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
     
+
+
+def regular_example():
+    instance = Instance(init=[Project("Project A", 30), Project("Project B", 40), Project("Project C", 30), Project("Project D", 25)])
+    donors = Profile([
+        CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), 
+        CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), 
+        CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), 
+        CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), 
+        CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})
+        ])    
+    selected_projects = cstv_budgeting_combination(instance, donors, "ewtc")
+    print("Regular example:")
+    if selected_projects:
+        logger.info("Selected projects: %s",selected_projects)
+    
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    import doctest
+    # doctest.testmod()
+    regular_example()
