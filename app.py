@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from myapp.cstv import *
+from cstv import *
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
