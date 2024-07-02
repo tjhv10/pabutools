@@ -77,6 +77,7 @@ def cstv_budgeting(projects: Instance, donors: Profile, S :Instance, eliminated_
     
     # Loop until a halting condition is met
     while True:
+        print("shoko: ",S)
         print("asfasf",branches_of_selected_projects)
         # Calculate the total budget
         budget = sum(sum(donor.values()) for donor in donors)
@@ -119,8 +120,8 @@ def cstv_budgeting(projects: Instance, donors: Profile, S :Instance, eliminated_
                 else:    
                     return S
             eligible_projects = eligible_fn(projects, donors)
-        cp = copy.deepcopy(projects)
-        cd = copy.deepcopy(donors)
+        cp = projects
+        cd = donors
         # Choose one project to fund according to the project-to-fund selection procedure
         p = project_to_fund_selection_procedure(cp, cd, branches_of_selected_projects, S , eliminated_projects , project_to_fund_selection_procedure, eligible_fn, no_eligible_project_procedure, inclusive_maximality_postprocedure,state_stack, tie_breaking, resoluteness,inRec =inRec)
         excess_support = sum(donor.get(p.name, 0) for donor in donors) - p.cost
@@ -315,7 +316,7 @@ def select_project_GE(projects: Instance, donors: Profile, branches_of_selected_
             max_excess_project = max_excess_projects[0]
     elif len(max_excess_projects) > 1:
         state_stack.append((copy.deepcopy(projects), copy.deepcopy(donors)))
-        for i in range(0,len(max_excess_projects)-1):
+        for i in range(0,len(max_excess_projects)):
             p = max_excess_projects[i]
             max_excess_project = p
             excess_support = sum(donor.get(p.name, 0) for donor in donors) - p.cost
@@ -624,7 +625,6 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
     logger.debug(f"Projects with a chance to get funded if some of their supporters transfer money to them: {projects_with_chance}")
     if not projects_with_chance:
         return False
-    logger.debug(f"Projects with a chance to get funded if some of their supporters transfer money to them: {projects_with_chance}")
     chosen_project = project_to_fund_selection_procedure(projects_with_chance, donors,tie_breaking)
     donors_of_selected_project = [i for i, donor in enumerate(donors) if donor.get(chosen_project.name, 0) > 0]
     logger.debug(f"Selected project for minimal transfer: {chosen_project.name}")
@@ -819,7 +819,7 @@ def regular_example():
         logger.info("Selected projects: %s",selected_projects)
     
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     import doctest
     # doctest.testmod()
     regular_example()
