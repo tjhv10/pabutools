@@ -672,18 +672,3 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
         return cstv_budgeting(projects, donors, select_project_GSC, is_eligible_GSC, minimal_transfer, acceptance_of_undersupported_projects, tie_breaking, resoluteness)
     else:
         raise KeyError(f"Invalid combination algorithm: {combination}. Please insert an existing combination algorithm.")
-
-
-def regular_example():
-    instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
-    donors = Profile([
-        CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), 
-        CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), 
-        CumulativeBallot({"Project A": 0, "Project B": 15, "Project C": 5, "Project D": 5}), 
-        CumulativeBallot({"Project A": 0, "Project B": 0, "Project C": 20, "Project D": 5}), 
-        CumulativeBallot({"Project A": 15, "Project B": 5, "Project C": 0, "Project D": 5})
-        ])    
-    selected_projects = cstv_budgeting_combination(instance, donors, "mt")
-    print("Regular example:")
-    if selected_projects:
-        logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
