@@ -533,7 +533,7 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
                     if proj_name != project_name and proj_donation > 0:
                         change = to_distribute * proj_donation / total
                         donor[proj_name] -= change
-                        donor[project_name] += np.ceil(change * 1000000000000000) / 1000000000000000
+                        donor[project_name] += np.ceil(change * 100000000000000) / 100000000000000
 
         # Recalculate the support ratio
         total_support = sum(donor.get(project_name, 0) for donor in donors)
@@ -687,10 +687,3 @@ def regular_example():
     print("Regular example:")
     if selected_projects:
         logger.info(f"Selected projects: {[project.name for project in selected_projects]}")
-
-    
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    import doctest
-    doctest.testmod()
-    regular_example()
