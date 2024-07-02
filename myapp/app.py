@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from pabutools.rules.cstv_flask.cstv import *
+from pabutools.myapp.cstv import *
 
 app = Flask(__name__)
 
