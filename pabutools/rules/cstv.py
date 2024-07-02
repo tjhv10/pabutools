@@ -621,6 +621,7 @@ def minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: I
             sum_of_don+= sum(d)
         if sum_of_don >= project.cost:
             projects_with_chance.append(project)
+    logger.debug(f"Projects with a chance to get funded if some of their supporters transfer money to them: {projects_with_chance}")
     if not projects_with_chance:
         return False
     logger.debug(f"Projects with a chance to get funded if some of their supporters transfer money to them: {projects_with_chance}")
