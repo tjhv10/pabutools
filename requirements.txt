@@ -1,3 +1,3 @@
 numpy
-pabutools
+-e ".[dev]"
 flask
