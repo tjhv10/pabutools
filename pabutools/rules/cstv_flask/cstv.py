@@ -676,7 +676,7 @@ def cstv_budgeting_combination(projects: Instance, donors: Profile, combination:
 
 
 def regular_example():
-    instance = Instance(init=[Project("Project A", 30), Project("Project B", 40), Project("Project C", 30), Project("Project D", 25)])
+    instance = Instance(init=[Project("Project A", 35), Project("Project B", 30), Project("Project C", 30), Project("Project D", 30)])
     donors = Profile([
         CumulativeBallot({"Project A": 5, "Project B": 10, "Project C": 5, "Project D": 5}), 
         CumulativeBallot({"Project A": 10, "Project B": 10, "Project C": 0, "Project D": 5}), 
