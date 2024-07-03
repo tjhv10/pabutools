@@ -1,11 +1,11 @@
 import random
 import time
-from pabutools.rules.cstv import *
+from pabutools.rules.CSTV import *
 import copy
 from experiments_csv import *
 
 
-def old_minimal_transfer(projects: Instance, donors: list[CumulativeBallot], eliminated_projects: Instance, project_to_fund_selection_procedure:callable, tie_breaking: TieBreakingRule) -> Instance:
+def old_minimal_transfer(projects: Instance, donors: list[CumulativeBallot], eliminated_projects: Instance, project_to_fund_selection_procedure:callable, tie_breaking: TieBreakingRule = lexico_tie_breaking) -> Instance:
     projects_with_chance = []
     for project in projects:
         donors_of_selected_project = [donor.values() for _, donor in enumerate(donors) if donor.get(project.name, 0) > 0]
@@ -40,7 +40,7 @@ def old_minimal_transfer(projects: Instance, donors: list[CumulativeBallot], eli
         r = sum(donor.get(chosen_project.name, 0) for donor in donors) / chosen_project.cost
     return True
 
-def improved_minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: Instance, project_to_fund_selection_procedure: callable, tie_breaking: TieBreakingRule) -> bool:
+def improved_minimal_transfer(projects: Instance, donors: Profile, eliminated_projects: Instance, project_to_fund_selection_procedure: callable, tie_breaking: TieBreakingRule = lexico_tie_breaking) -> bool:
     projects_with_chance = []
     for project in projects:
         donors_of_selected_project = [donor.values() for _, donor in enumerate(donors) if donor.get(project.name, 0) > 0]
@@ -152,7 +152,7 @@ def create_inputs_2():
     max_projects = 900
     variations = [
         {"num_donors": 50, "total_donations": 300},
-        {"num_donors": 10, "total_donations": 600},
+        {"num_donors": 100, "total_donations": 600},
         {"num_donors": 150, "total_donations": 900}
     ]
     inputs = []
@@ -194,4 +194,4 @@ def calculate_metrics(inputs, combination):
     vs = sum(voter_satisfaction) / total_voters
     ar = ignored_voters / total_voters
     ac = sum(project.cost for project in selected_projects[key]) / len(selected_projects[key])
-    return {"Voter Satisfaction | Anger Ratio | Average Cost":(vs, ar, ac)}
+    return {"Voter Satisfaction":vs, "Anger ratio": ar, "Avarge cost":ac}
