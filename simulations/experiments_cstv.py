@@ -50,6 +50,6 @@ def exp_para():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    he.run_experiments()
+    # he.run_experiments()
     he.show_graphs()
     
