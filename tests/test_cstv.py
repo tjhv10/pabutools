@@ -13,11 +13,9 @@ import random
 
 class TestFunctions(unittest.TestCase):
     def setUp(self):
-        
         self.projects = Instance([Project("A", 27),Project("B", 30),Project("C", 40)])
         self.donors = [CumulativeBallot({"A": 5, "B": 10, "C": 5}), CumulativeBallot({"A": 10, "B": 10, "C": 0}), CumulativeBallot({"A": 0, "B": 15, "C": 5}), CumulativeBallot({"A": 0, "B": 0, "C": 20}), CumulativeBallot({"A": 15, "B": 5, "C": 0})]
 
-        
     def test_cstv_budgeting_with_zero_budget(self):
         for donor in self.donors:
             for key in donor.keys():
