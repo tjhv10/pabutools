@@ -9,8 +9,6 @@ import logging
 from pabutools.rules.CSTV import *
 from experiments_csv import *
 import simulations.helpExp as he
-import pandas as pd
-import matplotlib.pyplot as plt
 
 
 def exp_time():
