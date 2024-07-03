@@ -3,6 +3,7 @@ import time
 from pabutools.rules.CSTV import *
 import copy
 from experiments_csv import *
+from simulations.experiments_cstv import *
 
 
 def old_minimal_transfer(projects: Instance, donors: list[CumulativeBallot], eliminated_projects: Instance, project_to_fund_selection_procedure:callable, tie_breaking: TieBreakingRule = lexico_tie_breaking) -> Instance:
@@ -147,13 +148,13 @@ def create_input_1():
 
 
 def create_inputs_2():
-    initial_num_projects = 500
+    initial_num_projects = 100
     step = 100
-    max_projects = 900
+    max_projects = 400
     variations = [
-        {"num_donors": 50, "total_donations": 300},
-        {"num_donors": 100, "total_donations": 600},
-        {"num_donors": 150, "total_donations": 900}
+        {"num_donors": 100, "total_donations": 300},
+        {"num_donors": 200, "total_donations": 600},
+        {"num_donors": 300, "total_donations": 900}
     ]
     inputs = []
     for variation in variations:
@@ -195,3 +196,23 @@ def calculate_metrics(inputs, combination):
     ar = ignored_voters / total_voters
     ac = sum(project.cost for project in selected_projects[key]) / len(selected_projects[key])
     return {"Voter Satisfaction":vs, "Anger ratio": ar, "Avarge cost":ac}
+
+
+def run_experiments():
+    exp_time()
+    exp_with_variations()
+    exp_para()
+
+def show_graphs():
+    file_path = 'simulations/results/results_time.csv'
+    single_plot_results(file_path, filter={}, x_field="inputs", y_field="time_taken", z_field="combination")
+    file_path = 'simulations/results/results_para.csv'
+    single_plot_results(file_path, filter={}, x_field="inputs", y_field="Voter Satisfaction", z_field="combination", mean=False)
+    single_plot_results(file_path, filter={}, x_field="inputs", y_field="Anger ratio", z_field="combination", mean=False)
+    single_plot_results(file_path, filter={}, x_field="inputs", y_field="Avarge cost", z_field="combination", mean=False)
+    file_path = 'simulations/results/results_var_100.csv'
+    single_plot_results(file_path, filter={}, x_field="inputs", y_field="time_taken", z_field="combination")
+    file_path = 'simulations/results/results_var_200.csv'
+    single_plot_results(file_path, filter={}, x_field="inputs", y_field="time_taken", z_field="combination")
+    file_path = 'simulations/results/results_var_300.csv'
+    single_plot_results(file_path, filter={}, x_field="inputs", y_field="time_taken", z_field="combination")

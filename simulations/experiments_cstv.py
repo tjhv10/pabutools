@@ -13,7 +13,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-
 def exp_time():
     ex = Experiment("simulations/results","results_time.csv","simulations/backup_results")
     ex.logger.setLevel(logging.CRITICAL)
@@ -23,7 +22,6 @@ def exp_time():
         "combination": ["ewt", "improved_mt", "old_mt", "ewtc", "improved_mtc", "old_mtc"]
     }
     ex.run(he.cstv_budgeting_combination_exp, input_ranges)
-    
 
 
 def exp_with_variations():
@@ -35,7 +33,6 @@ def exp_with_variations():
         "combination": ["var_ewt", "var_improved_mt", "var_old_mt", "var_ewtc", "var_improved_mtc", "var_old_mtc"]
     }  
     ex.run(he.cstv_budgeting_combination_exp,input_ranges)
-    print("exp with variations:\n", ex.dataFrame)
     
 
 def exp_para():
@@ -49,24 +46,10 @@ def exp_para():
         "combination": ["improved_mt", "ewt", "old_mt", "ewtc", "improved_mtc", "old_mtc"]
     }
     ex.run(he.calculate_metrics,input_ranges)
-    print(ex.dataFrame)
 
 
-logging.basicConfig(level=logging.INFO)
-
-# exp_time()
-# exp_with_variations()
-# exp_para()
-file_path = 'simulations/results/results_time.csv'
-# single_plot_results(file_path, filter={}, x_field="inputs", y_field="time_taken", z_field="combination")
-# file_path = 'simulations/results/results_para.csv'
-# single_plot_results(file_path, filter={}, x_field="inputs", y_field="Voter Satisfaction", z_field="combination", mean=False)
-# single_plot_results(file_path, filter={}, x_field="inputs", y_field="Anger ratio", z_field="combination", mean=False)
-# single_plot_results(file_path, filter={}, x_field="inputs", y_field="Avarge cost", z_field="combination", mean=False)
-file_path = 'simulations/results/results_var_50.csv'
-single_plot_results(file_path, filter={}, x_field="inputs", y_field="time_taken", z_field="combination")
-file_path = 'simulations/results/results_var_100.csv'
-single_plot_results(file_path, filter={}, x_field="inputs", y_field="time_taken", z_field="combination")
-file_path = 'simulations/results/results_var_150.csv'
-single_plot_results(file_path, filter={}, x_field="inputs", y_field="time_taken", z_field="combination")
-
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    he.run_experiments()
+    he.show_graphs()
+    
